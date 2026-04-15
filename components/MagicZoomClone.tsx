@@ -1,117 +1,95 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { ZoomIn } from 'lucide-react';
+import React, { useRef, useState } from "react";
 
-interface MagicZoomProps {
+interface Props {
   src: string;
-  zoomSrc: string;
-  alt: string;
-  zoomLevel: number;
-  glassSize: number;
-  className?: string;
+  zoomSrc?: string;
+  alt?: string;
+  zoomLevel?: number;
+  glassSize?: number;
 }
 
-const MagicZoomClone: React.FC<MagicZoomProps> = ({ 
-  src, 
-  zoomSrc, 
-  alt = "", 
-  zoomLevel = 2.5, 
-  glassSize = 180 // Slightly smaller default for better mobile fit
+const MagicZoomClone: React.FC<Props> = ({
+  src,
+  zoomSrc,
+  alt,
+  zoomLevel = 2,
+  glassSize = 150,
 }) => {
-  const [showMagnifier, setShowMagnifier] = useState(false);
-  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
-  const [isTouchDevice, setIsTouchDevice] = useState(false);
-  
-  const imgRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  // Detect if the device uses touch (more reliable than screen width)
-  useEffect(() => {
-    const checkTouch = () => {
-      setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
-    };
-    checkTouch();
-  }, []);
+  const [showZoom, setShowZoom] = useState(false);
+  const [pos, setPos] = useState({ x: 0, y: 0 });
+  const [isTouch, setIsTouch] = useState(false);
 
-  // Vertical distance to float the glass ABOVE the touch point
-  // 120px is usually enough to clear a thumb/finger
-  const VERTICAL_OFFSET = isTouchDevice ? 120 : 0; 
+  const getPosition = (clientX: number, clientY: number) => {
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (!rect) return;
 
-  const processMovement = (clientX: number, clientY: number) => {
-    if (!imgRef.current) return;
-    const { left, top, width, height } = imgRef.current.getBoundingClientRect();
-    
-    const x = clientX - left;
-    const y = clientY - top;
+    let x = clientX - rect.left;
+    let y = clientY - rect.top;
 
-    // Boundary check
-    if (x < 0 || y < 0 || x > width || y > height) {
-      setShowMagnifier(false);
-      return;
-    }
+    x = Math.max(0, Math.min(x, rect.width));
+    y = Math.max(0, Math.min(y, rect.height));
 
-    setCursorPos({ x, y });
-    setShowMagnifier(true);
+    setPos({ x, y });
   };
 
-  const handleMouseMove = (e: React.MouseEvent) => processMovement(e.clientX, e.clientY);
+  // 🖱 Desktop
+  const handleMouseMove = (e: React.MouseEvent) => {
+    setIsTouch(false);
+    getPosition(e.clientX, e.clientY);
+  };
+
+  // 📱 Mobile
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (e.touches.length > 0) {
-      processMovement(e.touches[0].clientX, e.touches[0].clientY);
-    }
+    setIsTouch(true);
+    const touch = e.touches[0];
+    getPosition(touch.clientX, touch.clientY);
   };
 
-  const activeZoomSrc = zoomSrc || src;
+  // 👉 IMPORTANT: offset for mobile (finger ke upar)
+  const getGlassPosition = () => {
+    const offsetY = isTouch ? glassSize * 0.9 : glassSize / 2;
+
+    return {
+      left: pos.x - glassSize / 2,
+      top: pos.y - offsetY,
+    };
+  };
 
   return (
-    <div 
-      ref={imgRef}
-      className="relative overflow-hidden cursor-crosshair group select-none w-full h-full flex items-center justify-center bg-[#dbdbdc] rounded-lg"
-      style={{ touchAction: 'none' }} 
-      onMouseEnter={() => !isTouchDevice && setShowMagnifier(true)}
-      onMouseLeave={() => setShowMagnifier(false)}
+    <div
+      ref={containerRef}
+      className="relative w-full h-full"
+      onMouseEnter={() => setShowZoom(true)}
+      onMouseLeave={() => setShowZoom(false)}
       onMouseMove={handleMouseMove}
-      onTouchStart={(e) => {
-        setShowMagnifier(true);
-        processMovement(e.touches[0].clientX, e.touches[0].clientY);
-      }}
+      onTouchStart={() => setShowZoom(true)}
+      onTouchEnd={() => setShowZoom(false)}
       onTouchMove={handleTouchMove}
-      onTouchEnd={() => setShowMagnifier(false)}
     >
-      <img 
-        src={src} 
-        alt={alt} 
-        className="max-w-full max-h-full w-auto h-auto object-contain pointer-events-none"
+      {/* Main Image */}
+      <img
+        src={src}
+        alt={alt}
+        className="w-full h-full object-contain"
       />
 
-      {/* Dynamic Hint */}
-      <div className={`absolute bottom-4 right-4 bg-black/60 text-white text-[10px] px-3 py-1 rounded-full pointer-events-none transition-opacity duration-300 flex items-center gap-2 ${showMagnifier ? 'opacity-0' : 'opacity-100'}`}>
-         <ZoomIn size={12} /> {isTouchDevice ? "Drag to Zoom" : "Hover to Zoom"}
-      </div>
-
-      {showMagnifier && (
-        <div 
-          className="absolute z-50 bg-white border-2 border-white shadow-2xl rounded-full pointer-events-none overflow-hidden"
+      {/* Zoom Glass */}
+      {showZoom && (
+        <div
+          className="absolute border-2 border-yellow-500 rounded-full pointer-events-none shadow-lg transition-all duration-75"
           style={{
-            width: `${glassSize}px`,
-            height: `${glassSize}px`,
-
-            // POSITIONING:
-            // We center it horizontally (x - size/2)
-            // We lift it vertically (y - size/2 - OFFSET)
-            left: `${cursorPos.x - glassSize / 2}px`,
-           
-            top: `${cursorPos.y - glassSize / 1 - VERTICAL_OFFSET}px`,
-
-            backgroundImage: `url('${activeZoomSrc}')`,
-            backgroundRepeat: 'no-repeat',
-            
-            // ZOOM MATH
-            backgroundSize: `${(imgRef.current?.offsetWidth || 0) * zoomLevel}px ${(imgRef.current?.offsetHeight || 0) * zoomLevel}px`,
-            
-            // FOCUS POINT:
-            // This stays mapped to cursorPos so it zooms exactly where the finger is,
-            // even though the glass itself is positioned higher up.
-            backgroundPositionX: `${-cursorPos.x * zoomLevel + glassSize / 2}px`,
-            backgroundPositionY: `${-cursorPos.y * zoomLevel + glassSize / 2}px` 
+            width: glassSize,
+            height: glassSize,
+            ...getGlassPosition(),
+            backgroundImage: `url(${zoomSrc || src})`,
+            backgroundRepeat: "no-repeat",
+            backgroundSize: `${zoomLevel * 100}%`,
+            backgroundPosition: `
+              ${(pos.x / (containerRef.current?.offsetWidth || 1)) * 100}% 
+              ${(pos.y / (containerRef.current?.offsetHeight || 1)) * 100}%
+            `,
           }}
         />
       )}
