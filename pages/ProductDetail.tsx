@@ -13,8 +13,32 @@
    import MagicZoomClone from '../components/MagicZoomClone';
    import { Helmet } from 'react-helmet-async';
    
-   const { useParams, Link } = ReactRouterDOM;
-   
+const { useParams, Link } = ReactRouterDOM;
+const getMaterialData = (displayMaterial: string) => {
+  if (!displayMaterial) return { ms: '-', ss: '-' };
+
+  const materials = displayMaterial.split('|');
+
+ let ms = null;
+  let ss = null;
+
+  materials.forEach((mat) => {
+    const clean = mat.trim();
+
+    if (clean.toLowerCase().includes('mild')) {
+      ms = clean.match(/\((.*?)\)/)?.[1] || clean;
+    }
+
+    if (clean.toLowerCase().includes('stainless')) {
+      ss = clean.match(/\((.*?)\)/)?.[1] || clean;
+    }
+  });
+
+  return {
+     ms,
+    ss,
+  };
+};
    
    const THEME = {
      bg: "bg-[#dbdbdc]",
@@ -472,13 +496,14 @@
      const showDimensions   = product.technical_drawing || product.dimensional_specifications?.length > 0;
      const displayMaterial  = product.material || '';
      const displayHeadType  = product.head_type?.replace(/Buggel/gi, 'Bugle') || '';
+     const materialData     = getMaterialData(displayMaterial);
    
      // ── Schema strings (built once per render, outside JSX) ───────────────────
      // ⚠️  IMPORTANT: These are injected via react-helmet-async which renders them
      //     client-side. For Google to read them reliably you need SSR or a
      //     pre-rendering service (e.g. Prerender.io). The schema logic itself is
      //     correct; the delivery mechanism is the gap to fix.
-     const faqSchemaJson        = buildFaqSchema(product.faqs);
+     const faqSchemaJson        = buildFaqSchema(product.faqs || []);
      const breadcrumbSchemaJson = buildBreadcrumbSchema(product.name, slug!);
      const productSchemaJson    = buildProductSchema(product, slug!, selectedDia, selectedLen, selectedUnit);
    
@@ -560,301 +585,247 @@
              </motion.div>
            </motion.div>
    
-           {/* ── Main Grid ── */}
-           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-start">
-   
-             {/* LEFT – Image viewer */}
-             <div className="lg:col-span-7 flex flex-col gap-6">
-               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col-reverse md:flex-row gap-4 h-auto md:h-[950px]">
-   
-                 {/* Thumbnails */}
-                 <div className="hidden md:flex flex-col gap-3 overflow-y-auto w-24 py-1 pr-1">
-                   {displayImages.map((img: string, idx: number) => (
-                     <button
-                       key={idx}
-                       onClick={() => setSelectedImageIndex(idx)}
-                       className={`relative w-full aspect-square rounded-xl overflow-hidden transition-all duration-200 ${
-                         selectedImageIndex === idx
-                           ? 'ring-2 ring-yellow-500 opacity-100 scale-100'
-                           : 'opacity-60 hover:opacity-100 scale-90'
-                       }`}
-                     >
-                       <img src={img} className="w-full h-full object-contain bg-transparent" alt="" />
-                     </button>
-                   ))}
-                 </div>
-   
-                 {/* Main image */}
-                 <div className="flex-1 relative flex items-center justify-center h-[400px] md:h-full overflow-visible">
-                   <AnimatePresence mode="wait">
-                     <motion.div
-                       key={currentImage}
-                       initial={{ opacity: 0, scale: 0.9 }}
-                       animate={{ opacity: 1, scale: 1 }}
-                       className="w-full h-full flex items-center justify-center relative z-10 p-8"
-                     >
-                       <div className="max-h-full max-w-full object-contain filter drop-shadow-[0_20px_50px_rgba(0,0,0,0.15)] contrast-[1.05] brightness-[1.02]">
-                         <MagicZoomClone
-                           src={currentImage}
-                           zoomSrc={currentImage}
-                           alt={product.name}
-                           zoomLevel={2.5}
-                           glassSize={isMobile ? 120 : 200}
-                         />
-                       </div>
-                     </motion.div>
-                   </AnimatePresence>
-                 </div>
-               </motion.div>
-             </div>
-   
-             {/* RIGHT – Configurator */}
-             <div className="lg:col-span-5 flex flex-col space-y-8 sticky top-[200px]">
-               <motion.div variants={containerVar} initial="hidden" animate="visible" className="space-y-8">
-   
-                 {/* Config panel */}
-                 <motion.div variants={itemVar} className="bg-white border border-neutral-200 p-8 rounded-2xl shadow-lg">
-   
-                   {/* Diameter */}
-                   <div className="mb-8">
-                     <SectionHeader icon={Ruler} title={diameterTitle} />
-                     <div className="flex flex-wrap gap-3">
-                       {uniqueDiameters.map((dia: any) => {
-                         const isSelected = selectedDia === dia;
-                         return (
-                           <button
-                             key={dia}
-                             onClick={() => setSelectedDia(dia)}
-                             className={`relative px-3 h-12 min-w-[3.5rem] rounded-lg flex items-center justify-center text-lg transition-all duration-200 border-2 ${
-                               isSelected
-                                 ? 'bg-yellow-500 text-neutral-900 border-yellow-500 shadow-md font-bold'
-                                 : 'bg-neutral-50 text-neutral-600 border-neutral-100 hover:border-neutral-300 hover:text-neutral-900 hover:bg-white font-medium'
-                             }`}
-                             style={fontMono}
-                           >
-                             {dia.toString().replace('mm', '').trim()}
-                           </button>
-                         );
-                       })}
-                     </div>
-                   </div>
-   
-                   {/* Length */}
-                   <div className="mb-8">
-                     <div className="flex justify-between items-end mb-4 border-b border-neutral-100 pb-2">
-                       <SectionHeader icon={Maximize2} title={`Select Length (${selectedUnit})`} />
-                       <span className="text-4xl font-bold text-neutral-900 tracking-tight" style={fontHeading}>
-                         {selectedLen || '--'}
-                         <span className="text-sm text-neutral-400 ml-1 font-sans font-medium">{selectedUnit}</span>
-                       </span>
-                     </div>
-                     <div className="w-full bg-neutral-50 border border-neutral-200 rounded-xl p-5 relative overflow-hidden">
-                       <div
-                         className="absolute inset-0 opacity-[0.05] pointer-events-none"
-                         style={{
-                           backgroundImage: 'linear-gradient(#000 1px,transparent 1px),linear-gradient(90deg,#000 1px,transparent 1px)',
-                           backgroundSize: '12px 12px',
-                         }}
-                       />
-                       <div className="flex items-end justify-between h-32 gap-1 relative z-10 w-full px-1">
-                         {availableLengthOptions.length > 0 ? (
-                           availableLengthOptions.map((opt: any, idx: number) => {
-                             const isSelected = selectedLen === opt.value && selectedUnit === opt.unit;
-                             return (
-                               <button
-                                 key={idx}
-                                 onClick={() => { setSelectedLen(opt.value); setSelectedUnit(opt.unit); }}
-                                 className="group flex-1 flex flex-col items-center justify-end h-full gap-3 focus:outline-none relative"
-                               >
-                                 <span className={`font-mono transition-all duration-200 whitespace-nowrap block ${
-                                   isSelected
-                                     ? 'text-base font-bold text-neutral-900 -translate-y-2 scale-110'
-                                     : 'text-xs sm:text-sm text-neutral-500 font-medium group-hover:text-neutral-900'
-                                 }`}>
-                                   {parseFloat(opt.value)}
-                                   {opt.unit !== 'mm' && <span className="text-[9px] block text-center">{opt.unit}</span>}
-                                 </span>
-                                 <div className={`w-1.5 sm:w-2 rounded-t-[2px] transition-all duration-300 ${
-                                   isSelected ? 'h-full bg-yellow-500 shadow-md' : 'h-8 bg-neutral-300 group-hover:h-12 group-hover:bg-neutral-400'
-                                 }`} />
-                                 <div className="absolute bottom-0 w-full h-[1px] bg-neutral-300 -z-10" />
-                               </button>
-                             );
-                           })
-                         ) : (
-                           <div className="w-full h-full flex items-center justify-center text-neutral-400 text-sm italic">
-                             Select Diameter to view lengths
-                           </div>
-                         )}
-                       </div>
-                     </div>
-                   </div>
-   
-                   {/* Finish */}
-                   <div className="mb-8">
-                     <SectionHeader icon={Layers} title="Surface Finish" />
-                     {availableFinishes.length > 0 ? (
-                       <div className="flex flex-wrap gap-2">
-                         {availableFinishes.map((finish: any) => (
-                           <button
-                             key={finish}
-                             onClick={() => handleFinishClick(finish)}
-                             className={`px-5 py-2.5 text-[14px] font-medium uppercase tracking-wide border rounded-md transition-all ${
-                               activeImageOverride === (product.finish_images?.[finish]) ||
-                               product.variants?.find((v: any) => v.finish === finish && v.image === activeImageOverride)
-                                 ? 'border-yellow-500 text-neutral-900 bg-yellow-400 shadow-sm font-bold'
-                                 : 'border-neutral-200 bg-neutral-50 text-neutral-600 hover:border-neutral-400 hover:bg-white'
-                             }`}
-                             style={fontHeading}
-                           >
-                             {finish}
-                           </button>
-                         ))}
-                       </div>
-                     ) : (
-                       <div className="text-sm text-neutral-400 italic">Select Diameter & Length to see finishes</div>
-                     )}
-                   </div>
-   
-                   {/* Type */}
-                   {availableTypes.length > 0 && (
-                     <div>
-                       <SectionHeader icon={Tag} title="Product Type" />
-                       <div className="flex flex-wrap gap-2">
-                         {availableTypes.map((type: any) => (
-                           <button
-                             key={type}
-                             onClick={() => handleTypeClick(type)}
-                             className={`px-5 py-2.5 text-[14px] font-medium uppercase tracking-wide border rounded-md transition-all ${
-                               selectedType === type
-                                 ? 'border-yellow-500 text-neutral-900 bg-yellow-400 shadow-sm font-bold'
-                                 : 'border-neutral-200 bg-neutral-50 text-neutral-600 hover:border-neutral-400 hover:bg-white'
-                             }`}
-                             style={fontHeading}
-                           >
-                             {type}
-                           </button>
-                         ))}
-                       </div>
-                     </div>
-                   )}
-                 </motion.div>
-               </motion.div>
-   
-               {/* Spec Details */}
-               <motion.div variants={itemVar} className="bg-white border border-neutral-200 rounded-xl overflow-hidden shadow-md">
-                 <div className="bg-neutral-100 px-6 py-4 border-b border-neutral-200 flex items-center gap-2">
-                   <FileCheck size={18} className="text-yellow-600" />
-                   <span className="text-sm font-bold uppercase tracking-widest text-neutral-800" style={fontHeading}>
-                     Specification Details
-                   </span>
-                 </div>
-                 <div className="p-6 flex flex-col gap-0 divide-y divide-neutral-100">
-                   {displayMaterial && (
-                     <div className="pb-8 mb-2">
-                       <h4 className="text-center text-sm font-bold uppercase tracking-widest text-neutral-800 mb-5" style={fontHeading}>
-                         Material Specifications
-                       </h4>
-                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                         {displayMaterial.split(/\|/g).map((mat: string, idx: number) => {
-  let name = '';
-  let grade = '';
+           {/* ── MAIN PRODUCT SECTION (Updated for Image-1 Design Match) ── */}
+<div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
 
-  // ✅ Case 1: Proper format (Material (Grade))
-  if (mat.includes('(')) {
-    const parts = mat.split('(');
-    name = parts[0].trim();
-    grade = parts[1]?.replace(')', '').trim() || '';
-  } 
-  // ✅ Case 2: Only grade (bad admin data)
-  else {
-    name = `Material ${idx + 1}`; // fallback name
-    grade = mat.replace(')', '').trim();
-  }
+  {/* LEFT COLUMN: PRODUCT IMAGE (Occupies 5/12 columns) */}
+  <div className="lg:col-span-5 flex items-center justify-center min-h-[400px] lg:min-h-[500px]">
+    <div className="w-full max-w-[380px]">
+      <MagicZoomClone
+        src={currentImage}
+        zoomSrc={currentImage}
+        alt={product.name}
+        zoomLevel={2.2}
+        glassSize={isMobile ? 120 : 180}
+      />
+    </div>
+  </div>
 
-  // ✅ Remove "Grade" word only (keep case)
-  grade = grade.replace(/grade/i, '').trim();
-
-  return (
-    <div key={idx} className="bg-white border border-neutral-200 rounded-xl p-5 flex flex-col hover:shadow-md transition-shadow">
+  {/* RIGHT COLUMN: CONFIG PANEL (Occupies 7/12 columns) */}
+  <div className="lg:col-span-7 space-y-8">
+    <div className="bg-white rounded-2xl shadow-sm border border-neutral-200 p-8">
       
-      {/* Material Name */}
-      <div className="flex items-center gap-3 mb-3 pb-3 border-b border-neutral-100">
-        <Settings className="text-neutral-400" size={20} />
-        <span className="text-base font-bold text-neutral-900">
-          {name || 'Material'}
-        </span>
-      </div>
+      {/* 1. SELECT DIAMETER */}
+      <div className="mb-8">
+                  <SectionHeader icon={Ruler} title={diameterTitle} />
+                  <div className="flex flex-wrap gap-3">
+                    {uniqueDiameters.map((dia: any) => {
+                      const isSelected = selectedDia === dia;
+                      return (
+                        <button
+                          key={dia}
+                          onClick={() => setSelectedDia(dia)}
+                          className={`relative px-3 h-12 min-w-[3.5rem] rounded-lg flex items-center justify-center text-lg transition-all duration-200 border-2 ${
+                            isSelected
+                              ? 'bg-yellow-500 text-neutral-900 border-yellow-500 shadow-md font-bold'
+                              : 'bg-neutral-50 text-neutral-600 border-neutral-100 hover:border-neutral-300 hover:text-neutral-900 hover:bg-white font-medium'
+                          }`}
+                          style={fontMono}
+                        >
+                          {dia.toString().replace('mm', '').trim()}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
 
-      {/* Grade Section */}
-      <div className="mt-auto">
-        <span className="text-[11px] font-bold text-neutral-400 uppercase tracking-wider block mb-2">
-          Grade
-        </span>
-
-        <div className="flex flex-col gap-1">
-          {grade
-            ? grade.split(',').map((g, i) => (
-                <span key={i} className="text-sm font-semibold text-neutral-800">
-                  {g.trim().toUpperCase()}
-                </span>
-              ))
-            : <span className="text-sm text-neutral-400">—</span>
-          }
-        </div>
-      </div>
+      {/* 2. SELECT LENGTH (Graph Style) */}
+    <div className="mb-8">
+                  <div className="flex justify-between items-end mb-4 border-b border-neutral-100 pb-2">
+                    <SectionHeader icon={Maximize2} title={`Select Length (${selectedUnit})`} />
+                    <span className="text-4xl font-bold text-neutral-900 tracking-tight" style={fontHeading}>
+                      {selectedLen || '--'}
+                      <span className="text-sm text-neutral-400 ml-1 font-sans font-medium">{selectedUnit}</span>
+                    </span>
+                  </div>
+                  <div className="w-full bg-neutral-50 border border-neutral-200 rounded-xl p-5 relative overflow-hidden">
+                    <div
+                      className="absolute inset-0 opacity-[0.05] pointer-events-none"
+                      style={{
+                        backgroundImage: 'linear-gradient(#000 1px,transparent 1px),linear-gradient(90deg,#000 1px,transparent 1px)',
+                        backgroundSize: '12px 12px',
+                      }}
+                    />
+                    <div className="flex items-end justify-between h-32 gap-1 relative z-10 w-full px-1">
+                      {availableLengthOptions.length > 0 ? (
+                        availableLengthOptions.map((opt: any, idx: number) => {
+                          const isSelected = selectedLen === opt.value && selectedUnit === opt.unit;
+                          return (
+                            <button
+                              key={idx}
+                              onClick={() => { setSelectedLen(opt.value); setSelectedUnit(opt.unit); }}
+                              className="group flex-1 flex flex-col items-center justify-end h-full gap-3 focus:outline-none relative"
+                            >
+                              <span className={`font-mono transition-all duration-200 whitespace-nowrap block ${
+                                isSelected
+                                  ? 'text-base font-bold text-neutral-900 -translate-y-2 scale-110'
+                                  : 'text-xs sm:text-sm text-neutral-500 font-medium group-hover:text-neutral-900'
+                              }`}>
+                                {parseFloat(opt.value)}
+                                {opt.unit !== 'mm' && <span className="text-[9px] block text-center">{opt.unit}</span>}
+                              </span>
+                              <div className={`w-1.5 sm:w-2 rounded-t-[2px] transition-all duration-300 ${
+                                isSelected ? 'h-full bg-yellow-500 shadow-md' : 'h-8 bg-neutral-300 group-hover:h-12 group-hover:bg-neutral-400'
+                              }`} />
+                              <div className="absolute bottom-0 w-full h-[1px] bg-neutral-300 -z-10" />
+                            </button>
+                          );
+                        })
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-neutral-400 text-sm italic">
+                          Select Diameter to view lengths
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+      {/* Finish */}
+                <div className="mb-8">
+                  <SectionHeader icon={Layers} title="Surface Finish" />
+                  {availableFinishes.length > 0 ? (
+                    <div className="flex flex-wrap gap-2">
+                      {availableFinishes.map((finish: any) => (
+                        <button
+                          key={finish}
+                          onClick={() => handleFinishClick(finish)}
+                          className={`px-5 py-2.5 text-[14px] font-medium uppercase tracking-wide border rounded-md transition-all ${
+                            activeImageOverride === (product.finish_images?.[finish]) ||
+                            product.variants?.find((v: any) => v.finish === finish && v.image === activeImageOverride)
+                              ? 'border-yellow-500 text-neutral-900 bg-yellow-400 shadow-sm font-bold'
+                              : 'border-neutral-200 bg-neutral-50 text-neutral-600 hover:border-neutral-400 hover:bg-white'
+                          }`}
+                          style={fontHeading}
+                        >
+                          {finish}
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-sm text-neutral-400 italic">Select Diameter & Length to see finishes</div>
+                  )}
+                </div>
 
     </div>
-  );
-})}
-                       </div>
-                     </div>
-                   )}
-   
-                   {[
-                     { label: 'Head Type', value: displayHeadType },
-                     { label: 'Drive', value: product.drive_type },
-                     { label: 'Type', value: selectedType },
-                     ...product.specifications
-                       .filter((s: any) => !HIDDEN_SPECS.includes(s.key.toLowerCase()))
-                       .map((s: any) => ({ label: s.key, value: s.value })),
-                   ].map(
-                     (item, idx) =>
-                       item.value && (
-                         <div key={idx} className="flex flex-row justify-between py-5 items-center">
-                           <span className="text-neutral-500 font-bold uppercase text-xs tracking-wider min-w-[120px]">
-                             {item.label}
-                           </span>
-                           <span className="text-[15px] font-bold text-neutral-900 text-right">{item.value}</span>
-                         </div>
-                       ),
-                   )}
-                 </div>
-               </motion.div>
-   
-               {/* CTA buttons */}
-               <div className="grid grid-cols-2 gap-4 pt-4">
-                 <a
-                   href="/contact"
-                   className="col-span-1 bg-yellow-500 hover:bg-yellow-400 text-neutral-900 h-14 rounded-lg font-bold uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg shadow-yellow-500/20 transition-all text-sm border border-yellow-600/10 hover:-translate-y-0.5"
-                   style={fontHeading}
-                 >
-                   <ShoppingCart size={20} /> Bulk Quote
-                 </a>
-                 <a
-                   href="/public/Durable Fastener Pvt. Ltd. Catalogue.pdf"
-                   target="_blank"
-                   rel="noopener noreferrer"
-                   className="col-span-1 bg-neutral-900 text-white h-14 rounded-lg font-bold uppercase tracking-widest flex items-center justify-center gap-2 transition-all text-sm hover:-translate-y-0.5"
-                   style={fontHeading}
-                 >
-                   <FileText size={20} /> View Catalogue
-                 </a>
-               </div>
-             </div>
-           </div>
-         </div>
-   
+  </div>
+
+
+  {/* ── FULL WIDTH SPECIFICATION TABLE (Centered Below) ── */}
+  <div className="lg:col-span-12 mt-4">
+  <motion.div
+    variants={itemVar}
+    className="bg-white border border-neutral-200 rounded-xl overflow-hidden shadow-lg"
+  >
+    <div className="bg-neutral-100 px-6 py-4 border-b border-neutral-200 text-center">
+      <span
+        className="text-xl font-bold uppercase tracking-[0.1em] text-neutral-900"
+        style={fontHeading}
+      >
+        Specification Details
+      </span>
+    </div>
+
+    <div className="overflow-x-auto">
+      <table className="w-full text-left border-collapse">
+        <thead>
+          <tr className="border-b border-neutral-200 bg-neutral-50/50">
+            <th className="py-4 px-8 border-r border-neutral-200 w-1/3"></th>
+
+            <th
+              className="py-4 px-6 text-center text-sm font-bold uppercase text-neutral-800 border-r border-neutral-200"
+              style={fontHeading}
+            >
+              Mild Steel
+            </th>
+
+            <th
+              className="py-4 px-6 text-center text-sm font-bold uppercase text-neutral-800"
+              style={fontHeading}
+            >
+              Stainless Steel
+            </th>
+          </tr>
+        </thead>
+
+        <tbody className="text-sm font-medium">
+
+          {/* ✅ MATERIAL (DYNAMIC) */}
+          <tr className="border-b border-neutral-100">
+            <td className="py-4 px-8 font-bold text-neutral-500 uppercase tracking-widest border-r border-neutral-200 bg-neutral-50/30">
+              Material
+            </td>
+
+            <td className="py-4 px-6 text-center text-neutral-900 border-r border-neutral-200" style={fontMono}>
+              {materialData.ms}
+            </td>
+
+            <td className="py-4 px-6 text-center text-neutral-900" style={fontMono}>
+              {materialData.ss}
+            </td>
+          </tr>
+
+          {/* ❌ Grades static hata diya (same value repeat ho raha tha) */}
+
+          {/* HEAD TYPE */}
+          <tr className="border-b border-neutral-100">
+            <td className="py-4 px-8 font-bold text-neutral-500 uppercase tracking-widest border-r border-neutral-200 bg-neutral-50/30">
+              Head Type
+            </td>
+
+            <td colSpan={2} className="py-4 px-6 text-center text-neutral-900 font-bold uppercase" style={fontHeading}>
+              {displayHeadType || "CSK Phillips Bugle Head"}
+            </td>
+          </tr>
+
+          {/* DRIVE */}
+          <tr className="border-b border-neutral-100">
+            <td className="py-4 px-8 font-bold text-neutral-500 uppercase tracking-widest border-r border-neutral-200 bg-neutral-50/30">
+              Drive
+            </td>
+
+            <td colSpan={2} className="py-4 px-6 text-center text-neutral-900 font-bold uppercase" style={fontHeading}>
+              {product?.drive_type || "Phillips"}
+            </td>
+          </tr>
+
+          {/* THREAD */}
+          <tr>
+            <td className="py-4 px-8 font-bold text-neutral-500 uppercase tracking-widest border-r border-neutral-200 bg-neutral-50/30">
+              Thread Type
+            </td>
+
+            <td colSpan={2} className="py-4 px-6 text-center text-neutral-900 font-bold uppercase" style={fontHeading}>
+              {selectedType || "Fine Thread"}
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </motion.div>
+
+
+    {/* CTA BUTTONS (Matching Image 1 Footer) */}
+   <div className="grid grid-cols-2 gap-4 pt-4">
+              <a
+                href="/contact"
+                className="col-span-1 bg-yellow-500 hover:bg-yellow-400 text-neutral-900 h-14 rounded-lg font-bold uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg shadow-yellow-500/20 transition-all text-sm border border-yellow-600/10 hover:-translate-y-0.5"
+                style={fontHeading}
+              >
+                <ShoppingCart size={20} /> Bulk Quote
+              </a>
+              <a
+                href="/public/Durable Fastener Pvt. Ltd. Catalogue.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="col-span-1 bg-neutral-900 text-white h-14 rounded-lg font-bold uppercase tracking-widest flex items-center justify-center gap-2 transition-all text-sm hover:-translate-y-0.5"
+                style={fontHeading}
+              >
+                <FileText size={20} /> View Catalogue
+              </a>
+            </div>
+    </div>
+  </div>
+</div>
          {/* ── Technical Vault ── */}
          <div className="bg-[#aaaaab] border-t border-neutral-300 relative z-20 overflow-hidden text-neutral-900">
            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
@@ -1238,7 +1209,6 @@
                  onClick={e => e.stopPropagation()}
                  alt="Full screen view"
                />
-               
              </motion.div>
            )}
          </AnimatePresence>
