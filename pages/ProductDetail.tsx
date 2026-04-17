@@ -728,7 +728,10 @@ const getMaterialData = (displayMaterial: string) => {
       <table className="w-full text-left border-collapse">
         <thead>
           <tr className="border-b border-neutral-200 bg-neutral-50/50">
-            <th className="py-4 px-8 border-r border-neutral-200 w-1/3"></th>
+          <td className="py-4 px-8 font-bold text-neutral-500 uppercase tracking-widest border-r border-neutral-200 bg-neutral-50/30">
+              Material
+            
+            </td>
 
             <th
               className="py-4 px-6 text-center text-sm font-bold uppercase text-neutral-800 border-r border-neutral-200"
@@ -736,6 +739,7 @@ const getMaterialData = (displayMaterial: string) => {
             >
               Mild Steel
             </th>
+            
 
             <th
               className="py-4 px-6 text-center text-sm font-bold uppercase text-neutral-800"
@@ -751,7 +755,7 @@ const getMaterialData = (displayMaterial: string) => {
           {/* ✅ MATERIAL (DYNAMIC) */}
           <tr className="border-b border-neutral-100">
             <td className="py-4 px-8 font-bold text-neutral-500 uppercase tracking-widest border-r border-neutral-200 bg-neutral-50/30">
-              Material
+              
             </td>
 
             <td className="py-4 px-6 text-center text-neutral-900 border-r border-neutral-200" style={fontMono}>
