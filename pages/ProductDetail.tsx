@@ -1,3 +1,10 @@
+   const FINISH_TEXTURES: Record<string, string> = {
+  nickel: "linear-gradient(135deg, #d9d9d9, #a6a6a6)",
+  black: "#000000",
+  antique: "linear-gradient(135deg, #6b4b2a, #3e2a14)",
+  zinc: "linear-gradient(135deg, #e0decf, #ab9f92)",
+};
+
    import React, { useState, useMemo, useEffect } from 'react';
    import * as ReactRouterDOM from 'react-router-dom';
    import { supabase } from '../lib/supabase';
@@ -589,24 +596,25 @@ const getMaterialData = (displayMaterial: string) => {
 <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
 
   {/* LEFT COLUMN: PRODUCT IMAGE (Occupies 5/12 columns) */}
-  <div className="lg:col-span-5 flex items-center justify-center min-h-[400px] lg:min-h-[500px]">
-    <div className="w-full max-w-[380px]">
+  <div className="lg:col-span-4 flex items-center justify-center min-h-[400px] lg:min-h-[1100px]">
+    <div className="w-full max-w-[400px]">
       <MagicZoomClone
         src={currentImage}
         zoomSrc={currentImage}
         alt={product.name}
-        zoomLevel={2.2}
+        zoomLevel={4}
         glassSize={isMobile ? 120 : 180}
       />
     </div>
   </div>
-
   {/* RIGHT COLUMN: CONFIG PANEL (Occupies 7/12 columns) */}
-  <div className="lg:col-span-7 space-y-8">
-    <div className="bg-white rounded-2xl shadow-sm border border-neutral-200 p-8">
-      
-      {/* 1. SELECT DIAMETER */}
-      <div className="mb-8">
+        <div className="lg:col-span-8 space-y-7">
+          <div className="bg-white rounded-2xl shadow-sm border border-neutral-200 p-4"> 
+                      
+            
+
+             {/* 1. SELECT DIAMETER */}
+     <div className="mb-8">
                   <SectionHeader icon={Ruler} title={diameterTitle} />
                   <div className="flex flex-wrap gap-3">
                     {uniqueDiameters.map((dia: any) => {
@@ -629,16 +637,16 @@ const getMaterialData = (displayMaterial: string) => {
                   </div>
                 </div>
 
-      {/* 2. SELECT LENGTH (Graph Style) */}
-    <div className="mb-8">
-                  <div className="flex justify-between items-end mb-4 border-b border-neutral-100 pb-2">
+                 {/* 2. SELECT LENGTH (Graph Style) */}
+    <div className="mb-5">
+                  <div className="flex justify-between items-end mb-0 border-b border-neutral-100 pb-2">
                     <SectionHeader icon={Maximize2} title={`Select Length (${selectedUnit})`} />
                     <span className="text-4xl font-bold text-neutral-900 tracking-tight" style={fontHeading}>
                       {selectedLen || '--'}
                       <span className="text-sm text-neutral-400 ml-1 font-sans font-medium">{selectedUnit}</span>
                     </span>
                   </div>
-                  <div className="w-full bg-neutral-50 border border-neutral-200 rounded-xl p-5 relative overflow-hidden">
+                  <div className="w-full bg-neutral-50 border border-neutral-200 rounded-xl p-2 relative overflow-hidden">
                     <div
                       className="absolute inset-0 opacity-[0.05] pointer-events-none"
                       style={{
@@ -678,137 +686,130 @@ const getMaterialData = (displayMaterial: string) => {
                       )}
                     </div>
                   </div>
-                </div>
+                </div>   
       {/* Finish */}
-                <div className="mb-8">
-                  <SectionHeader icon={Layers} title="Surface Finish" />
-                  {availableFinishes.length > 0 ? (
-                    <div className="flex flex-wrap gap-2">
-                      {availableFinishes.map((finish: any) => (
-                        <button
-                          key={finish}
-                          onClick={() => handleFinishClick(finish)}
-                          className={`px-5 py-2.5 text-[14px] font-medium uppercase tracking-wide border rounded-md transition-all ${
-                            activeImageOverride === (product.finish_images?.[finish]) ||
-                            product.variants?.find((v: any) => v.finish === finish && v.image === activeImageOverride)
-                              ? 'border-yellow-500 text-neutral-900 bg-yellow-400 shadow-sm font-bold'
-                              : 'border-neutral-200 bg-neutral-50 text-neutral-600 hover:border-neutral-400 hover:bg-white'
-                          }`}
-                          style={fontHeading}
-                        >
-                          {finish}
-                        </button>
-                      ))}
+
+<div className="mb-4">
+  <SectionHeader icon={Layers} title="Surface Finish" />
+
+  {availableFinishes.length > 0 ? (
+    <div className="flex flex-wrap gap-3">
+
+      {availableFinishes.map((finish: any) => {
+        const key = finish.toLowerCase().trim();
+
+        const isActive =
+          activeImageOverride === (product.finish_images?.[finish]) ||
+          product.variants?.find(
+            (v: any) => v.finish === finish && v.image === activeImageOverride
+          );
+
+        const bgStyle = FINISH_TEXTURES[key] || "#f3f4f6";
+
+        return (
+          <button
+            key={finish}
+            onClick={() => handleFinishClick(finish)}
+            className={`flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg border transition-all duration-200
+              ${isActive
+                ? "ring-2 ring-yellow-500 scale-105 border-yellow-500 shadow-md"
+                : "border-neutral-200 hover:scale-105 hover:shadow-sm"
+              }
+            `}
+            style={fontHeading}
+          >
+            
+            {/* COLOR BOX */}
+            <div
+              className="w-16 h-8 rounded-md border"
+              style={{
+                background: bgStyle,
+              }}
+            />
+
+            {/* LABEL */}
+            <span className="text-[11px] font-semibold text-neutral-700 uppercase tracking-wide">
+              {finish}
+            </span>
+
+          </button>
+        );
+      })}
+
+    </div>
+  ) : (
+    <div className="text-sm text-neutral-400 italic">
+      Select Diameter & Length to see finishes
+    </div>
+  )}
+</div>
+
+                {/*----------end finish------------------*/}
+                {/* head type*/}
+                 <div className="mb-5 border-b border-neutral-100 ">
+                <SectionHeader icon={FileCheck} title="Specification Details" />
+                <table className="w-full text-sm rounded-2xl border-collapse border border-neutral-200">
+  <tbody>
+    {[
+      { label: 'Head Type', value: displayHeadType },
+      { label: 'Drive', value: product.drive_type },
+      { label: 'Type', value: selectedType },
+
+      ...product.specifications
+        .filter((s: any) => !HIDDEN_SPECS.includes(s.key.toLowerCase()))
+        .map((s: any) => ({
+          label: s.key,
+          value: s.value,
+        })),
+    ].map(
+      (item, idx) =>
+        item.value && (
+          <tr key={idx} className="border">
+            <td className="p-4 border font-medium text-neutral-600 uppercase text-xs tracking-wider w-[30%]">
+              {item.label}
+            </td>
+
+            <td className="p-4 border font-semibold text-neutral-900" colSpan={2}>
+              {item.value}
+            </td>
+          </tr>
+        )
+    )}
+  </tbody>
+</table>
+</div>
+                   {/* -----metrial specification --- */}  
+                   
+            <div className="p-1 flex flex-col gap-0 divide-y divide-neutral-100">
+                {displayMaterial && (
+                  <div className="pb-1 mb-1">
+                    <h4 className="text-center text-sm font-bold uppercase tracking-widest text-neutral-800 mb-5" style={fontHeading}>
+                      Material Specifications
+                    </h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {displayMaterial.split(/\|/g).map((mat: string, idx: number) => {
+                        const parts = mat.split('(');
+                        const name = parts[0].trim();
+                        let grade = parts.length > 1 ? parts[1].replace(')', '').trim() : '';
+                       grade = grade.replace(/grade/i, '').trim();
+                        return (
+                          <div key={idx} className="bg-white border border-neutral-200 rounded-xl p-5 flex flex-col hover:shadow-md transition-shadow">
+                            <div className="flex items-center gap-3 mb-3 pb-3 border-b border-neutral-100">
+                              <Settings className="text-neutral-400" size={20} />
+                              <span className="text-base font-bold text-neutral-900">{name}</span>
+                            </div>
+                            <div className="mt-auto">
+                              <span className="text-[11px] font-bold text-neutral-400 uppercase tracking-wider block mb-1">Grade:</span>
+                              <span className="text-sm font-semibold text-neutral-800">{grade}</span>
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
-                  ) : (
-                    <div className="text-sm text-neutral-400 italic">Select Diameter & Length to see finishes</div>
-                  )}
-                </div>
-
-    </div>
-  </div>
-
-
-  {/* ── FULL WIDTH SPECIFICATION TABLE (Centered Below) ── */}
-  <div className="lg:col-span-12 mt-4">
-  <motion.div
-    variants={itemVar}
-    className="bg-white border border-neutral-200 rounded-xl overflow-hidden shadow-lg"
-  >
-    <div className="bg-neutral-100 px-6 py-4 border-b border-neutral-200 text-center">
-      <span
-        className="text-xl font-bold uppercase tracking-[0.1em] text-neutral-900"
-        style={fontHeading}
-      >
-        Specification Details
-      </span>
-    </div>
-
-    <div className="overflow-x-auto">
-      <table className="w-full text-left border-collapse">
-        <thead>
-          <tr className="border-b border-neutral-200 bg-neutral-50/50">
-          <td className="py-4 px-8 font-bold text-neutral-500 uppercase tracking-widest border-r border-neutral-200 bg-neutral-50/30">
-              Material
-            
-            </td>
-
-            <th
-              className="py-4 px-6 text-center text-sm font-bold uppercase text-neutral-800 border-r border-neutral-200"
-              style={fontHeading}
-            >
-              Mild Steel
-            </th>
-            
-
-            <th
-              className="py-4 px-6 text-center text-sm font-bold uppercase text-neutral-800"
-              style={fontHeading}
-            >
-              Stainless Steel
-            </th>
-          </tr>
-        </thead>
-
-        <tbody className="text-sm font-medium">
-
-          {/* ✅ MATERIAL (DYNAMIC) */}
-          <tr className="border-b border-neutral-100">
-            <td className="py-4 px-8 font-bold text-neutral-500 uppercase tracking-widest border-r border-neutral-200 bg-neutral-50/30">
-              
-            </td>
-
-            <td className="py-4 px-6 text-center text-neutral-900 border-r border-neutral-200" style={fontMono}>
-              {materialData.ms}
-            </td>
-
-            <td className="py-4 px-6 text-center text-neutral-900" style={fontMono}>
-              {materialData.ss}
-            </td>
-          </tr>
-
-          {/* ❌ Grades static hata diya (same value repeat ho raha tha) */}
-
-          {/* HEAD TYPE */}
-          <tr className="border-b border-neutral-100">
-            <td className="py-4 px-8 font-bold text-neutral-500 uppercase tracking-widest border-r border-neutral-200 bg-neutral-50/30">
-              Head Type
-            </td>
-
-            <td colSpan={2} className="py-4 px-6 text-center text-neutral-900 font-bold uppercase" style={fontHeading}>
-              {displayHeadType || "CSK Phillips Bugle Head"}
-            </td>
-          </tr>
-
-          {/* DRIVE */}
-          <tr className="border-b border-neutral-100">
-            <td className="py-4 px-8 font-bold text-neutral-500 uppercase tracking-widest border-r border-neutral-200 bg-neutral-50/30">
-              Drive
-            </td>
-
-            <td colSpan={2} className="py-4 px-6 text-center text-neutral-900 font-bold uppercase" style={fontHeading}>
-              {product?.drive_type || "Phillips"}
-            </td>
-          </tr>
-
-          {/* THREAD */}
-          <tr>
-            <td className="py-4 px-8 font-bold text-neutral-500 uppercase tracking-widest border-r border-neutral-200 bg-neutral-50/30">
-              Thread Type
-            </td>
-
-            <td colSpan={2} className="py-4 px-6 text-center text-neutral-900 font-bold uppercase" style={fontHeading}>
-              {selectedType || "Fine Thread"}
-            </td>
-          </tr>
-
-        </tbody>
-      </table>
-    </div>
-  </motion.div>
-
-
-    {/* CTA BUTTONS (Matching Image 1 Footer) */}
+                  </div>
+                )}                
+              </div>
+                 {/* CTA BUTTONS (Matching Image 1 Footer) */}
    <div className="grid grid-cols-2 gap-4 pt-4">
               <a
                 href="/contact"
@@ -827,8 +828,13 @@ const getMaterialData = (displayMaterial: string) => {
                 <FileText size={20} /> View Catalogue
               </a>
             </div>
+
     </div>
   </div>
+
+
+  </div>
+  {/*------end product image -----*/}
 </div>
          {/* ── Technical Vault ── */}
          <div className="bg-[#aaaaab] border-t border-neutral-300 relative z-20 overflow-hidden text-neutral-900">
