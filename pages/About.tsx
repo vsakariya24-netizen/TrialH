@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { 
-  Target, Eye, TrendingUp, Award, Zap, ShieldCheck, 
-  Settings, Globe2, ChevronRight, Quote, 
-  Boxes, Handshake, Microscope, 
-  ArrowUpRight, CheckCircle2, Factory, AlertTriangle, XCircle, RefreshCw
+  Target, Eye, Award, Zap, ShieldCheck, 
+  Settings, ChevronRight, Boxes, 
+  RefreshCw, AlertTriangle, Factory, 
+  MapPin, Users, TrendingUp, Landmark,
+  Scale, Gauge
 } from 'lucide-react';
-import { Helmet } from 'react-helmet-async';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 
 // --- 1. Helper: Reveal Animation ---
 const RevealSection: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = "" }) => {
@@ -28,7 +29,7 @@ const RevealSection: React.FC<{ children: React.ReactNode; className?: string }>
 };
 
 // --- 2. Helper: Counter Hook ---
-const useCounter = (target: number, duration: number = 2000) => {
+const useCounter = (target: number, duration: number = 2000, isDecimal: boolean = false) => {
   const [count, setCount] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
   const elementRef = useRef<HTMLDivElement>(null);
@@ -53,13 +54,16 @@ const useCounter = (target: number, duration: number = 2000) => {
         setCount(end);
         clearInterval(timer);
       } else {
-        setCount(Math.floor(start));
+        setCount(start);
       }
     }, duration / totalSteps);
     return () => clearInterval(timer);
   }, [isVisible, target, duration]);
 
-  return { count, elementRef };
+  return { 
+    displayValue: isDecimal ? count.toFixed(2) : Math.floor(count), 
+    elementRef 
+  };
 };
 
 const About: React.FC = () => {
@@ -71,291 +75,285 @@ const About: React.FC = () => {
   }, []);
 
   // Stats Configuration
-  const yearsStat = useCounter(8);
-  const clientsStat = useCounter(350);
-  const skuStat = useCounter(600);
-  const exportStat = useCounter(12);
+  const turnoverStat = useCounter(5.12, 2000, true);
+  const yearsStat = useCounter(7, 2000);
+  const teamStat = useCounter(25, 2000);
+  const citiesStat = useCounter(3, 2000);
 
   return (
-    <div className="bg-[#fcfcfc] min-h-screen overflow-x-hidden font-sans text-slate-900">
-      <Helmet>
-        <title>Our Legacy | Durable Fastener Pvt Ltd (DFPL)</title>
-        <meta name="description" content="Forging excellence since 2018. From Gujarat to the world, providing industrial screw solutions for Titan, Reliance, and beyond." />
-      </Helmet>
+    <HelmetProvider>
+      <div className="bg-[#0D0F14] min-h-screen text-[#F4F2ED] font-['Barlow'] overflow-x-hidden">
+        <Helmet>
+          <title>About Us | DFPL — Fasteners That Hold Industries Together</title>
+          <meta name="description" content="Founded in 2018 by Vipul Sakariya. Precision fastener manufacturing with ₹5.12 Crore turnover and a proven QC-first philosophy." />
+          <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet" />
+        </Helmet>
 
-      {/* SECTION 1: HERO - THE PROBLEM SOLVERS */}
-      <section className="relative h-[90vh] flex items-center justify-center overflow-hidden bg-[#05070a] text-white">
-        <div 
-          className="absolute inset-0 opacity-30 z-0 grayscale contrast-125"
-          style={{ 
-            backgroundImage: `url('https://images.unsplash.com/photo-1504917595217-d4dc5f66679b?auto=format&fit=crop&q=80&w=2000')`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            transform: `translateY(${offsetY * 0.4}px) scale(1.1)`
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-[#05070a]/60 to-[#05070a] z-10" />
-
-        <div className="relative z-20 max-w-7xl mx-auto px-6 text-center">
-          <RevealSection>
-            <span className="inline-block px-5 py-2 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-400 text-[10px] font-black tracking-[0.4em] uppercase mb-8 backdrop-blur-md">
-              Gujarat, India — Exporting Excellence
-            </span>
-            <h1 className="text-5xl md:text-8xl lg:text-9xl font-black mb-10 tracking-tighter leading-[0.85] uppercase">
-              Built to solve<br/>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-500 to-amber-200 italic">
-                The Market Gap.
-              </span>
-            </h1>
-            <div className="max-w-4xl mx-auto space-y-6">
-              <p className="text-lg md:text-2xl text-white font-medium leading-relaxed">
-                We didn't start DFPL to just sell screws. We started it because the industry lacked 
-                <span className="text-amber-500 italic"> technical precision </span> and reliable standards.
-              </p>
-            </div>
-          </RevealSection>
-        </div>
-      </section>
-
-      {/* SECTION 2: STATS STRIP */}
-      <div className="bg-amber-500 py-12 relative z-30 -mt-10 mx-6 rounded-3xl shadow-2xl">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-black">
-            <div className="text-center border-r border-black/10 last:border-0" ref={yearsStat.elementRef}>
-              <span className="block text-4xl md:text-6xl font-black tracking-tighter">{yearsStat.count}+</span>
-              <span className="text-[10px] font-bold uppercase tracking-widest opacity-60">Years in Industry</span>
-            </div>
-            <div className="text-center border-r border-black/10 last:border-0" ref={clientsStat.elementRef}>
-              <span className="block text-4xl md:text-6xl font-black tracking-tighter">{clientsStat.count}+</span>
-              <span className="text-[10px] font-bold uppercase tracking-widest opacity-60">Global Clients</span>
-            </div>
-            <div className="text-center border-r border-black/10 last:border-0" ref={skuStat.elementRef}>
-              <span className="block text-4xl md:text-6xl font-black tracking-tighter">{skuStat.count}+</span>
-              <span className="text-[10px] font-bold uppercase tracking-widest opacity-60">Unique SKUs</span>
-            </div>
-            
-          </div>
-        </div>
-      </div>
-
-      {/* SECTION 3: THE ORIGIN & EVOLUTION */}
-      <section className="py-32 px-6 bg-white overflow-hidden">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-20">
+        {/* --- SECTION 1: HERO --- */}
+        <section className="relative min-h-screen flex items-center overflow-hidden border-b border-white/5">
+          <div className="absolute inset-0 opacity-10"
+            style={{ 
+              backgroundImage: `linear-gradient(#E8A020 1px,transparent 1px), linear-gradient(90deg,#E8A020 1px,transparent 1px)`,
+              backgroundSize: '64px 64px'
+            }}
+          />
+          <div className="absolute right-0 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-amber-500/20 to-transparent" />
           
-          {/* Left: Origin Story */}
-          <div className="lg:col-span-5 space-y-8">
+          <div className="relative z-10 max-w-7xl mx-auto px-6 pt-20">
             <RevealSection>
-              <span className="text-amber-600 font-black text-xs tracking-[0.3em] uppercase block">Our Origin</span>
-              <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-none uppercase italic mb-8">
-                Why we started,<br/> <span className="text-slate-400">Not just when.</span>
-              </h2>
-              <div className="border-l-4 border-amber-500 pl-8 mb-8 italic text-xl text-slate-700 leading-relaxed">
-                "The problem wasn't a lack of supply — it was a lack of standards. We built DFPL to be the benchmark."
+              <div className="inline-flex items-center gap-3 px-4 py-2 border border-amber-500/30 bg-amber-500/10 rounded-sm mb-10">
+                <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse" />
+                <span className="text-[11px] tracking-[0.3em] font-bold text-amber-500 uppercase font-['Barlow_Condensed']">
+                  Since 29 August 2018 · Rajkot, Gujarat
+                </span>
               </div>
-              <p className="text-slate-500 leading-relaxed text-lg">
-                Before DFPL, the market for high-grade industrial screws was dominated by volume over quality. We entered this industry from Rajkot with a global mindset. We wanted to be the technical lead for engineers who cannot afford a 0.1% failure rate.
+              <h1 className="text-7xl md:text-9xl lg:text-[140px] font-['Bebas_Neue'] leading-[0.85] tracking-tight uppercase mb-8">
+                Fasteners That <br/>
+                <span className="text-amber-500">Hold Industries</span> <br/>
+                <span className="text-slate-500">Together.</span>
+              </h1>
+              <p className="max-w-2xl text-lg md:text-xl text-slate-400 leading-relaxed font-normal">
+                From a single dedicated founder to a <span className="text-white font-semibold">₹5.12 Crore</span> precision business — Durable Fastener Private Limited was built to solve the problems that others chose to ignore.
+              </p>
+            </RevealSection>
+          </div>
+        </section>
+
+        {/* --- SECTION 2: STAT STRIP --- */}
+        <section className="bg-amber-500 py-0 relative z-20">
+          <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 border-x border-black/10">
+            {[
+              { label: "Annual Turnover 2025–26", val: turnoverStat.displayValue, prefix: "₹", suffix: " Cr", ref: turnoverStat.elementRef },
+              { label: "Years of Operation", val: yearsStat.displayValue, prefix: "", suffix: "+", ref: yearsStat.elementRef },
+              { label: "Strong Team Members", val: teamStat.displayValue, prefix: "", suffix: "", ref: teamStat.elementRef },
+              { label: "Operating Hubs", val: citiesStat.displayValue, prefix: "", suffix: "", ref: citiesStat.elementRef },
+            ].map((stat, i) => (
+              <div key={i} ref={stat.ref} className="p-10 border-r border-black/10 last:border-0 text-[#0D0F14]">
+                <div className="text-5xl md:text-6xl font-['Bebas_Neue'] leading-none mb-2">
+                  {stat.prefix}{stat.val}{stat.suffix}
+                </div>
+                <div className="text-[10px] tracking-[0.2em] font-bold uppercase opacity-70 font-['Barlow_Condensed']">
+                  {stat.label}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* --- SECTION 3: ORIGIN --- */}
+        <section className="py-32 px-6 bg-[#161A24]">
+          <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-20 items-start">
+            <RevealSection>
+              <span className="text-amber-500 text-xs tracking-[0.4em] font-bold uppercase block mb-6 font-['Barlow_Condensed']">01 / The Catalyst</span>
+              <h2 className="text-5xl md:text-7xl font-['Bebas_Neue'] mb-8 uppercase leading-none">
+                The Problem We <em className="text-amber-500 not-italic">Saw</em> From Inside.
+              </h2>
+              <p className="text-slate-400 text-lg mb-10 leading-relaxed">
+                Vipul Sakariya did not start DFPL from a business school plan. He started it because he worked inside the fastener industry and witnessed the same issues repeat every single day. In 2018, he decided that if no one else was going to fix this, he would.
               </p>
               
-              <div className="pt-12 grid grid-cols-1 gap-4">
-                 <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100 group hover:border-amber-500 transition-all">
-                    <Microscope className="text-amber-500 mb-4" size={32} />
-                    <h4 className="font-bold uppercase italic">Technical DNA</h4>
-                    <p className="text-xs text-slate-500">Every thread is tested against DIN, ISO, and JIS standards.</p>
-                 </div>
+              <div className="space-y-4">
+                {[
+                  { title: "No Sales Infrastructure", desc: "Strong production existed in Rajkot, but manufacturers had no systems to reach the right buyers." },
+                  { title: "QC Was Optional", desc: "Standardized quality control did not exist. Products shipped without proper checks, leaving customers with rejected material." },
+                  { title: "Application Gaps", desc: "Screws were recommended for the wrong use-cases. When they failed, the customer bore the entire cost." }
+                ].map((item, i) => (
+                  <div key={i} className="flex gap-6 p-6 bg-[#1E2535] border border-white/5 rounded-sm group hover:border-amber-500/30 transition-all">
+                    <div className="w-10 h-10 bg-amber-500/10 border border-amber-500/20 rounded flex items-center justify-center shrink-0">
+                      <ShieldCheck className="text-amber-500" size={20} />
+                    </div>
+                    <div>
+                      <h4 className="text-xs tracking-widest font-bold uppercase text-white mb-2 font-['Barlow_Condensed']">{item.title}</h4>
+                      <p className="text-sm text-slate-400 leading-relaxed">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </RevealSection>
+
+            <div className="sticky top-32">
+              <RevealSection>
+                <div className="text-5xl md:text-8xl font-bold italic text-white leading-tight font-['Barlow'] mb-8">
+                  "A screw is <br/>
+                  <span className="text-amber-500">not hardware.</span> <br/>
+                  It is an engineering component."
+                </div>
+                <div className="p-8 bg-[#1E2535] border-l-4 border-amber-500">
+                  <span className="text-amber-500 text-[10px] tracking-[0.3em] font-bold uppercase block mb-3 font-['Barlow_Condensed']">Technical Insight</span>
+                  <p className="text-slate-300 leading-relaxed italic">
+                    Wood and plywood possess different strength characteristics across the seasons. A screw that holds in winter might fail in summer. We built our entire quality control system around this seasonal calibration.
+                  </p>
+                </div>
+              </RevealSection>
+            </div>
+          </div>
+        </section>
+
+        {/* --- SECTION 4: THE CRISIS --- */}
+        <section className="py-32 px-6 bg-[#0D0F14]">
+          <div className="max-w-7xl mx-auto">
+            <RevealSection>
+              <div className="grid md:grid-cols-2 gap-16 items-center">
+                <div>
+                  <h2 className="text-6xl md:text-8xl font-['Bebas_Neue'] leading-none mb-10">
+                    ₹8 Lakh. <br/>
+                    Batch Rejected. <br/>
+                    <span className="text-amber-500 italic">Everything Changed.</span>
+                  </h2>
+                  <div className="p-10 bg-[#161A24] border border-white/5 relative overflow-hidden group">
+                    <Landmark className="absolute -right-10 -bottom-10 text-white/5 group-hover:text-amber-500/5 transition-colors" size={240} />
+                    <h3 className="text-2xl font-bold mb-4 relative z-10">The Most Expensive Lesson</h3>
+                    <p className="text-slate-400 leading-relaxed mb-8 relative z-10">
+                      Our first significant order of 5,000 kg failed. The material behaved differently due to <span className="text-white">seasonal heat treatment</span> variables that we had not accounted for. We accepted the full rejection and pivoted immediately.
+                    </p>
+                    <div className="flex gap-10 relative z-10">
+                      <div>
+                        <div className="text-amber-500 font-['Bebas_Neue'] text-4xl">5,000 KG</div>
+                        <div className="text-[10px] uppercase tracking-widest text-slate-500 font-bold font-['Barlow_Condensed']">Material Size</div>
+                      </div>
+                      <div>
+                        <div className="text-white font-['Bebas_Neue'] text-4xl">₹8 LAKH</div>
+                        <div className="text-[10px] uppercase tracking-widest text-slate-500 font-bold font-['Barlow_Condensed']">Value Lost</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid gap-6">
+                   <div className="p-8 bg-[#161A24] border border-white/5">
+                      <AlertTriangle className="text-red-500 mb-6" size={32} />
+                      <h4 className="text-xl font-bold mb-3">Root Cause</h4>
+                      <p className="text-slate-400 text-sm leading-relaxed">
+                        Heat treatment parameters were not adjusted for environmental humidity and temperature. This taught us that precision is not static; it must be calibrated daily.
+                      </p>
+                   </div>
+                   <div className="p-8 bg-[#161A24] border border-white/5">
+                      <RefreshCw className="text-emerald-500 mb-6" size={32} />
+                      <h4 className="text-xl font-bold mb-3">The Pivot to 360° QC</h4>
+                      <p className="text-slate-400 text-sm leading-relaxed">
+                        From that point forward, quality control was embedded at every stage. We do not ship unless the batch passes the "Seven Point Verification" protocol.
+                      </p>
+                   </div>
+                </div>
               </div>
             </RevealSection>
           </div>
+        </section>
 
-          {/* Right: The Evolution Timeline */}
-          <div className="lg:col-span-7 relative">
-            <div className="absolute left-0 md:left-8 top-0 bottom-0 w-px bg-slate-100 hidden md:block" />
-            <div className="space-y-12">
+        {/* --- SECTION 5: SYSTEMS --- */}
+        <section className="py-32 px-6 bg-[#161A24]">
+          <div className="max-w-7xl mx-auto">
+            <RevealSection className="text-center mb-20">
+              <span className="text-amber-500 text-xs tracking-[0.4em] font-bold uppercase block mb-4 font-['Barlow_Condensed']">Operational Integrity</span>
+              <h2 className="text-6xl md:text-8xl font-['Bebas_Neue'] uppercase leading-none">
+                Systems That Build <span className="text-slate-500">Certainty.</span>
+              </h2>
+            </RevealSection>
+
+            <div className="grid md:grid-cols-3 gap-1 bg-white/5 border border-white/5">
               {[
-                { year: "2018", title: "The Foundation", desc: "Established with a disruptive vision to transform fastening solutions via a quality-first approach.", icon: <Factory size={20} /> },
-                { year: "2020", title: "The Breakthrough", desc: "During global supply disruptions, we ensured zero-delay for essential clients, building unbreakable trust.", icon: <Zap size={20} /> },
-                { year: "2021–2023", title: "Expansion Phase", desc: "Exponential scaling of manufacturing capabilities to meet surging global demand.", icon: <TrendingUp size={20} /> },
-                { year: "2023+", title: "Industry Standard", desc: "Now a trusted vendor for giants like Reliance and Titan. Recognized for precision quality.", icon: <Award size={20} />, isCurrent: true }
-              ].map((step, idx) => (
-                <RevealSection key={idx} className="relative pl-0 md:pl-24 group">
-                  <div className={`absolute left-0 md:left-7 top-0 w-3 h-3 rounded-full z-20 hidden md:block transition-all ${step.isCurrent ? 'bg-amber-500 ring-4 ring-amber-100 scale-125' : 'bg-slate-300 group-hover:bg-amber-500'}`} />
-                  <div className={`p-8 rounded-[2rem] border transition-all ${step.isCurrent ? 'bg-slate-900 text-white border-slate-900 shadow-xl' : 'bg-white border-slate-100 hover:border-amber-200 shadow-sm'}`}>
-                    <div className="flex items-center gap-4 mb-4">
-                      <span className={`text-[10px] font-black uppercase tracking-widest ${step.isCurrent ? 'text-amber-500' : 'text-slate-400'}`}>{step.year}</span>
-                      <div className={step.isCurrent ? 'text-amber-500' : 'text-slate-700'}>{step.icon}</div>
-                    </div>
-                    <h4 className="text-xl font-black uppercase italic mb-2 tracking-tight">{step.title}</h4>
-                    <p className={`text-sm leading-relaxed ${step.isCurrent ? 'text-slate-400' : 'text-slate-500'}`}>{step.desc}</p>
+                { icon: <Gauge />, title: "360° Daily QC", desc: "Quality, packing, and documentation are checked every single working day across all departments." },
+                { icon: <Boxes />, title: "Real-Time Inventory", desc: "Every stock movement is recorded automatically. Floor inventory and software always match perfectly." },
+                { icon: <Settings />, title: "Seasonal Calibration", desc: "Heat treatment parameters are adjusted for summer, monsoon, and winter to ensure consistent hardness." },
+                { icon: <Scale />, title: "Zero Substitution", desc: "We ship the exact grade specified. There are no silent substitutions or grade changes without notice." },
+                { icon: <Factory />, title: "Technical Support", desc: "We provide engineered solutions, matching the specific SKU to the customer application requirements." },
+                { icon: <Users />, title: "Team Discipline", desc: "A 25-person team follows structured SOPs to ensure that commitment equals delivery every time." }
+              ].map((sys, i) => (
+                <div key={i} className="p-12 bg-[#0D0F14] hover:bg-[#1E2535] transition-colors group">
+                  <div className="w-12 h-12 bg-amber-500/10 flex items-center justify-center mb-8 border border-amber-500/20">
+                    {React.cloneElement(sys.icon as React.ReactElement, { className: "text-amber-500", size: 24 })}
                   </div>
-                </RevealSection>
+                  <h4 className="text-xl font-bold mb-4 uppercase tracking-tight">{sys.title}</h4>
+                  <p className="text-slate-400 text-sm leading-relaxed">{sys.desc}</p>
+                </div>
               ))}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* SECTION 4: THE TRUST LEAGUE (CLIENTS) */}
-      <section className="py-32 bg-[#05070a] relative overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.1] pointer-events-none" 
-             style={{ backgroundImage: `radial-gradient(#ffffff 1px, transparent 1px)`, backgroundSize: '40px 40px' }} />
-
-        <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <div className="text-center mb-20">
+        {/* --- SECTION 6: THE VISION --- */}
+        <section className="py-32 px-6 bg-[#0D0F14]">
+          <div className="max-w-7xl mx-auto">
             <RevealSection>
-              <span className="text-amber-500 font-black text-[10px] tracking-[0.5em] uppercase">Strategic Assets</span>
-              <h2 className="text-4xl md:text-6xl font-black text-white tracking-tighter italic uppercase mt-6">
-                Important <span className="text-slate-600">Clients & Projects</span>
+              <div className="flex flex-col md:flex-row justify-between items-end gap-10 mb-20">
+                <div className="max-w-2xl">
+                  <span className="text-amber-500 text-xs tracking-[0.4em] font-bold uppercase block mb-4 font-['Barlow_Condensed']">07 / The Roadmap</span>
+                  <h2 className="text-6xl md:text-8xl font-['Bebas_Neue'] uppercase leading-none">
+                    Not An Aspiration. <br/> <em className="text-amber-500 not-italic">A Plan.</em>
+                  </h2>
+                </div>
+                <div className="text-right">
+                  <div className="text-5xl font-['Bebas_Neue'] text-white">Target 2030</div>
+                  <div className="text-[10px] uppercase tracking-widest text-amber-500 font-bold font-['Barlow_Condensed']">₹30 Crore Turnover</div>
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-3 gap-8">
+                <div className="p-12 bg-[#161A24] border border-white/5">
+                  <div className="text-amber-500 text-xs font-bold tracking-widest mb-6 font-['Barlow_Condensed']">FY 2026–27</div>
+                  <div className="text-5xl font-['Bebas_Neue'] mb-6">₹10 <em className="text-amber-500 not-italic">Cr</em></div>
+                  <p className="text-slate-400 text-sm leading-relaxed">
+                    Systems and inventory infrastructure are already aligned to support this doubling of our current revenue.
+                  </p>
+                </div>
+
+                <div className="p-12 bg-transparent border border-amber-500/40 relative group overflow-hidden">
+                  <TrendingUp className="absolute -right-10 -bottom-10 text-amber-500/10 group-hover:text-amber-500/20 transition-all" size={200} />
+                  <div className="text-amber-500 text-xs font-bold tracking-widest mb-6 font-['Barlow_Condensed']">WITHIN 5 YEARS</div>
+                  <div className="text-5xl font-['Bebas_Neue'] mb-6 uppercase">SME <em className="text-amber-500 not-italic">IPO</em></div>
+                  <p className="text-slate-400 text-sm leading-relaxed">
+                    A structured public listing on the SME board, reflecting the financial discipline we have maintained since 2021.
+                  </p>
+                </div>
+
+                <div className="p-12 bg-[#161A24] border border-white/5">
+                  <div className="text-amber-500 text-xs font-bold tracking-widest mb-6 font-['Barlow_Condensed']">BY 2036</div>
+                  <div className="text-5xl font-['Bebas_Neue'] mb-6 uppercase">Main <em className="text-amber-500 not-italic">Board</em></div>
+                  <p className="text-slate-400 text-sm leading-relaxed">
+                    Transitioning to the main board of the stock exchange as a leader in Indian precision manufacturing.
+                  </p>
+                </div>
+              </div>
+            </RevealSection>
+          </div>
+        </section>
+
+        {/* --- SECTION 7: FINAL CTA --- */}
+        <section className="py-32 px-6 border-t border-white/5">
+          <div className="max-w-4xl mx-auto text-center">
+            <RevealSection>
+              <h2 className="text-7xl md:text-9xl font-['Bebas_Neue'] leading-[0.85] mb-10">
+                Precision <br/> <span className="text-amber-500 italic">Delivered.</span>
               </h2>
-            </RevealSection>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Titan */}
-            <div className="group bg-white/[0.02] border border-white/5 rounded-3xl p-10 md:p-14 hover:border-amber-500/40 transition-all">
-               <div className="flex justify-between items-start mb-12">
-                 <span className="text-[10px] font-mono text-amber-500 tracking-widest uppercase">Direct Supply Tier-1</span>
-                 <Award className="text-slate-700 group-hover:text-amber-500" size={32} />
-               </div>
-               <h3 className="text-7xl md:text-9xl font-black text-white tracking-tighter italic opacity-20 group-hover:opacity-100 transition-all duration-700">TITAN</h3>
-               <div className="mt-8">
-                 <h4 className="text-lg font-bold text-white uppercase italic mb-2">Watchmaking Precision</h4>
-                 <p className="text-slate-400 text-sm leading-relaxed max-w-sm">Micro-precision components that meet the rigorous aesthetic and mechanical standards of premium horology.</p>
-               </div>
-            </div>
-
-            {/* Reliance */}
-            <div className="group bg-white/[0.02] border border-white/5 rounded-3xl p-10 md:p-14 hover:border-amber-500/40 transition-all">
-               <div className="flex justify-between items-start mb-12">
-                 <span className="text-[10px] font-mono text-slate-500 tracking-widest uppercase">Infrastructure Partner</span>
-                 <Zap className="text-slate-700 group-hover:text-amber-500" size={32} />
-               </div>
-               <h3 className="text-7xl md:text-9xl font-black text-white tracking-tighter italic opacity-20 group-hover:opacity-100 transition-all duration-700">RELIANCE</h3>
-               <div className="mt-8">
-                 <h4 className="text-lg font-bold text-white uppercase italic mb-2">Industrial Strength</h4>
-                 <p className="text-slate-400 text-sm leading-relaxed max-w-sm">Anchoring critical industrial infrastructure through high-volume, authorized supply partnerships.</p>
-               </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* SECTION 5: HONEST TURNING POINTS */}
-      <section className="py-32 bg-[#0a0f1a] text-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="max-w-2xl mb-20">
-            <span className="text-amber-500 font-black text-[10px] tracking-[0.5em] uppercase">The Turning Points</span>
-            <h2 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter mt-4">
-              Moments that<br/> <span className="text-slate-600">Defined us.</span>
-            </h2>
-            <p className="text-slate-400 mt-6 text-lg">We don't hide our friction. Our challenges are why our systems are unbreakable.</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-1">
-            <RevealSection className="bg-white/[0.03] p-12 border border-white/5 hover:bg-white/[0.05] transition-all">
-              <AlertTriangle className="text-red-500 mb-8" size={40} />
-              <h3 className="text-2xl font-black italic uppercase mb-6">Market Disruption</h3>
-              <p className="text-slate-500 text-sm leading-relaxed">During the 2020 supply stall, we chose to pivot our procurement logic to ensure zero-delay for essential clients. We didn't quit; we restructured.</p>
-            </RevealSection>
-
-            <RevealSection className="bg-white/[0.03] p-12 border border-white/5 hover:bg-white/[0.05] transition-all">
-              <XCircle className="text-amber-500 mb-8" size={40} />
-              <h3 className="text-2xl font-black italic uppercase mb-6">The Scaling Mistake</h3>
-              <p className="text-slate-500 text-sm leading-relaxed">Early on, speed outpaced our QC manual. A minor batch error taught us: speed is nothing without a rigid system. That mistake rewrote our manual.</p>
-            </RevealSection>
-
-            <RevealSection className="bg-white/[0.03] p-12 border border-white/5 hover:bg-white/[0.05] transition-all">
-              <RefreshCw className="text-emerald-500 mb-8" size={40} />
-              <h3 className="text-2xl font-black italic uppercase mb-6">Strategic Shift</h3>
-              <p className="text-slate-500 text-sm leading-relaxed">We shifted from a 'vendor' to a 'technical partner' mindset. This opened doors to industrial leaders like Titan and Reliance.</p>
-            </RevealSection>
-          </div>
-        </div>
-      </section>
-
-      {/* SECTION 6: MISSION/VISION BENTO GRID */}
-      <section className="py-32 px-6 bg-white">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-6">
-          <RevealSection className="md:col-span-7 bg-slate-900 rounded-[3rem] p-12 md:p-16 text-white relative overflow-hidden">
-              <Target className="text-amber-500 mb-8" size={48} />
-              <h3 className="text-4xl font-black mb-6 tracking-tighter uppercase italic">Our Mission</h3>
-              <p className="text-xl text-slate-400 font-light leading-relaxed max-w-lg">
-                To deliver high-integrity fastening solutions that serve as the silent, unbreakable backbone of global industrial progress.
+              <p className="text-xl text-slate-400 mb-14 leading-relaxed">
+                Experience the DFPL difference, where every screw is an engineering commitment and every order is a promise kept.
               </p>
-              <div className="absolute -bottom-10 -right-10 p-8 opacity-10">
-                <Boxes size={300} />
+              <div className="flex flex-col sm:flex-row justify-center gap-4">
+                <button className="px-10 py-5 bg-amber-500 text-black font-['Barlow_Condensed'] font-bold text-xs tracking-[0.2em] uppercase hover:bg-amber-400 transition-all">
+                  Request Technical Catalog
+                </button>
+                <button className="px-10 py-5 border border-white/20 text-white font-['Barlow_Condensed'] font-bold text-xs tracking-[0.2em] uppercase hover:bg-white hover:text-black transition-all">
+                  Contact Our Team
+                </button>
               </div>
-          </RevealSection>
-
-          <RevealSection className="md:col-span-5 bg-amber-500 rounded-[3rem] p-12 md:p-16 flex flex-col justify-between hover:bg-amber-400 transition-colors">
-              <div>
-                <Eye className="text-black mb-8" size={48} />
-                <h3 className="text-4xl font-black mb-6 tracking-tighter uppercase italic">Our Vision</h3>
-                <p className="text-lg font-bold text-black/80 leading-tight">
-                  To become the global benchmark for fastener manufacturing, synonymous with Indian engineering excellence by 2030.
-                </p>
-              </div>
-              <div className="mt-8 flex justify-end">
-                  <div className="w-16 h-16 rounded-full border-2 border-black flex items-center justify-center">
-                    <ChevronRight size={32} />
-                  </div>
-              </div>
-          </RevealSection>
-        </div>
-      </section>
-
-      {/* SECTION 7: ACTION-BASED VALUES */}
-      <section className="py-32 bg-[#f8f9fa]">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-6xl font-black tracking-tighter text-slate-900 uppercase italic">Values are Decisions</h2>
-            <p className="text-slate-500 mt-4 max-w-xl mx-auto">Not posters on a wall, but rules that shape our behavior when no one is watching.</p>
+            </RevealSection>
           </div>
+        </section>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              { icon: <CheckCircle2 />, title: "Quality Clearance", action: "No Dispatch without double QC", desc: "Every batch is cross-inspected against technical spec sheets. No exceptions for Friday rushes." },
-              { icon: <Zap />, title: "Defined Response", action: "4-Hour Query Policy", desc: "All client inquiries — pricing or technical — receive a response within 4 hours." },
-              { icon: <Handshake />, title: "Honest Intel", action: "Disclose before escalation", desc: "If a delay is identified, we notify the client before they ask. We resolve, never hide." },
-              { icon: <Microscope />, title: "Standard Obsession", action: "DIN/ISO/JIS Adherence", desc: "We manufacture to international codes, ensuring 100% compatibility for global projects." },
-              { icon: <Factory />, title: "Production Integrity", action: "Monthly Process Fix", desc: "Every department must identify and fix one friction point every 30 days." },
-              { icon: <Globe2 />, title: "Global Reliability", action: "Export Grade Packing", desc: "Whether it goes to Rajkot or Germany, the packaging must withstand 45 days of sea-freight." },
-            ].map((value, idx) => (
-              <RevealSection key={idx} className="group p-10 rounded-[2.5rem] bg-white border border-slate-200 hover:border-amber-500 hover:shadow-2xl transition-all">
-                <div className="text-amber-600 mb-6 bg-amber-50 w-12 h-12 flex items-center justify-center rounded-xl">{value.icon}</div>
-                <h4 className="text-xl font-black mb-2 uppercase tracking-tight">{value.title}</h4>
-                <div className="inline-block px-3 py-1 bg-amber-500/10 text-amber-700 text-[10px] font-black uppercase rounded-md mb-4">{value.action}</div>
-                <p className="text-slate-500 text-sm leading-relaxed">{value.desc}</p>
-              </RevealSection>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* SECTION 8: FINAL CTA */}
-      <section className="py-32 px-6">
-        <div className="max-w-6xl mx-auto bg-slate-900 rounded-[4rem] p-12 md:p-24 text-center relative overflow-hidden">
-          <RevealSection className="relative z-10">
-            <h2 className="text-4xl md:text-7xl font-black text-white mb-8 tracking-tighter leading-tight uppercase italic">
-              Ready to Secure Your <br/>
-              <span className="text-amber-500">Industrial Future?</span>
-            </h2>
-            <p className="text-slate-400 mb-12 max-w-2xl mx-auto text-lg">
-              Experience the DFPL difference. Let's discuss how our precision components can elevate your production line.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-6 justify-center">
-              <button className="px-12 py-6 bg-amber-500 text-black rounded-full font-black uppercase tracking-widest text-sm hover:scale-105 transition-all">
-                Contact Technical Sales
-              </button>
-              <button className="px-12 py-6 border border-white/20 text-white rounded-full font-black uppercase tracking-widest text-sm hover:bg-white hover:text-black transition-all">
-                Download Catalog (PDF)
-              </button>
+        {/* --- FOOTER --- */}
+        <footer className="py-12 px-6 bg-[#0D0F14] border-t border-white/5">
+          <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8 opacity-50">
+            <div className="text-3xl font-['Bebas_Neue'] tracking-widest"><span className="text-amber-500">DF</span>PL</div>
+            <div className="text-[10px] font-bold tracking-[0.2em] uppercase font-['Barlow_Condensed']">
+              Rajkot, Gujarat · Est. 29 August 2018 · CIN Registered
             </div>
-          </RevealSection>
-          <div className="absolute top-0 right-0 w-full h-full opacity-5 pointer-events-none">
-             <Factory size={600} className="text-white absolute -right-20 -bottom-20" />
+            <div className="text-[10px] italic font-bold tracking-[0.2em] uppercase font-['Barlow_Condensed']">
+              Fasteners That Hold Industries Together
+            </div>
           </div>
-        </div>
-      </section>
-    </div>
+        </footer>
+      </div>
+    </HelmetProvider>
   );
 };
 
