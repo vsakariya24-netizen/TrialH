@@ -753,118 +753,198 @@ const About: React.FC = () => {
         {/* ============================================ */}
         {/* SECTION 2: WHO WE ARE - ENHANCED */}
         {/* ============================================ */}
-
-        <section id="about" className="py-32 px-6 relative">
+        <section id="genesis" className="py-32 px-6 bg-gradient-to-b from-[#0A0A0F] to-[#050508] relative overflow-hidden">
           <div className="max-w-[1400px] mx-auto">
             <div className="grid lg:grid-cols-2 gap-20 items-center">
-              
-              {/* Left Column */}
               <div>
+               
+                
                 <SectionHeader 
-                  badge="Who We Are"
-                  title="The Story Behind"
-                  highlight="DFPL"
-                  descripti
-                  on="Durable Fastener Pvt. Ltd. (DFPL) was founded with a singular purpose: to bridge the gap between heavy-duty manufacturing and professional, system-driven service."
+                  badge="Founded on 29th August 2018"
+                  title="Who We"
+                  highlight="Are"
+                  description="Durable Fastener Pvt. Ltd. (DFPL) was founded by Mr. Vipul Sakariya with a singular and unyielding purpose — to bridge the gap between heavy-duty manufacturing and professional, system-driven service."
                   align="left"
-                  className="mb-0"
+                  className="mb-8"
                 />
 
-                <ScrollReveal direction="up" delay={0.3}>
-                  <motion.div 
-                    className="mt-8 p-8 rounded-2xl bg-gradient-to-r from-amber-500/5 to-transparent border-l-3 border-amber-500"
-                    whileHover={{ x: 15 }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                  >
-                    <div className="flex items-center gap-4 mb-4">
-                      <motion.div 
-                        className="w-14 h-14 rounded-full bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center"
-                        whileHover={{ rotate: 360 }}
-                        transition={{ duration: 0.5 }}
-                      >
-                        <Factory className="w-7 h-7 text-amber-400" />
-                      </motion.div>
-                      <div>
-                        <div className="text-sm text-amber-400 font-semibold uppercase tracking-wider">Factory Location</div>
-                        <div className="text-white font-medium text-lg">Ravki Makhavad, Rajkot</div>
-                      </div>
-                    </div>
-                    <p className="text-slate-300 leading-relaxed">
-                      Operating from <strong className="text-white">Rajkot</strong> — India's industrial nerve center — we have engineered a company built on reliable systems and a deep commitment to uncompromising quality.
-                    </p>
-                  </motion.div>
-                </ScrollReveal>
-
-                <ScrollReveal direction="up" delay={0.4}>
-                  <div className="flex items-start gap-5 p-8 rounded-2xl bg-gradient-to-r from-amber-500/5 to-transparent border-l-3 border-amber-500 mt-6">
-                    <motion.div
-                      animate={{ rotate: [0, 10, -10, 0] }}
-                      transition={{ duration: 3, repeat: Infinity }}
-                      className="flex-shrink-0"
-                    >
-                      <Quote className="w-8 h-8 text-amber-500" />
-                    </motion.div>
-                    <p className="text-slate-300 italic text-lg leading-relaxed">
-                      "We don't just supply fasteners; we engineer the integrity of your structures."
-                    </p>
+                <ScrollReveal direction="up" delay={0.2}>
+                  <p className="text-slate-300 text-lg leading-relaxed mb-8">
+                    Operating from <span className="text-white font-semibold">Rajkot — India’s industrial nerve center</span>, DFPL is built on reliable systems, precision engineering, and a deep commitment to customer satisfaction. We transformed traditional hardware supply into a system-driven engineering service, focused on reliability, speed, and trust.
+                  </p>
+                  
+                  <div className="p-6 rounded-2xl bg-amber-500/10 border-l-4 border-amber-500 italic text-amber-100 text-xl">
+                    "We don’t just supply fasteners — we engineer the integrity of your structures."
                   </div>
                 </ScrollReveal>
               </div>
 
-              {/* Right Column - Animated Visual */}
-              <ScrollReveal direction="left" delay={0.2}>
-                <div className="relative">
-                  <motion.div 
-                    className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-zinc-900 to-black border border-white/[0.08] p-1"
-                    whileHover={{ scale: 1.02 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <div className="aspect-[4/3] rounded-2xl bg-gradient-to-br from-zinc-800/50 to-zinc-900/50 flex items-center justify-center relative overflow-hidden">
-                      {/* Animated Icon */}
-                      <motion.div
-                        animate={{ 
-                          scale: [1, 1.1, 1],
-                          rotate: [0, 5, -5, 0]
-                        }}
-                        transition={{ duration: 4, repeat: Infinity }}
-                        className="text-center z-10"
-                      >
-                        <div className="relative">
-                          <motion.div 
-                            className="absolute inset-0 bg-amber-500/20 rounded-full blur-2xl"
-                            animate={{ scale: [1, 1.5, 1] }}
-                            transition={{ duration: 2, repeat: Infinity }}
-                          />
-                          
-                        </div>
-                        <div className="text-sm text-slate-500 font-medium">State-of-the-art manufacturing facility</div>
-                      </motion.div>
-                      
-                      {/* Scanning Line Effect */}
-                      <motion.div 
-                        className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-amber-500 to-transparent"
-                        animate={{ top: ["0%", "100%"] }}
-                        transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                      />
-                      
-                      {/* Overlay Gradient */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+              <div className="grid sm:grid-cols-2 gap-6">
+                <ScrollReveal direction="left" delay={0.3}>
+                  <TiltCard glow className="h-full">
+                    <div className="p-8 rounded-3xl bg-white/[0.03] border border-white/[0.08] h-full group hover:border-amber-500/40 transition-colors">
+                      <div className="w-12 h-12 rounded-xl bg-amber-500/20 flex items-center justify-center mb-6">
+                        <MapPinIcon className="w-6 h-6 text-amber-400" />
+                      </div>
+                      <h4 className="text-xl font-bold text-white mb-2">The Factory</h4>
+                      <p className="text-slate-400 text-sm mb-4">Ravki Makhavad, Rajkot, Gujarat</p>
+                      <div className="text-[10px] font-mono text-amber-500/50 uppercase tracking-widest">Log Code: RAJKOT_GUJ_IND</div>
                     </div>
-                  </motion.div>
-                  
-                  {/* Decorative Elements */}
-                  <motion.div 
-                    className="absolute -top-8 -right-8 w-40 h-40 bg-amber-500/20 rounded-full blur-3xl"
-                    animate={{ scale: [1, 1.2, 1] }}
-                    transition={{ duration: 4, repeat: Infinity }}
-                  />
-                  <motion.div 
-                    className="absolute -bottom-8 -left-8 w-40 h-40 bg-blue-500/20 rounded-full blur-3xl"
-                    animate={{ scale: [1.2, 1, 1.2] }}
-                    transition={{ duration: 4, repeat: Infinity, delay: 1 }}
-                  />
+                  </TiltCard>
+                </ScrollReveal>
+
+                <ScrollReveal direction="left" delay={0.4}>
+                  <TiltCard glow className="h-full">
+                    <div className="p-8 rounded-3xl bg-white/[0.03] border border-white/[0.08] h-full group hover:border-blue-500/40 transition-colors">
+                      <div className="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center mb-6">
+                        <Globe2 className="w-6 h-6 text-blue-400" />
+                      </div>
+                      <h4 className="text-xl font-bold text-white mb-2">Global Presence</h4>
+                      <p className="text-slate-400 text-sm mb-4">Surat Branch & Warehouse serving Pan-India</p>
+                      <div className="text-[10px] font-mono text-blue-500/50 uppercase tracking-widest">Log Code: PAN_INDIA</div>
+                    </div>
+                  </TiltCard>
+                </ScrollReveal>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ============================================ */}
+        {/* CHAPTER 02: THE ORIGIN — THE STORY */}
+        {/* ============================================ */}
+        <section id="origin" className="py-32 px-6 bg-[#050508] relative">
+          <div className="max-w-[1200px] mx-auto text-center">
+            <ScrollReveal direction="up">
+             
+              <h2 className="text-4xl md:text-6xl font-bold text-white mb-16">The Story Behind <span className="text-amber-500">DFPL</span></h2>
+            </ScrollReveal>
+
+            <div className="grid md:grid-cols-2 gap-12 text-left">
+              <ScrollReveal direction="right" delay={0.1}>
+                <div className="space-y-8">
+                  <div className="p-8 rounded-3xl bg-gradient-to-br from-zinc-900 to-black border border-white/[0.05]">
+                    <h3 className="text-amber-400 font-bold text-xl mb-4 flex items-center gap-3">
+                      <Eye className="w-5 h-5" /> The Market Gap
+                    </h3>
+                    <p className="text-slate-300 leading-relaxed">
+                      Before founding DFPL, Mr. Vipul Sakariya witnessed the friction caused by poor workplace systems and lack of accountability. Manufacturers in Rajkot produced quality, but lacked structured sales and QC.
+                    </p>
+                  </div>
+                  <div className="p-8 rounded-3xl border border-amber-500/20 bg-amber-500/5">
+                    <p className="text-white text-lg font-medium italic">
+                      "What we sell is not just a product — we sell a service. The screw is just the beginning."
+                    </p>
+                  </div>
                 </div>
               </ScrollReveal>
+
+              <ScrollReveal direction="left" delay={0.2}>
+                <div className="space-y-6">
+                  <h3 className="text-2xl font-bold text-white">The Dual Purpose</h3>
+                  <div className="space-y-4">
+                    {[
+                      { title: "Internal Excellence", desc: "Eliminate system failures for employees through process discipline." },
+                      { title: "Customer Reliability", desc: "Consistent service via a one-day dispatch system and strict QC." }
+                    ].map((item, i) => (
+                      <div key={i} className="flex gap-4 items-start">
+                        <div className="mt-1.5"><CheckCircle2 className="w-5 h-5 text-amber-500" /></div>
+                        <div>
+                          <div className="text-white font-semibold">{item.title}</div>
+                          <div className="text-slate-400 text-sm">{item.desc}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-8 pt-8 border-t border-white/10">
+                    <p className="text-slate-400">
+                      Mr. Sakariya identified a critical shift: Fasteners are not just hardware — they are <span className="text-white font-bold">precision-engineered mechanical components</span>.
+                    </p>
+                  </div>
+                </div>
+              </ScrollReveal>
+            </div>
+          </div>
+        </section>
+
+        {/* ============================================ */}
+        {/* CHAPTER 03: THE EVOLUTION — THE EARLY JOURNEY */}
+        {/* ============================================ */}
+        <section id="evolution" className="py-32 px-6 bg-gradient-to-b from-[#050508] to-[#0A0A0F]">
+          <div className="max-w-[1400px] mx-auto">
+            <ScrollReveal direction="up" className="text-center mb-20">
+              
+              <h2 className="text-4xl md:text-7xl font-bold text-white">The Early <span className="text-amber-500">Journey</span></h2>
+            </ScrollReveal>
+
+            <div className="grid lg:grid-cols-12 gap-12">
+              {/* The Rejection Story */}
+              <div className="lg:col-span-7">
+                <ScrollReveal direction="right">
+                  <div className="relative p-10 rounded-[2rem] bg-gradient-to-br from-red-500/10 to-transparent border border-red-500/20 overflow-hidden">
+                    <div className="absolute top-0 right-0 p-4 opacity-10"><AlertTriangle className="w-32 h-32 text-red-500" /></div>
+                    <div className="relative z-10">
+                      <div className="inline-block px-4 py-1 rounded-full bg-red-500/20 text-red-400 text-xs font-bold uppercase mb-6 tracking-widest">Critical Incident</div>
+                      <h3 className="text-3xl font-bold text-white mb-4">The ₹8 Lakh Rejection</h3>
+                      <p className="text-slate-300 text-lg mb-6">
+                        A major order of 5,000 kg was rejected due to a head-cutting issue. Upon investigation, we found the cause: <span className="text-white font-bold">Seasonal variation in plywood density during winter.</span>
+                      </p>
+                      <div className="flex flex-wrap gap-4">
+                        <div className="px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-amber-400 font-bold">Breakthrough Achievement</div>
+                        <div className="px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-white">Application Engineering Shift</div>
+                      </div>
+                    </div>
+                  </div>
+                </ScrollReveal>
+
+                <div className="grid sm:grid-cols-2 gap-6 mt-8">
+                  <div className="p-8 rounded-3xl bg-zinc-900/50 border border-white/5">
+                    <div className="text-3xl font-bold text-amber-500 mb-2">₹5 Lakh</div>
+                    <div className="text-white font-semibold mb-1">Breakthrough 01</div>
+                    <div className="text-slate-400 text-sm">120 Cartons Delivered</div>
+                  </div>
+                  <div className="p-8 rounded-3xl bg-zinc-900/50 border border-white/5">
+                    <div className="text-3xl font-bold text-amber-500 mb-2">₹12 Lakh</div>
+                    <div className="text-white font-semibold mb-1">Breakthrough 02</div>
+                    <div className="text-slate-400 text-sm">200 Cartons Delivered</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Strategic Learning */}
+              <div className="lg:col-span-5 space-y-6">
+                <ScrollReveal direction="left" delay={0.2}>
+                  <div className="p-8 rounded-[2rem] bg-amber-500 text-black">
+                    <h4 className="text-2xl font-black mb-4 uppercase">Key Learning</h4>
+                    <p className="text-lg font-medium leading-tight">
+                      Quality is not just about the product — it depends on environment, material behavior, and application conditions.
+                    </p>
+                    <div className="mt-8 flex gap-3 flex-wrap">
+                      <span className="px-3 py-1 bg-black/10 rounded-full text-xs font-bold">MATERIAL SCIENCE</span>
+                      <span className="px-3 py-1 bg-black/10 rounded-full text-xs font-bold">SEASONAL VARIATIONS</span>
+                      <span className="px-3 py-1 bg-black/10 rounded-full text-xs font-bold">REAL-WORLD APPS</span>
+                    </div>
+                  </div>
+                </ScrollReveal>
+
+                <ScrollReveal direction="left" delay={0.3}>
+                  <div className="p-8 rounded-[2rem] bg-white/[0.03] border border-white/10">
+                    <h4 className="text-white font-bold mb-4">Early Trusted Partners</h4>
+                    <div className="flex flex-col gap-3">
+                      <div className="flex items-center gap-3 text-slate-300">
+                        <div className="w-2 h-2 rounded-full bg-amber-500" /> Bhumi Associates
+                      </div>
+                      <div className="flex items-center gap-3 text-slate-300">
+                        <div className="w-2 h-2 rounded-full bg-amber-500" /> Ramdev Hardware
+                      </div>
+                    </div>
+                  </div>
+                </ScrollReveal>
+
+                <div className="text-slate-500 text-sm italic p-4">
+                  "We don’t react to problems — we engineer systems that prevent them."
+                </div>
+              </div>
             </div>
           </div>
         </section>
