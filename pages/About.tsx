@@ -1,5 +1,5 @@
-import React, { useRef, useEffect } from 'react';
-import { motion, useScroll, useTransform, useInView, useSpring } from 'framer-motion';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
+import { motion, useScroll, useTransform, useInView, useSpring, AnimatePresence } from 'framer-motion';
 import { 
   Target, Eye, Award, Zap, ShieldCheck, 
   Settings, ChevronRight, Boxes, 
@@ -9,751 +9,1120 @@ import {
   Truck, Timer, BarChart3, Binary, HardHat,
   FileCheck, Database, ClipboardCheck,
   History, Repeat, XCircle, CheckCircle, ArrowRight,
-  Globe, Briefcase, Rocket, Quote, MoveRight, Layers, Building2
+  Globe, Briefcase, Rocket, Quote, MoveRight, Layers, Building2,
+  Play, Star, Crown, Sparkles, Clock, Shield, ThumbsUp, ChevronDown,
+  Hexagon, Activity, Cpu, CircuitBoard, Globe2, Award as AwardIcon,
+  Linkedin, Mail, Menu, X, Instagram, Facebook, Youtube, 
+  Phone, Mail as MailIcon, MapPin as MapPinIcon, Send, Check,
+  Circle, CircleDot, Diamond, Gem, Trophy, BriefcaseBusiness,
+  CandlestickChart, ChartNoAxesCombined, CircleGauge,
+  Cog, Wrench, Nut, Bolt, Fan, Gauge as GaugeIcon
 } from 'lucide-react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
-// --- ADVANCED ANIMATION UTILITIES (UPGRADED) ---
-const FadeInView = ({ children, direction = "up", delay = 0, blur = true }: any) => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-10%" });
+// ============================================
+// PREMIUM DESIGN SYSTEM - VARIABLES & THEMES
+// ============================================
+
+const designSystem = {
+  colors: {
+    primary: {
+      50: '#fffbeb',
+      100: '#fef3c7',
+      200: '#fde68a',
+      300: '#fcd34d',
+      400: '#fbbf24',
+      500: '#f59e0b',
+      600: '#d97706',
+      700: '#b45309',
+      800: '#92400e',
+      900: '#78350f',
+    },
+    dark: {
+      1: '#0A0A0F',
+      2: '#0F0F14',
+      3: '#14141A',
+      4: '#1A1A22',
+      5: '#20202A',
+    },
+    accent: {
+      blue: '#3B82F6',
+      purple: '#8B5CF6',
+      emerald: '#10B981',
+      rose: '#F43F5E',
+    }
+  },
+  fonts: {
+    heading: "'Clash Display', 'Inter', sans-serif",
+    body: "'Inter', sans-serif",
+    mono: "'JetBrains Mono', monospace",
+  },
+  shadows: {
+    sm: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+    md: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+    lg: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+    xl: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
+    glow: '0 0 30px rgba(245, 158, 11, 0.3)',
+    glowStrong: '0 0 50px rgba(245, 158, 11, 0.5)',
+  },
+  animations: {
+    durFast: '0.2s',
+    durBase: '0.3s',
+    durSlow: '0.5s',
+    durVerySlow: '0.8s',
+    ease: [0.25, 0.1, 0.25, 1],
+    easeOut: [0.16, 1, 0.3, 1],
+  }
+};
+
+// ============================================
+// ADVANCED ANIMATION COMPONENTS
+// ============================================
+
+// Custom Cursor Component
+const CustomCursor = () => {
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isHovering, setIsHovering] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const updatePosition = (e) => {
+      setPosition({ x: e.clientX, y: e.clientY });
+      if (!isVisible) setIsVisible(true);
+    };
+    
+    const handleMouseLeave = () => setIsVisible(false);
+    const handleMouseEnter = () => setIsVisible(true);
+    
+    const handleMouseOver = (e) => {
+      const target = e.target;
+      const isInteractive = target.closest('button, a, .interactive');
+      setIsHovering(!!isInteractive);
+    };
+    
+    window.addEventListener('mousemove', updatePosition);
+    window.addEventListener('mouseleave', handleMouseLeave);
+    window.addEventListener('mouseenter', handleMouseEnter);
+    window.addEventListener('mouseover', handleMouseOver);
+    
+    return () => {
+      window.removeEventListener('mousemove', updatePosition);
+      window.removeEventListener('mouseleave', handleMouseLeave);
+      window.removeEventListener('mouseenter', handleMouseEnter);
+      window.removeEventListener('mouseover', handleMouseOver);
+    };
+  }, [isVisible]);
+
+  if (!isVisible) return null;
   
-  const yOffset = direction === "up" ? 60 : direction === "down" ? -60 : 0;
-  const xOffset = direction === "left" ? 60 : direction === "right" ? -60 : 0;
+  return (
+    <>
+      <motion.div
+        className="fixed top-0 left-0 w-[32px] h-[32px] rounded-full border-2 border-amber-400/60 pointer-events-none z-[9999] mix-blend-difference"
+        animate={{
+          x: position.x - 16,
+          y: position.y - 16,
+          scale: isHovering ? 1.5 : 1,
+        }}
+        transition={{ type: "spring", stiffness: 500, damping: 28, mass: 0.5 }}
+      />
+      <motion.div
+        className="fixed top-0 left-0 w-[8px] h-[8px] rounded-full bg-amber-400 pointer-events-none z-[9999]"
+        animate={{
+          x: position.x - 4,
+          y: position.y - 4,
+          scale: isHovering ? 0.5 : 1,
+        }}
+        transition={{ type: "spring", stiffness: 800, damping: 30, mass: 0.3 }}
+      />
+    </>
+  );
+};
+
+// 3D Tilt Card with Enhanced Effects
+const TiltCard = ({ children, className = "", glow = false }) => {
+  const ref = useRef(null);
+  const [rotate, setRotate] = useState({ x: 0, y: 0 });
+  const [glowIntensity, setGlowIntensity] = useState(0);
+
+  const handleMouseMove = (e) => {
+    if (!ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateX = (y - centerY) / 15;
+    const rotateY = (centerX - x) / 15;
+    const intensity = Math.min(Math.abs(rotateX) + Math.abs(rotateY), 15) / 15;
+    setRotate({ x: rotateX, y: rotateY });
+    setGlowIntensity(intensity);
+  };
+
+  const handleMouseLeave = () => {
+    setRotate({ x: 0, y: 0 });
+    setGlowIntensity(0);
+  };
 
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: yOffset, x: xOffset, filter: blur ? 'blur(20px)' : 'none' }}
-      animate={isInView ? { opacity: 1, y: 0, x: 0, filter: blur ? 'blur(0px)' : 'none' } : {}}
-      transition={{ duration: 1.4, delay, ease: [0.16, 1, 0.3, 1] }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      animate={{ rotateX: rotate.x, rotateY: rotate.y }}
+      transition={{ type: "spring", stiffness: 400, damping: 25 }}
+      className={className}
+      style={{ transformStyle: "preserve-3d" }}
+    >
+      {glow && (
+        <motion.div 
+          className="absolute -inset-px rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+          style={{
+            background: `radial-gradient(circle at ${rotate.x * 10 + 50}% ${rotate.y * 10 + 50}%, rgba(245,158,11,0.3), transparent 70%)`,
+            opacity: glowIntensity * 0.5,
+          }}
+        />
+      )}
+      {children}
+    </motion.div>
+  );
+};
+
+// Animated Counter with Floating Effect
+const AnimatedCounter = ({ value, suffix = "", prefix = "", duration = 2000, delay = 0 }) => {
+  const [count, setCount] = useState(0);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+  useEffect(() => {
+    if (isInView) {
+      const timeout = setTimeout(() => {
+        let start = 0;
+        const end = parseFloat(value.toString());
+        const increment = end / (duration / 16);
+        const timer = setInterval(() => {
+          start += increment;
+          if (start >= end) {
+            setCount(end);
+            clearInterval(timer);
+          } else {
+            setCount(start);
+          }
+        }, 16);
+        return () => clearInterval(timer);
+      }, delay * 1000);
+      return () => clearTimeout(timeout);
+    }
+  }, [isInView, value, duration, delay]);
+
+  return (
+    <motion.span 
+      ref={ref} 
+      className="font-bold inline-block"
+      initial={{ opacity: 0, scale: 0.5 }}
+      animate={isInView ? { opacity: 1, scale: 1 } : {}}
+      transition={{ duration: 0.6, delay: delay + 0.2, type: "spring" }}
+    >
+      {prefix}{count.toLocaleString(undefined, { 
+        minimumFractionDigits: value.toString().includes('.') ? 1 : 0,
+        maximumFractionDigits: 1 
+      })}{suffix}
+    </motion.span>
+  );
+};
+
+// Scroll Reveal with Stagger
+const ScrollReveal = ({ children, direction = "up", delay = 0, className = "", threshold = 0.1, duration = 0.8 }) => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px", amount: threshold });
+  
+  const directions = {
+    up: { y: 80, x: 0, scale: 0.95 },
+    down: { y: -80, x: 0, scale: 0.95 },
+    left: { y: 0, x: 80, scale: 0.95 },
+    right: { y: 0, x: -80, scale: 0.95 },
+    none: { y: 0, x: 0, scale: 1 },
+    scale: { scale: 0.8, y: 0, x: 0 }
+  };
+  
+  const initial = directions[direction] || directions.up;
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, ...initial }}
+      animate={isInView ? { opacity: 1, y: 0, x: 0, scale: 1 } : {}}
+      transition={{ duration, delay, ease: designSystem.animations.easeOut }}
+      className={className}
     >
       {children}
     </motion.div>
   );
 };
 
-const RollingNumber = ({ value, suffix = "", prefix = "" }: { value: string | number, suffix?: string, prefix?: string }) => {
+// Parallax Section Component
+const ParallaxSection = ({ children, speed = 0.5, className = "" }) => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true });
-  const [display, setDisplay] = React.useState(0);
-
-  useEffect(() => {
-    if (isInView) {
-      let start = 0;
-      const end = parseFloat(value.toString());
-      const duration = 2500;
-      const increment = end / (duration / 16);
-      const timer = setInterval(() => {
-        start += increment;
-        if (start >= end) {
-          setDisplay(end);
-          clearInterval(timer);
-        } else { setDisplay(start); }
-      }, 16);
-      return () => clearInterval(timer);
-    }
-  }, [isInView, value]);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"]
+  });
+  const y = useTransform(scrollYProgress, [0, 1], [0, speed * 100]);
 
   return (
-    <span ref={ref} className="font-['Space_Mono'] bg-clip-text text-transparent bg-gradient-to-b from-white via-amber-200 to-amber-600 drop-shadow-sm">
-      {prefix}{display.toLocaleString(undefined, { minimumFractionDigits: value.toString().includes('.') ? 2 : 0, maximumFractionDigits: 2 })}{suffix}
-    </span>
+    <motion.div ref={ref} style={{ y }} className={className}>
+      {children}
+    </motion.div>
   );
 };
 
+// Animated Background Grid
+const AnimatedGrid = () => (
+  <motion.div 
+    className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:80px_80px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,#000_30%,transparent_100%)]"
+    animate={{ 
+      backgroundPosition: ["0px 0px", "80px 80px"],
+    }}
+    transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+  />
+);
+
+// Floating Particles Component
+const FloatingParticles = ({ count = 50 }) => {
+  const particles = Array.from({ length: count }, (_, i) => ({
+    id: i,
+    size: Math.random() * 4 + 1,
+    left: Math.random() * 100,
+    top: Math.random() * 100,
+    delay: Math.random() * 10,
+    duration: Math.random() * 20 + 10,
+  }));
+
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {particles.map((p) => (
+        <motion.div
+          key={p.id}
+          className="absolute bg-amber-400/20 rounded-full"
+          style={{
+            width: p.size,
+            height: p.size,
+            left: `${p.left}%`,
+            top: `${p.top}%`,
+          }}
+          animate={{
+            y: [0, -100, 0],
+            x: [0, (Math.random() - 0.5) * 100, 0],
+            opacity: [0, 0.5, 0],
+          }}
+          transition={{
+            duration: p.duration,
+            delay: p.delay,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+
+// Advanced Feature Card
+const FeatureCard = ({ icon: Icon, title, description, delay = 0, gradient = "from-amber-500", metrics = null }) => (
+  <ScrollReveal direction="up" delay={delay}>
+    <TiltCard glow className="h-full">
+      <motion.div 
+        whileHover={{ y: -8 }}
+        className="group relative p-8 bg-gradient-to-br from-white/[0.03] to-transparent rounded-2xl border border-white/[0.06] hover:border-amber-500/40 transition-all duration-500 backdrop-blur-sm overflow-hidden h-full"
+      >
+        <div className={`absolute inset-0 bg-gradient-to-br ${gradient}/0 to-transparent group-hover:${gradient}/[0.08] transition-all duration-700`} />
+        <div className="absolute -top-12 -right-12 w-32 h-32 bg-gradient-to-br from-amber-500/20 to-transparent rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
+        
+        <div className="relative z-10">
+          <motion.div 
+            className="w-14 h-14 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-gradient-to-br group-hover:from-amber-500 group-hover:to-amber-600 transition-all duration-500"
+            whileHover={{ rotate: [0, -10, 10, -5, 5, 0] }}
+            transition={{ duration: 0.5 }}
+          >
+            <Icon className="w-7 h-7 text-amber-400 group-hover:text-white transition-colors" strokeWidth={1.5} />
+          </motion.div>
+          
+          <h3 className="text-xl font-bold text-white mb-3 group-hover:text-amber-400 transition-colors">
+            {title}
+          </h3>
+          <p className="text-slate-400 text-sm leading-relaxed">
+            {description}
+          </p>
+          
+          {metrics && (
+            <div className="mt-4 pt-4 border-t border-white/10">
+              <div className="text-2xl font-bold text-amber-400">{metrics.value}</div>
+              <div className="text-xs text-slate-500">{metrics.label}</div>
+            </div>
+          )}
+        </div>
+        
+        <motion.div 
+          className="absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-amber-500 to-transparent"
+          initial={{ width: "0%" }}
+          whileHover={{ width: "100%" }}
+          transition={{ duration: 0.4 }}
+        />
+      </motion.div>
+    </TiltCard>
+  </ScrollReveal>
+);
+
+// Premium Stat Card
+const StatCard = ({ icon: Icon, label, value, suffix = "", prefix = "", delay = 0, trend = null }) => (
+  <ScrollReveal direction="up" delay={delay}>
+    <motion.div 
+      whileHover={{ scale: 1.05, y: -5 }}
+      className="text-center p-6 rounded-2xl bg-gradient-to-br from-white/[0.02] to-transparent border border-white/[0.04] hover:border-amber-500/40 transition-all duration-500 group backdrop-blur-sm relative overflow-hidden"
+    >
+      <motion.div 
+        className="absolute inset-0 bg-gradient-to-br from-amber-500/0 via-amber-500/0 to-amber-500/0 group-hover:from-amber-500/5 group-hover:via-amber-500/5 transition-all duration-500"
+      />
+      
+      <div className="relative z-10">
+        <div className="w-14 h-14 rounded-full bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:bg-gradient-to-br group-hover:from-amber-500 group-hover:to-amber-600 transition-all duration-500">
+          <Icon className="w-7 h-7 text-amber-400 group-hover:text-white" strokeWidth={1.5} />
+        </div>
+        <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-white to-amber-200 bg-clip-text text-transparent mb-2">
+          <AnimatedCounter value={value} suffix={suffix} prefix={prefix} delay={delay} />
+        </div>
+        <div className="text-xs text-slate-400 uppercase tracking-wider font-medium">{label}</div>
+        
+        {trend && (
+          <motion.div 
+            className="mt-2 text-xs text-emerald-400 flex items-center justify-center gap-1"
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: delay + 0.5 }}
+          >
+            <TrendingUp className="w-3 h-3" />
+            <span>{trend}</span>
+          </motion.div>
+        )}
+      </div>
+    </motion.div>
+  </ScrollReveal>
+);
+
+// Premium Section Header
+const SectionHeader = ({ badge, title, highlight, description = "", align = "center", className = "" }) => (
+  <div className={`mb-20 ${align === "center" ? "text-center" : ""} ${className}`}>
+    <ScrollReveal direction="up">
+      <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-gradient-to-r from-amber-500/10 to-amber-600/5 border border-amber-500/20 mb-6 backdrop-blur-sm">
+        <motion.div 
+          animate={{ rotate: 360 }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+        >
+          <Sparkles className="w-4 h-4 text-amber-400" />
+        </motion.div>
+        <span className="text-xs font-medium text-amber-400 uppercase tracking-wider">{badge}</span>
+      </div>
+    </ScrollReveal>
+    
+    <ScrollReveal direction="up" delay={0.1}>
+      <h2 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-4 leading-[1.1] tracking-tight">
+        {title}{" "}
+        <span className="bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 bg-clip-text text-transparent relative inline-block">
+          {highlight}
+          <motion.div 
+            className="absolute -bottom-3 left-0 right-0 h-[3px] bg-gradient-to-r from-amber-400 to-amber-600 rounded-full"
+            initial={{ width: "0%", opacity: 0 }}
+            whileInView={{ width: "100%", opacity: 1 }}
+            transition={{ duration: 1, delay: 0.5 }}
+          />
+        </span>
+      </h2>
+    </ScrollReveal>
+    
+    {description && (
+      <ScrollReveal direction="up" delay={0.2}>
+        <p className="text-slate-400 text-lg max-w-3xl mx-auto leading-relaxed">
+          {description}
+        </p>
+      </ScrollReveal>
+    )}
+  </div>
+);
+
+// Team Member Card with 3D Effect
+const TeamMemberCard = ({ name, role, delay, socialLinks = [] }) => (
+  <ScrollReveal direction="up" delay={delay}>
+    <TiltCard glow>
+      <motion.div 
+        whileHover={{ y: -10 }}
+        className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-800/50 to-zinc-900/50 p-6 text-center border border-white/[0.06] hover:border-amber-500/30 transition-all duration-500"
+      >
+        <div className="relative w-32 h-32 mx-auto mb-4">
+          <motion.div 
+            className="absolute inset-0 rounded-full border-2 border-transparent group-hover:border-amber-500/50 transition-all duration-500"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+          />
+          <div className="w-full h-full rounded-full bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+            <Users className="w-12 h-12 text-amber-400" />
+          </div>
+        </div>
+        
+        <h3 className="text-xl font-bold text-white mb-1">{name}</h3>
+        <p className="text-amber-400 text-sm mb-3">{role}</p>
+        <p className="text-slate-400 text-sm">
+          Leading DFPL's {role.toLowerCase()} initiatives with excellence and innovation
+        </p>
+        
+        <div className="flex justify-center gap-3 mt-4 opacity-0 group-hover:opacity-100 transition-all duration-500">
+          {socialLinks.map((link, idx) => (
+            <motion.div 
+              key={idx}
+              className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-amber-500 transition-all duration-300 cursor-pointer"
+              whileHover={{ scale: 1.1, rotate: 360 }}
+              transition={{ duration: 0.3 }}
+            >
+              {link.icon === 'linkedin' && <Linkedin className="w-4 h-4 text-white hover:text-black" />}
+              {link.icon === 'mail' && <Mail className="w-4 h-4 text-white hover:text-black" />}
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
+    </TiltCard>
+  </ScrollReveal>
+);
+
+// Testimonial Card
+const TestimonialCard = ({ quote, author, role, delay }) => (
+  <ScrollReveal direction="up" delay={delay}>
+    <motion.div 
+      whileHover={{ y: -5 }}
+      className="p-8 rounded-2xl bg-gradient-to-br from-white/[0.02] to-transparent border border-white/[0.06] hover:border-amber-500/30 transition-all duration-500"
+    >
+      <Quote className="w-10 h-10 text-amber-500/30 mb-4" />
+      <p className="text-slate-300 leading-relaxed mb-6">{quote}</p>
+      <div>
+        <p className="text-white font-semibold">{author}</p>
+        <p className="text-amber-400 text-sm">{role}</p>
+      </div>
+    </motion.div>
+  </ScrollReveal>
+);
+
+// FadeInView Component (used in some sections)
+const FadeInView = ({ children, direction = "up", delay = 0, className = "" }) => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px", amount: 0.2 });
+  
+  const variants = {
+    hidden: { opacity: 0, y: direction === "up" ? 40 : direction === "down" ? -40 : 0, x: direction === "left" ? 40 : direction === "right" ? -40 : 0 },
+    visible: { opacity: 1, y: 0, x: 0 }
+  };
+
+  return (
+    <motion.div
+      ref={ref}
+      initial="hidden"
+      animate={isInView ? "visible" : "hidden"}
+      variants={variants}
+      transition={{ duration: 0.8, delay, ease: [0.25, 0.1, 0.25, 1] }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+// ============================================
+// MAIN COMPONENT
+// ============================================
+
 const About: React.FC = () => {
   const containerRef = useRef(null);
+  const [showCustomCursor, setShowCustomCursor] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+  const [activeNav, setActiveNav] = useState('hero');
+  
   const { scrollYProgress } = useScroll({ target: containerRef });
-  const scaleX = useSpring(scrollYProgress, { stiffness: 80, damping: 25, restDelta: 0.001 });
-  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "40%"]);
+  const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
+  
+  const heroY = useTransform(scrollYProgress, [0, 0.5], [0, 200]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
-  const heroScale = useTransform(scrollYProgress, [0, 0.3], [1, 0.92]);
+  const heroScale = useTransform(scrollYProgress, [0, 0.3], [1, 0.95]);
+  const heroBlur = useTransform(scrollYProgress, [0, 0.3], [0, 8]);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+      setShowCustomCursor(window.innerWidth >= 1024);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const scrollToSection = useCallback((sectionId) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setActiveNav(sectionId);
+    }
+  }, []);
 
   return (
     <HelmetProvider>
-      <div ref={containerRef} className="bg-[#050505] min-h-screen text-[#E2E4E9] font-['Barlow'] overflow-x-hidden selection:bg-amber-500 selection:text-black">
+      <div ref={containerRef} className="bg-[#0A0A0F] min-h-screen text-white overflow-x-hidden selection:bg-amber-500 selection:text-black">
+        
         <Helmet>
-          <title>The DFPL Story | Durable Fastener Pvt. Ltd.</title>
-          <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@100;300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+          <title>About DFPL | Durable Fastener Pvt. Ltd. - Engineering Integrity Since 2018</title>
+          <meta name="description" content="Durable Fastener Pvt. Ltd. (DFPL) - India's premier fastener manufacturer with 95% on-time dispatch, 99% order accuracy, and uncompromising quality standards since 2018." />
+          <meta name="keywords" content="fastener manufacturer India, industrial fasteners, screws, bolts, DFPL, Rajkot fastener company" />
+          <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+          <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet" />
         </Helmet>
 
-        {/* --- GLOBAL UI ELEMENTS --- */}
-        <motion.div className="fixed top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-amber-600 via-amber-300 to-amber-600 z-[100] origin-left shadow-[0_0_15px_rgba(245,158,11,0.6)]" style={{ scaleX }} />
+        {showCustomCursor && <CustomCursor />}
+
+        <motion.div 
+          className="fixed top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 z-[100] origin-left shadow-[0_0_20px_rgba(245,158,11,0.5)]"
+          style={{ scaleX }}
+        />
+
+        <motion.nav 
+          initial={{ y: -100 }}
+          animate={{ y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="fixed top-6 left-1/2 -translate-x-1/2 z-50 hidden lg:block"
+        >
+          <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-white/5 backdrop-blur-xl border border-white/10">
+            {['hero', 'about', 'mission', 'values', 'team', 'contact'].map((section) => (
+              <button
+                key={section}
+                onClick={() => scrollToSection(section)}
+                className={`px-5 py-2 rounded-full text-xs font-medium transition-all duration-300 ${
+                  activeNav === section 
+                    ? 'bg-amber-500 text-black' 
+                    : 'text-slate-400 hover:text-white hover:bg-white/10'
+                }`}
+              >
+                {section.charAt(0).toUpperCase() + section.slice(1)}
+              </button>
+            ))}
+          </div>
+        </motion.nav>
+
+        <FloatingParticles count={30} />
+        <AnimatedGrid />
         
-        {/* Substantive Noise Overlay for Premium Matte Finish */}
-        <div className="fixed inset-0 z-50 pointer-events-none opacity-[0.025] mix-blend-overlay" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.8%22 numOctaves=%224%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }} />
-        
-        {/* --- DYNAMIC INDUSTRIAL GRID & LIGHTING --- */}
-        <div className="fixed inset-0 pointer-events-none z-[1] opacity-[0.03] mix-blend-screen" 
-             style={{ backgroundImage: `linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)`, backgroundSize: '80px 80px', maskImage: 'radial-gradient(ellipse 60% 60% at 50% 50%, black 20%, transparent 100%)' }} />
-        <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[80vw] h-[50vh] bg-amber-500/10 blur-[180px] pointer-events-none z-[1] rounded-[100%] mix-blend-screen" />
+        <div className="fixed top-0 left-1/4 w-[600px] h-[600px] bg-amber-500/20 rounded-full blur-[150px] pointer-events-none z-0 mix-blend-screen animate-pulse" />
+        <div className="fixed bottom-0 right-1/4 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[150px] pointer-events-none z-0 animate-pulse" style={{ animationDelay: "2s" }} />
+        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-purple-500/5 rounded-full blur-[200px] pointer-events-none z-0" />
 
-        {/* --- HERO: THE MACHINE --- */}
-        <section className="relative h-[100dvh] flex items-center justify-center px-6 md:px-12 overflow-hidden">
-          <motion.div style={{ y: bgY, opacity: heroOpacity }} className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none">
-             <h1 className="text-[24vw] font-['Bebas_Neue'] whitespace-nowrap text-white/[0.015] select-none tracking-tighter mix-blend-lighten">DURABLE</h1>
-          </motion.div>
-
-          <motion.div style={{ scale: heroScale, opacity: heroOpacity }} className="max-w-[1400px] mx-auto w-full z-10 relative mt-12">
-            <FadeInView>
-              <div className="flex items-center gap-6 mb-10 lg:mb-14 opacity-80">
-                <span className="w-24 h-[1px] bg-gradient-to-r from-amber-500 to-transparent shadow-[0_0_10px_rgba(245,158,11,0.5)]" />
-                <span className="font-['Space_Mono'] text-amber-500 text-xs md:text-sm tracking-[0.4em] uppercase font-bold">Est. 2018 // Industrial Excellence</span>
+        {/* ========== HERO SECTION ========== */}
+        <section id="hero" className="relative min-h-screen flex items-center justify-center px-6 lg:px-12 overflow-hidden">
+          <ParallaxSection speed={0.3} className="absolute inset-0 z-0">
+            <div className="relative w-full h-full">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[20vw] font-black text-white/[0.015] whitespace-nowrap select-none">
+                DURABLE
               </div>
-              <h1 className="text-[clamp(3rem,8vw,7rem)] font-['Bebas_Neue'] leading-[0.85] uppercase tracking-tighter mb-10 drop-shadow-2xl flex flex-col">
-                <span className="text-white">Engineering</span>
-                <span className="text-transparent bg-clip-text bg-gradient-to-br from-amber-300 via-amber-500 to-amber-700 inline-block drop-shadow-[0_0_60px_rgba(245,158,11,0.4)] pb-2 -mt-2">Integrity.</span>
-                <span className="text-transparent border-text opacity-40 block mt-2">Built To Last.</span>
-              </h1>
-            </FadeInView>
-
-            <div className="grid lg:grid-cols-12 gap-10">
-              <div className="lg:col-span-7 xl:col-span-6">
-                <FadeInView delay={0.4}>
-                  <p className="text-xl md:text-2xl font-light leading-[1.4] text-slate-300 border-l-[3px] border-amber-500/80 pl-8 md:pl-10 relative bg-gradient-to-r from-amber-500/5 to-transparent py-4 backdrop-blur-sm shadow-[inset_1px_0_0_rgba(245,158,11,0.5)]">
-                    <span className="absolute -left-[1.5px] top-0 w-[3px] h-1/2 bg-amber-400 blur-[4px]" />
-                    Defining the future of fasteners through <span className="text-white font-semibold">system-driven reliability</span> and unyielding industrial grit.
-                  </p>
-                </FadeInView>
-              </div>
+              <motion.div 
+                className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:60px_60px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,#000_20%,transparent_100%)]"
+                animate={{ backgroundPosition: ["0px 0px", "60px 60px"] }}
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+              />
             </div>
-          </motion.div>
-          
+          </ParallaxSection>
+
           <motion.div 
-             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.8, duration: 2, ease: [0.16, 1, 0.3, 1] }}
-             className="absolute bottom-12 left-6 md:left-12 flex flex-col gap-3 font-['Space_Mono'] text-[10px] md:text-xs text-zinc-500 uppercase tracking-[0.3em]">
-            <span className="flex items-center gap-4">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
-              </span>
-              Lat: 22.3039° N
-            </span>
-            <span className="pl-6 opacity-70">Long: 70.8022° E</span>
-          </motion.div>
-        </section>
+            style={{ scale: heroScale, opacity: heroOpacity, filter: `blur(${heroBlur}px)` }}
+            className="max-w-[1400px] mx-auto w-full relative z-10"
+          >
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div>
+                <ScrollReveal direction="up">
+                  <motion.div 
+                    className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-gradient-to-r from-amber-500/10 to-amber-600/5 border border-amber-500/20 mb-8 backdrop-blur-sm"
+                    whileHover={{ scale: 1.05 }}
+                  >
+                    <motion.div 
+                      className="relative w-2 h-2"
+                      animate={{ scale: [1, 1.5, 1] }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                    >
+                      <div className="absolute inset-0 rounded-full bg-amber-400 animate-ping" />
+                      <div className="relative rounded-full w-2 h-2 bg-amber-400" />
+                    </motion.div>
+                    <span className="text-xs font-medium text-amber-400 uppercase tracking-wider">Est. 2018 // Industrial Excellence</span>
+                  </motion.div>
+                </ScrollReveal>
 
-        {/* --- 01 THE GENESIS: ARCHITECTURAL VIEW --- */}
-        <section className="py-24 md:py-40 px-6 relative z-10 border-t border-white/[0.04] bg-gradient-to-b from-zinc-950/90 to-[#050505] backdrop-blur-[100px]">
-          <div className="max-w-[1400px] mx-auto grid lg:grid-cols-12 gap-16 md:gap-24">
-            <div className="lg:col-span-5 relative">
-              <div className="sticky top-40">
-                <FadeInView direction="right">
-                  <div className="inline-flex items-center gap-3 font-['Space_Mono'] text-amber-500 text-xs tracking-[0.3em] uppercase mb-10 bg-amber-500/[0.08] px-5 py-2.5 rounded-full border border-amber-500/20 shadow-[inset_0_0_10px_rgba(245,158,11,0.1)]">
-                    <span className="w-2 h-2 bg-amber-500 rounded-full shadow-[0_0_8px_rgba(245,158,11,0.8)]" /> 01 // THE GENESIS
-                  </div>
-                  <h2 className="text-5xl md:text-7xl font-['Bebas_Neue'] leading-[0.9] uppercase mb-14 text-white tracking-tight">
-                    Who <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-600 italic pr-4">We Are.</span>
-                  </h2>
-                  <div className="relative group overflow-hidden rounded-[2.5rem] border border-white/[0.08] aspect-square bg-[#0a0a0a]/80 backdrop-blur-2xl shadow-[0_20px_80px_rgba(0,0,0,0.8)] max-w-sm">
-                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(245,158,11,0.15),transparent_70%)] opacity-50 group-hover:opacity-100 transition-opacity duration-1000 ease-out" />
-                    <div className="absolute inset-0 flex items-center justify-center grayscale opacity-20 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000 ease-[0.16,1,0.3,1]">
-                      <Factory size={120} strokeWidth={0.5} className="text-white group-hover:text-amber-500 drop-shadow-[0_0_40px_rgba(245,158,11,0.4)] group-hover:scale-110 transition-transform duration-1000 ease-[0.16,1,0.3,1]" />
-                    </div>
-                  </div>
-                </FadeInView>
-              </div>
-            </div>
-            
-            <div className="lg:col-span-7 space-y-12 md:space-y-16 pt-10 lg:pt-32">
-              <FadeInView delay={0.2}>
-                <div className="space-y-10">
-                  <div className="p-8 md:p-12 bg-gradient-to-br from-zinc-900/90 to-[#080808] backdrop-blur-3xl border border-white/[0.06] rounded-[2rem] relative shadow-[0_30px_100px_rgba(0,0,0,0.5)] group hover:border-white/[0.12] transition-colors duration-700 ease-out">
-                    <div className="absolute -top-4 -left-2 md:-left-6 px-6 py-2.5 bg-amber-500 text-black font-bold text-xs uppercase tracking-[0.2em] rounded shadow-[0_10px_30px_rgba(245,158,11,0.3)]">Founded 29th Aug 2018</div>
-                    <p className="text-lg md:text-xl font-light text-slate-200 leading-[1.6]">
-                      Durable Fastener Pvt. Ltd. (DFPL) was founded by <span className="text-white font-semibold italic underline decoration-amber-500/50 hover:decoration-amber-500 transition-colors duration-300 underline-offset-8">Mr. Vipul Sakariya</span> with a singular, unyielding purpose: to bridge the gap between heavy-duty manufacturing and professional, system-driven service.
-                    </p>
-                  </div>
-                  <p className="text-base md:text-lg font-light text-slate-400 pl-8 md:pl-10 border-l-[2px] border-amber-500/30 leading-[1.7]">
-                    Operating from Rajkot — India’s industrial nerve center — we have engineered a company built on reliable systems and a deep commitment to customer satisfaction. We don't just supply fasteners; we engineer the integrity of your structures.
+                <ScrollReveal direction="up" delay={0.1}>
+                  <h1 className="text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold leading-[0.9] mb-8 tracking-tighter">
+                    Engineering{" "}
+                    <motion.span 
+                      className="bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 bg-clip-text text-transparent inline-block"
+                      animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
+                      transition={{ duration: 5, repeat: Infinity }}
+                      style={{ backgroundSize: "200% auto" }}
+                    >
+                      Integrity.
+                    </motion.span>
+                    <br />
+                    <span className="text-4xl md:text-5xl text-slate-500 block mt-4 font-light">
+                      Built To Last.
+                    </span>
+                  </h1>
+                </ScrollReveal>
+
+                <ScrollReveal direction="up" delay={0.2}>
+                  <p className="text-lg md:text-xl text-slate-300 leading-relaxed mb-10 max-w-xl">
+                    Defining the future of fasteners through <span className="text-white font-semibold relative inline-block group">
+                      system-driven reliability
+                      <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-amber-500 group-hover:w-full transition-all duration-300"></span>
+                    </span> and unyielding industrial grit.
                   </p>
-                </div>
-              </FadeInView>
+                </ScrollReveal>
 
-              <div className="grid md:grid-cols-2 gap-6 md:gap-8">
-                {[
-                  { icon: <MapPin size={28} />, title: "The Factory", sub: "Ravki Makhavad, Rajkot, Gujarat", label: "LOG_COORD: RAJKOT_GUJ_IND" },
-                  { icon: <Globe size={28} />, title: "Global Presence", sub: "Surat Branch & Warehouse Serving Pan-India", label: "LOG_DIST: PAN_INDIA" }
-                ].map((item, idx) => (
-                  <FadeInView key={idx} delay={0.1 * idx}>
-                    <div className="p-8 rounded-[1.5rem] border border-white/[0.05] bg-[#0a0a0a]/50 hover:bg-[#111]/80 backdrop-blur-xl transition-all duration-700 group relative overflow-hidden shadow-xl">
-                      <div className="absolute top-0 right-0 p-4 font-['Space_Mono'] text-[9px] text-zinc-600 bg-white/[0.02] rounded-bl-2xl border-b border-l border-white/[0.02]">{item.label}</div>
-                      <div className="absolute inset-0 bg-gradient-to-br from-amber-500/0 via-transparent to-transparent group-hover:from-amber-500/[0.03] transition-colors duration-700 ease-out" />
-                      <div className="w-14 h-14 rounded-xl bg-white/[0.03] flex items-center justify-center text-amber-500 mb-6 group-hover:scale-110 group-hover:-rotate-3 group-hover:bg-amber-500/10 group-hover:shadow-[0_0_30px_rgba(245,158,11,0.2)] transition-all duration-700 ease-[0.16,1,0.3,1] relative z-10 border border-white/[0.05]">{item.icon}</div>
-                      <h4 className="text-2xl md:text-3xl font-['Bebas_Neue'] mb-3 tracking-wide text-white group-hover:text-amber-400 transition-colors duration-500 relative z-10">{item.title}</h4>
-                      <p className="text-xs uppercase tracking-[0.15em] text-slate-500 group-hover:text-slate-300 transition-colors duration-500 leading-relaxed relative z-10">{item.sub}</p>
-                    </div>
-                  </FadeInView>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* --- 02 THE STORY: CINEMATIC QUOTE --- */}
-        <section className="py-24 md:py-40 px-6 relative overflow-hidden bg-[#020202]">
-          {/* Ambient Quote Background */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(245,158,11,0.03)_0,transparent_60%)] pointer-events-none mix-blend-screen" />
-          <Quote className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white/[0.015] w-[70vw] h-[70vw] md:w-[50vw] md:h-[50vw] pointer-events-none" strokeWidth={0.5} />
-          
-          <div className="max-w-[1400px] mx-auto relative z-10">
-            <FadeInView>
-              <div className="font-['Space_Mono'] text-amber-500 text-xs mb-10 uppercase tracking-[0.3em] flex justify-center lg:justify-start">02 // THE ORIGIN</div>
-              <h2 className="text-5xl md:text-7xl font-['Bebas_Neue'] leading-[0.9] uppercase mb-20 text-center lg:text-left drop-shadow-2xl tracking-tight">
-                The Story <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-600 italic pr-4">Behind DFPL.</span>
-              </h2>
-            </FadeInView>
-
-            <div className="grid lg:grid-cols-12 gap-16 md:gap-20 items-center">
-              <div className="lg:col-span-8">
-                <FadeInView>
-                  <div className="relative mb-16 group pl-8 md:pl-10">
-                    <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-amber-500 via-amber-700 to-transparent rounded-full shadow-[0_0_15px_rgba(245,158,11,0.5)]" />
-                    <p className="text-xl md:text-2xl font-light text-slate-200 italic leading-[1.5] relative z-10">
-                      Before founding DFPL, <span className="font-semibold text-amber-500 not-italic">Mr. Vipul Sakariya</span> witnessed firsthand the friction of poor workplace systems and the lack of accountability in the industry.
-                    </p>
+                <ScrollReveal direction="up" delay={0.3}>
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <motion.button 
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="group relative px-8 py-4 bg-gradient-to-r from-amber-500 to-amber-600 text-black font-semibold rounded-full flex items-center justify-center gap-2 overflow-hidden shadow-lg shadow-amber-500/25 hover:shadow-amber-500/50 transition-all duration-300"
+                    >
+                      <span className="relative z-10">Explore Our Products</span>
+                      <motion.div className="relative z-10" animate={{ x: [0, 5, 0] }} transition={{ duration: 1, repeat: Infinity }}>
+                        <ArrowRight className="w-5 h-5" />
+                      </motion.div>
+                      <motion.div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-amber-500" initial={{ x: "100%" }} whileHover={{ x: "0%" }} transition={{ duration: 0.3 }} />
+                    </motion.button>
+                    <motion.button 
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="px-8 py-4 border border-white/20 rounded-full font-semibold hover:border-amber-500 hover:text-amber-400 transition-all duration-300 backdrop-blur-sm"
+                    >
+                      Download Brochure
+                    </motion.button>
                   </div>
-                  
-                  <div className="grid md:grid-cols-2 gap-6 md:gap-8">
-                    <div className="p-8 md:p-10 rounded-[2rem] bg-[#0a0a0a]/80 border border-white/[0.04] backdrop-blur-3xl relative overflow-hidden group hover:bg-[#111]/90 hover:border-white/[0.08] shadow-[0_20px_60px_rgba(0,0,0,0.5)] transition-all duration-700">
-                      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-400 to-amber-600 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-1000 ease-[0.16,1,0.3,1]" />
-                      <h4 className="text-amber-500 font-['Bebas_Neue'] text-2xl md:text-3xl mb-5 tracking-widest uppercase">The Market Gap</h4>
-                      <p className="text-slate-400 text-sm md:text-base leading-[1.6] font-light">Manufacturers in Rajkot produced quality fasteners but lacked structured sales and QC. Mr. Sakariya saw them as <span className="text-white font-medium">precision-engineered mechanical products</span>, not just hardware.</p>
-                    </div>
-                    <div className="p-8 md:p-10 rounded-[2rem] bg-[#0a0a0a]/80 border border-white/[0.04] backdrop-blur-3xl relative overflow-hidden group hover:bg-[#111]/90 hover:border-white/[0.08] shadow-[0_20px_60px_rgba(0,0,0,0.5)] transition-all duration-700">
-                      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-white/40 to-white/10 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-1000 delay-100 ease-[0.16,1,0.3,1]" />
-                      <h4 className="text-white font-['Bebas_Neue'] text-2xl md:text-3xl mb-5 tracking-widest uppercase">The Dual Purpose</h4>
-                      <p className="text-slate-400 text-sm md:text-base leading-[1.6] font-light">Built to ensure neither employees nor customers faced systemic failures. The goal: <span className="text-white font-medium">one-day dispatch system</span> backed by rigorous QC.</p>
-                    </div>
-                  </div>
-                </FadeInView>
+                </ScrollReveal>
               </div>
-              <div className="lg:col-span-4">
-                <FadeInView direction="left" delay={0.3}>
-                   <div className="relative group">
-                     <div className="absolute inset-0 bg-amber-500 blur-[80px] opacity-20 group-hover:opacity-30 rounded-[2.5rem] transition-opacity duration-1000" />
-                     <div className="p-10 md:p-12 bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600 text-black rounded-[2.5rem] shadow-[0_40px_100px_rgba(245,158,11,0.3)] transform md:rotate-3 group-hover:rotate-0 transition-transform duration-1000 ease-[0.16,1,0.3,1] relative z-10 border border-amber-300">
-                        <Quote className="text-black/10 absolute top-8 left-8" size={80} />
-                        <p className="text-xl md:text-2xl font-bold italic leading-[1.4] mb-8 relative z-10 pt-4 text-black/90">
-                          "What we sell is not just a product — we sell a service. The screw is just the beginning."
-                        </p>
-                        <div className="h-2 w-16 bg-black/30 rounded-full" />
-                     </div>
-                   </div>
-                </FadeInView>
-              </div>
-            </div>
-          </div>
-        </section>
 
-        {/* --- 03 EVOLUTION: THE CRITICAL FAIL --- */}
-        <section className="py-24 md:py-40 px-6 bg-[#000000] border-y border-white/[0.03] relative overflow-hidden">
-          {/* Subtle Red Warning Glow */}
-          <div className="absolute top-0 right-0 w-[50vw] h-[50vw] bg-red-600/5 blur-[150px] pointer-events-none rounded-full mix-blend-screen" />
-
-          <div className="max-w-[1400px] mx-auto relative z-10">
-             <div className="grid lg:grid-cols-12 gap-16 md:gap-20">
-               <div className="lg:col-span-5">
-                 <FadeInView>
-                   <div className="font-['Space_Mono'] text-amber-500 text-xs mb-10 tracking-[0.3em] uppercase">03 // THE EVOLUTION</div>
-                   <h2 className="text-5xl md:text-7xl font-['Bebas_Neue'] leading-[0.9] uppercase mb-12 tracking-tight">The Early <br/><span className="text-amber-500 italic pr-4">Journey.</span></h2>
-                   
-                   {/* Terminal Style Glitch Card */}
-                   <div className="p-8 md:p-12 rounded-[2rem] bg-[#050505] border border-red-500/20 relative group shadow-[0_20px_80px_rgba(239,68,68,0.08)] overflow-hidden transition-colors duration-700 hover:border-red-500/40">
-                      <div className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_50%,rgba(239,68,68,0.02)_50%)] bg-[length:100%_4px] group-hover:bg-[length:100%_2px] transition-all duration-700" />
-                      <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-red-500/80 to-transparent" />
-                      <div className="absolute top-0 right-0 px-4 py-2 font-['Space_Mono'] text-[9px] bg-red-500/[0.08] text-red-400 border-b border-l border-red-500/20 rounded-bl-2xl tracking-[0.2em]">CRITICAL_LOG_2019</div>
-                      
-                      <div className="relative z-10">
-                        <AlertTriangle className="text-red-500 mb-8 drop-shadow-[0_0_20px_rgba(239,68,68,0.6)]" size={48} />
-                        <h4 className="text-2xl md:text-3xl font-['Bebas_Neue'] mb-4 text-white tracking-widest">The ₹8 Lakh Rejection</h4>
-                        <p className="text-slate-400 text-sm md:text-base mb-8 leading-[1.6] font-light">
-                          A major 5,000kg order failed due to head-cutting. Investigation revealed: plywood density increases in winter.
-                        </p>
-                        <div className="flex items-center gap-3 text-emerald-400 font-bold text-xs uppercase tracking-[0.1em] bg-emerald-500/10 w-fit px-4 py-2.5 rounded-lg border border-emerald-500/30 shadow-[inset_0_0_10px_rgba(16,185,129,0.1)]">
-                          <CheckCircle size={16} /> Pivot: Season-Aware QC
-                        </div>
-                      </div>
-                   </div>
-                 </FadeInView>
-               </div>
-               
-               <div className="lg:col-span-7 flex flex-col justify-center pt-8 lg:pt-0">
-                 <FadeInView delay={0.2}>
-                   <p className="text-xl md:text-2xl font-light text-slate-300 mb-16 leading-[1.5]">
-                     This moment shifted our focus to <span className="text-white italic font-medium relative inline-block"><span className="relative z-10 px-1">application engineering.</span><span className="absolute bottom-1 md:bottom-2 left-0 w-full h-2 md:h-3 bg-amber-500/30 -z-10 rounded-sm"></span></span> We analyzed international standards to build a system that accounts for material science and variables.
-                   </p>
-                   
-                   {/* Bento Grid for Breakthroughs */}
-                   <div className="grid sm:grid-cols-2 gap-4 md:gap-6">
-                      <div className="p-8 md:p-10 rounded-[2rem] bg-[#0a0a0a]/80 border border-white/[0.04] hover:border-amber-500/40 hover:bg-[#111] transition-all duration-700 ease-[0.16,1,0.3,1] group shadow-[0_10px_40px_rgba(0,0,0,0.4)]">
-                        <History className="text-amber-500 mb-6 w-10 h-10 group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-700 ease-[0.16,1,0.3,1] drop-shadow-[0_0_10px_rgba(245,158,11,0.4)]" />
-                        <div className="text-[9px] text-zinc-500 font-bold uppercase tracking-[0.2em] mb-2">Breakthrough 01</div>
-                        <div className="text-4xl md:text-5xl font-['Bebas_Neue'] text-white tracking-tight leading-none mb-4">120 Cartons</div>
-                        <div className="text-[10px] font-['Space_Mono'] text-amber-500/80 tracking-widest bg-amber-500/10 w-fit px-3 py-1.5 rounded-md border border-amber-500/20">VALUED AT ₹5 LAKH</div>
-                      </div>
-                      <div className="p-8 md:p-10 rounded-[2rem] bg-[#0a0a0a]/80 border border-white/[0.04] hover:border-amber-500/40 hover:bg-[#111] transition-all duration-700 ease-[0.16,1,0.3,1] group shadow-[0_10px_40px_rgba(0,0,0,0.4)]">
-                        <TrendingUp className="text-amber-500 mb-6 w-10 h-10 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-700 ease-[0.16,1,0.3,1] drop-shadow-[0_0_10px_rgba(245,158,11,0.4)]" />
-                        <div className="text-[9px] text-zinc-500 font-bold uppercase tracking-[0.2em] mb-2">Breakthrough 02</div>
-                        <div className="text-4xl md:text-5xl font-['Bebas_Neue'] text-white tracking-tight leading-none mb-4">200 Cartons</div>
-                        <div className="text-[10px] font-['Space_Mono'] text-amber-500/80 tracking-widest bg-amber-500/10 w-fit px-3 py-1.5 rounded-md border border-amber-500/20">VALUED AT ₹12 LAKH</div>
-                      </div>
-                      <div className="sm:col-span-2 p-8 md:p-12 rounded-[2rem] bg-gradient-to-r from-amber-600 via-amber-500 to-amber-400 text-black flex items-center justify-between shadow-[0_20px_60px_rgba(245,158,11,0.25)] relative overflow-hidden group">
-                        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.2),transparent_50%)] opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-                        <div className="relative z-10">
-                           <div className="text-[10px] font-bold uppercase tracking-[0.2em] mb-3 opacity-80 mix-blend-overlay">Elite Early Partners</div>
-                           <div className="text-3xl md:text-4xl font-['Bebas_Neue'] leading-none tracking-wide text-black/90">Bhumi Associates & <br className="md:hidden"/>Ramdev Hardware</div>
-                        </div>
-                        <Award size={90} className="opacity-[0.15] hidden sm:block mix-blend-overlay absolute right-10 top-1/2 -translate-y-1/2 group-hover:scale-110 transition-transform duration-1000 ease-[0.16,1,0.3,1]" />
-                      </div>
-                   </div>
-                 </FadeInView>
-               </div>
-             </div>
-          </div>
-        </section>
-
-        {/* --- 04 SYSTEMS: THE DASHBOARD GRID --- */}
-        <section className="py-24 md:py-40 px-6 bg-[#040404] relative">
-          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent shadow-[0_0_20px_rgba(255,255,255,0.1)]" />
-          
-          <div className="max-w-[1400px] mx-auto">
-            <FadeInView>
-              <div className="font-['Space_Mono'] text-amber-500 text-xs mb-8 tracking-[0.3em] uppercase text-center">04 // TRANSFORMATION</div>
-              <h2 className="text-5xl md:text-7xl font-['Bebas_Neue'] leading-[0.9] uppercase mb-20 text-center text-white drop-shadow-2xl tracking-tighter">
-                From Resilience <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-500 to-amber-700 italic">To Systems.</span>
-              </h2>
-            </FadeInView>
-            
-            <div className="grid lg:grid-cols-12 gap-12 md:gap-16 mb-24 items-center">
-               <div className="lg:col-span-7">
-                  <FadeInView>
-                    <p className="text-xl md:text-2xl font-light text-slate-300 leading-[1.5]">
-                      The 2020 lockdown was our <span className="text-white italic font-medium">Strategic Clarity</span> phase. We dismantled legacy operations and rebuilt around one truth: the market needed <span className="text-amber-500 font-semibold underline decoration-amber-500/40 hover:decoration-amber-500 transition-colors duration-300 underline-offset-8">Speed and Reliability</span> above all else.
-                    </p>
-                  </FadeInView>
-               </div>
-               <div className="lg:col-span-5">
-                  <FadeInView delay={0.2} direction="left">
-                    <div className="p-8 md:p-10 rounded-[2rem] bg-[#0a0a0a]/60 backdrop-blur-3xl border border-white/[0.06] relative shadow-[0_30px_80px_rgba(0,0,0,0.6)] group overflow-hidden">
-                      <div className="absolute left-0 top-0 bottom-0 w-2 bg-gradient-to-b from-amber-400 to-amber-600 shadow-[0_0_20px_rgba(245,158,11,0.5)]" />
-                      <Quote className="absolute top-6 right-6 text-white/[0.02] group-hover:scale-110 transition-transform duration-1000 ease-[0.16,1,0.3,1]" size={80} />
-                      <p className="relative z-10 italic text-lg md:text-xl text-slate-300 leading-[1.6] font-light">
-                        "We didn't just wait for the world to open; we prepared our systems to be the fastest to respond."
-                      </p>
-                    </div>
-                  </FadeInView>
-               </div>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-6 md:gap-8">
-              {[
-                { title: "Quality Control", icon: <ShieldCheck />, desc: "QC at every stage—wire, heading, threading, heat treat—ensuring international standard compliance." },
-                { title: "Inventory & Dispatch", icon: <RefreshCw />, desc: "Real-time management via pro software. Floor stock matches system records for 1-day dispatch." },
-                { title: "Compliance & Ethics", icon: <Scale />, desc: "Strict adherence to regulations and financial systems since 2021. Built for multi-decade growth." }
-              ].map((item, i) => (
-                <FadeInView key={i} delay={0.1 * i}>
-                  <div className="h-full p-8 md:p-10 rounded-[2rem] bg-[#0a0a0a]/40 border border-white/[0.04] hover:border-amber-500/30 hover:bg-[#111]/80 backdrop-blur-xl transition-all duration-700 ease-[0.16,1,0.3,1] group relative overflow-hidden flex flex-col justify-between shadow-xl">
-                    <div className="absolute inset-0 bg-gradient-to-br from-amber-500/0 to-transparent group-hover:from-amber-500/[0.04] transition-colors duration-700" />
-                    <div className="relative z-10">
-                      <div className="w-16 h-16 rounded-xl bg-[#111] border border-white/[0.05] text-amber-500 mb-8 flex items-center justify-center group-hover:scale-110 group-hover:-rotate-3 group-hover:bg-amber-500/20 group-hover:border-amber-500/30 transition-all duration-700 ease-[0.16,1,0.3,1] shadow-lg">{React.cloneElement(item.icon as React.ReactElement, { size: 28, strokeWidth: 1.5 })}</div>
-                      <h4 className="text-2xl md:text-3xl font-['Bebas_Neue'] mb-4 tracking-widest uppercase text-white group-hover:text-amber-400 transition-colors duration-500">{item.title}</h4>
-                    </div>
-                    <p className="text-[10px] md:text-[11px] text-slate-400 leading-[1.8] uppercase tracking-[0.1em] mt-5 relative z-10">{item.desc}</p>
-                  </div>
-                </FadeInView>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* --- 05 NUMBERS: THE STATS HUB --- */}
-        <section className="py-24 md:py-40 bg-zinc-950 relative overflow-hidden border-y border-white/[0.03]">
-          {/* Subtle Graphic Element */}
-          <div className="absolute top-1/2 right-0 -translate-y-1/2 w-[800px] h-[800px] bg-[radial-gradient(circle_at_center,rgba(245,158,11,0.03)_0,transparent_50%)] pointer-events-none mix-blend-screen" />
-
-          <div className="max-w-[1400px] mx-auto px-6 relative z-10">
-            <FadeInView>
-              <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-white/[0.08] pb-10 mb-20 gap-6">
-                <h2 className="text-5xl md:text-6xl font-['Bebas_Neue'] uppercase leading-none tracking-tight">Our Numbers <br/><span className="text-amber-500">Speak.</span></h2>
-                <div className="font-['Space_Mono'] text-[10px] text-zinc-500 uppercase tracking-[0.2em] bg-white/[0.02] px-5 py-2.5 rounded-full border border-white/[0.05]">Real-Time Performance Metrics</div>
-              </div>
-              
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-16 md:gap-y-20">
-                {[
-                  { l: "On-Time Dispatch", v: 95, s: "%", i: <Truck size={20} strokeWidth={1.5}/> },
-                  { l: "Order Accuracy", v: 99, s: "%", i: <CheckCircle2 size={20} strokeWidth={1.5}/> },
-                  { l: "Repeat Customers", v: 92, s: "%", i: <Users size={20} strokeWidth={1.5}/> },
-                  { l: "Avg Response", v: "45", s: "m", i: <Timer size={20} strokeWidth={1.5}/> },
-                  { l: "Rejection Rate", v: 1.20, s: "%", i: <XCircle size={20} strokeWidth={1.5}/> },
-                  { l: "Turnover Cr", v: 5.12, p: "₹", i: <TrendingUp size={20} strokeWidth={1.5}/> },
-                ].map((stat, i) => (
-                  <div key={i} className="group relative">
-                    <div className="flex items-center gap-3 text-zinc-500 mb-6 group-hover:text-amber-500 transition-colors duration-500">
-                      <div className="p-2.5 rounded-lg bg-white/[0.03] group-hover:bg-amber-500/10 group-hover:shadow-[0_0_15px_rgba(245,158,11,0.2)] transition-all duration-500 border border-transparent group-hover:border-amber-500/20">{stat.i}</div>
-                      <span className="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.15em]">{stat.l}</span>
-                    </div>
-                    <div className="text-5xl md:text-6xl font-['Bebas_Neue'] text-white drop-shadow-lg tracking-tight group-hover:scale-105 transform origin-left transition-transform duration-700 ease-[0.16,1,0.3,1]">
-                      <RollingNumber value={stat.v} suffix={stat.s} prefix={stat.p} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </FadeInView>
-          </div>
-          <div className="absolute -bottom-16 md:-bottom-32 right-0 text-[10rem] md:text-[15rem] font-['Bebas_Neue'] text-white/[0.015] select-none uppercase pointer-events-none leading-none tracking-tighter mix-blend-lighten">PERFORMANCE</div>
-        </section>
-
-        {/* --- 06 THE PROTOCOL: SCHEMATIC FLOW --- */}
-        <section className="py-24 md:py-40 px-6 bg-[#020202]">
-          <div className="max-w-[1400px] mx-auto grid lg:grid-cols-12 gap-16 md:gap-20 relative">
-            <div className="lg:col-span-5 lg:sticky lg:top-32 h-fit">
-              <FadeInView direction="right">
-                <div className="font-['Space_Mono'] text-amber-500 text-xs mb-8 tracking-[0.3em] uppercase">05 // THE PROTOCOL</div>
-                <h2 className="text-5xl md:text-7xl font-['Bebas_Neue'] leading-[0.9] uppercase mb-10 text-white tracking-tight">Precision <br/><span className="text-amber-500 italic pr-4">Dispatch.</span></h2>
-                <p className="text-lg md:text-xl text-slate-400 mb-12 leading-[1.6] font-light">
-                   In 8 years, we have achieved a <span className="text-white font-medium bg-white/[0.05] border border-white/[0.1] px-2 py-1 rounded-md shadow-inner">0% error rate</span> in material accuracy. We never miss a deadline.
-                </p>
-                <div className="p-8 md:p-10 rounded-[2rem] bg-amber-500/[0.03] border border-amber-500/20 text-base md:text-lg text-amber-100/90 italic font-light leading-[1.6] shadow-[0_20px_40px_rgba(245,158,11,0.05)] backdrop-blur-xl relative overflow-hidden group hover:border-amber-500/40 transition-colors duration-700">
-                  <div className="absolute top-0 left-0 w-1 h-full bg-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.5)]" />
-                  <Quote className="text-amber-500/20 mb-5 group-hover:scale-110 transition-transform duration-700 ease-[0.16,1,0.3,1]" size={32} />
-                  "If wrong material is sent, DFPL covers 100% of replacement costs. If a delay occurs, we deliver before the deadline with 2 buffer days."
-                </div>
-              </FadeInView>
-            </div>
-            
-            <div className="lg:col-span-7 relative">
-              {/* Connecting Line with Gradient Mask */}
-              <div className="absolute left-[39px] md:left-[47px] top-10 bottom-10 w-[2px] bg-gradient-to-b from-amber-500 via-zinc-800 to-transparent hidden sm:block opacity-60" />
-              
-              <div className="space-y-5 md:space-y-8">
-                {[
-                  { s: "01", t: "Engineering Flow", d: "Wire → Heading → Threading → Stock → Heat Treat → Plating → Packing → Dispatch.", i: <Settings /> },
-                  { s: "02", t: "Verification Trigger", d: "Order/PI is printed and handed to the packing floor before a single box moves.", i: <FileCheck /> },
-                  { s: "03", t: "Mandatory QC Sign-off", d: "Size, grade, and quantity are verified against the PI. Sign-off is non-negotiable.", i: <ClipboardCheck /> },
-                  { s: "04", t: "Third-Party Cross-Check", d: "Dedicated validator audits the shipment independently before billing.", i: <Users /> },
-                  { s: "05", t: "Final Confirmation", d: "Billing team verifies physical stock. LR and transport details shared instantly.", i: <Truck /> },
-                ].map((step, i) => (
-                  <FadeInView key={i} delay={0.1 * i} direction="left">
-                    <div className="group flex flex-col sm:flex-row gap-5 md:gap-8 p-6 md:p-8 rounded-[2rem] bg-[#0a0a0a]/50 border border-white/[0.04] hover:bg-[#111]/80 hover:border-amber-500/30 transition-all duration-700 ease-[0.16,1,0.3,1] relative backdrop-blur-xl shadow-lg hover:shadow-[0_15px_40px_rgba(0,0,0,0.6)]">
-                      <div className="flex-shrink-0 w-20 h-20 md:w-24 md:h-24 rounded-xl bg-[#050505] border border-white/[0.08] flex items-center justify-center text-3xl md:text-4xl font-['Bebas_Neue'] text-amber-500/30 group-hover:text-amber-500 group-hover:border-amber-500/50 group-hover:shadow-[0_0_20px_rgba(245,158,11,0.2)] transition-all duration-700 ease-[0.16,1,0.3,1] z-10 relative">
-                        {step.s}
-                        <div className="absolute -right-5 top-1/2 -translate-y-1/2 w-10 h-[2px] bg-gradient-to-r from-amber-500 to-transparent hidden sm:block opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                      </div>
-                      <div className="flex flex-col justify-center">
-                        <h4 className="text-xl md:text-2xl font-['Bebas_Neue'] mb-3 tracking-widest uppercase text-white group-hover:text-amber-400 transition-colors duration-500 flex items-center gap-3">
-                          {step.t}
-                        </h4>
-                        <p className="text-[10px] md:text-xs text-slate-400 uppercase tracking-[0.1em] leading-[1.6]">{step.d}</p>
-                      </div>
-                    </div>
-                  </FadeInView>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* --- 07 THE ADVANTAGE: COMPARISON --- */}
-        <section className="py-24 md:py-40 px-6 bg-[#040404] border-y border-white/[0.03] relative overflow-hidden">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[500px] bg-gradient-to-r from-emerald-500/[0.03] via-transparent to-red-500/[0.03] blur-[100px] pointer-events-none mix-blend-screen" />
-          
-          <div className="max-w-[1400px] mx-auto relative z-10">
-             <div className="grid lg:grid-cols-2 gap-16 md:gap-20 items-center">
-                <FadeInView>
-                  <div className="font-['Space_Mono'] text-amber-500 text-xs mb-8 tracking-[0.3em] uppercase">06 // THE ADVANTAGE</div>
-                  <h2 className="text-5xl md:text-7xl font-['Bebas_Neue'] leading-none uppercase mb-12 drop-shadow-2xl tracking-tight">Why Choose <br/><span className="text-amber-500 italic">DFPL.</span></h2>
-                  <div className="inline-flex items-center gap-3 py-4 px-8 md:py-5 md:px-10 rounded-full bg-gradient-to-r from-amber-400 to-amber-600 text-black font-bold uppercase tracking-[0.15em] md:tracking-[0.2em] text-[10px] md:text-xs shadow-[0_15px_30px_rgba(245,158,11,0.3)] hover:scale-105 hover:shadow-[0_20px_40px_rgba(245,158,11,0.4)] transition-all duration-700 ease-[0.16,1,0.3,1]">
-                    <Zap size={16} className="animate-pulse" /> Delivering 10x value for every Rupee
-                  </div>
-                </FadeInView>
-                
-                <FadeInView delay={0.2} direction="left">
-                  <div className="grid gap-px bg-white/[0.05] border border-white/[0.08] overflow-hidden rounded-[2.5rem] shadow-[0_30px_80px_rgba(0,0,0,0.8)] backdrop-blur-3xl">
-                     <div className="bg-[#0a0a0a]/90 p-8 md:p-12 relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/[0.05] blur-[50px] rounded-full group-hover:bg-emerald-500/[0.08] transition-colors duration-1000" />
-                        <h4 className="text-white font-['Bebas_Neue'] text-2xl md:text-3xl mb-10 flex items-center gap-4 relative z-10 tracking-widest">
-                          <CheckCircle className="text-emerald-500 drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]" size={28} strokeWidth={2} /> The DFPL Standard
-                        </h4>
-                        <ul className="space-y-6 relative z-10">
-                          {["360° Continuous Daily Improvement", "Unified Quality, Packing & Service", "Zero-Exception QC Stage-wise", "Advanced R&D for New Tech"].map((li, i) => (
-                            <li key={i} className="flex items-center gap-5 text-sm md:text-base text-slate-200 font-medium">
-                               <span className="w-2.5 h-2.5 bg-emerald-500 rounded-sm shrink-0 shadow-[0_0_10px_rgba(16,185,129,0.6)]" /> {li}
-                            </li>
-                          ))}
-                        </ul>
-                     </div>
-                     <div className="bg-[#050505]/95 p-8 md:p-12 relative group transition-all duration-700">
-                        <div className="absolute bottom-0 right-0 w-48 h-48 bg-red-900/[0.05] blur-[50px] rounded-full group-hover:bg-red-900/[0.1] transition-colors duration-1000" />
-                        <h4 className="text-zinc-500 group-hover:text-zinc-300 font-['Bebas_Neue'] text-2xl md:text-3xl mb-10 flex items-center gap-4 transition-colors duration-500 relative z-10 tracking-widest">
-                          <XCircle className="text-red-900/50 group-hover:text-red-500 transition-colors duration-500" size={28} strokeWidth={2} /> Market Gaps
-                        </h4>
-                        <ul className="space-y-6 italic text-zinc-600 group-hover:text-zinc-400 transition-colors duration-500 relative z-10">
-                          {["No structured QC systems", "Fragmented service & poor reach", "Engineering treated as hardware", "Stagnant product development"].map((li, i) => (
-                            <li key={i} className="flex items-center gap-5 text-sm md:text-base font-light">
-                               <span className="w-2.5 h-2.5 bg-zinc-800 group-hover:bg-red-900/50 transition-colors duration-500 rounded-sm shrink-0" /> {li}
-                            </li>
-                          ))}
-                        </ul>
-                     </div>
-                  </div>
-                </FadeInView>
-             </div>
-          </div>
-        </section>
-
-        {/* --- 08 CAPABILITIES: SPEC SHEET --- */}
-        <section className="py-24 md:py-40 px-6 bg-[#020202]">
-          <div className="max-w-[1400px] mx-auto grid lg:grid-cols-12 gap-16 md:gap-20 items-center">
-            <div className="lg:col-span-5">
-              <FadeInView>
-                <div className="font-['Space_Mono'] text-amber-500 text-xs mb-8 tracking-[0.3em] uppercase">07 // CAPABILITIES</div>
-                <h2 className="text-5xl md:text-7xl font-['Bebas_Neue'] leading-none uppercase mb-16 tracking-tight">Scale & <br/><span className="text-amber-500 italic pr-4">Service.</span></h2>
-                <div className="space-y-2">
+              <ScrollReveal direction="left" delay={0.2}>
+                <div className="grid grid-cols-2 gap-6">
                   {[
-                    { l: "MAX ORDER CAPACITY", v: "3,000 Cartons / 100 Tons" },
-                    { l: "CUSTOM PRODUCTION", v: "1,000 Cartons / 25–30 Tons" },
-                    { l: "TRANSACTION RANGE", v: "₹1 Lakh – ₹1 Crore" },
-                    { l: "MONTHLY THROUGHPUT", v: "30 – 150 Orders" },
-                  ].map((cap, i) => (
-                    <div key={i} className="flex flex-col sm:flex-row sm:justify-between sm:items-end border-b border-white/[0.06] py-6 group hover:border-amber-500/50 transition-colors duration-500 relative">
-                      <div className="absolute inset-0 bg-gradient-to-r from-amber-500/0 via-amber-500/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                      <span className="text-[9px] md:text-[10px] font-['Space_Mono'] text-zinc-500 group-hover:text-amber-400 transition-colors duration-500 mb-2 sm:mb-0 tracking-[0.15em] relative z-10">{cap.l}</span>
-                      <span className="text-2xl md:text-3xl font-['Bebas_Neue'] text-white group-hover:tracking-wide transition-all duration-500 ease-[0.16,1,0.3,1] relative z-10">{cap.v}</span>
-                    </div>
+                    { value: "95", label: "On-Time Dispatch", suffix: "%", color: "from-emerald-500", icon: Truck },
+                    { value: "99", label: "Order Accuracy", suffix: "%", color: "from-blue-500", icon: CheckCircle2 },
+                    { value: "8", label: "Years Excellence", suffix: "+", color: "from-purple-500", icon: Award },
+                    { value: "100", label: "Client Satisfaction", suffix: "%", color: "from-amber-500", icon: ThumbsUp },
+                  ].map((stat, idx) => (
+                    <motion.div 
+                      key={idx}
+                      whileHover={{ scale: 1.05, y: -5 }}
+                      className="group relative p-6 rounded-2xl bg-gradient-to-br from-white/[0.02] to-transparent border border-white/[0.06] backdrop-blur-sm overflow-hidden"
+                    >
+                      <div className={`absolute inset-0 bg-gradient-to-br ${stat.color}/0 group-hover:${stat.color}/10 transition-all duration-500`} />
+                      <div className="relative z-10">
+                        <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                          <stat.icon className="w-5 h-5 text-amber-400" strokeWidth={1.5} />
+                        </div>
+                        <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-white to-amber-200 bg-clip-text text-transparent mb-1">
+                          {stat.value}{stat.suffix}
+                        </div>
+                        <div className="text-xs text-slate-400 font-medium">{stat.label}</div>
+                      </div>
+                    </motion.div>
                   ))}
                 </div>
-              </FadeInView>
+              </ScrollReveal>
             </div>
-            
-            <div className="lg:col-span-7">
-               <FadeInView delay={0.2} direction="left">
-                 <div className="bg-[#0a0a0a]/80 p-10 md:p-16 rounded-[2.5rem] border border-white/[0.04] relative overflow-hidden backdrop-blur-3xl shadow-[0_30px_80px_rgba(0,0,0,0.5)] group">
-                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.03),transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-                    <div className="absolute top-0 left-10 md:left-16 w-20 h-1 bg-gradient-to-r from-amber-400 to-amber-600 shadow-[0_0_15px_rgba(245,158,11,0.6)]" />
-                    <h4 className="text-3xl md:text-4xl font-['Bebas_Neue'] tracking-[0.1em] mb-12 border-l-4 border-amber-500/50 pl-6 uppercase text-white relative z-10">Industries We Serve</h4>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-y-12 gap-x-8 relative z-10">
-                      {[
-                        { t: "OEM Mfrs", i: <Factory /> },
-                        { t: "Wholesale", i: <Briefcase /> },
-                        { t: "Turnkey", i: <Settings /> },
-                        { t: "PEB Structs", i: <Building2 /> },
-                        { t: "POP Agencies", i: <Layers /> },
-                        { t: "Construction", i: <HardHat /> },
-                      ].map((ind, i) => (
-                        <div key={i} className="flex flex-col items-center text-center gap-4 group/icon cursor-default">
-                          <div className="w-16 h-16 md:w-20 md:h-20 rounded-xl bg-white/[0.02] border border-white/[0.05] flex items-center justify-center text-zinc-500 group-hover/icon:bg-gradient-to-br group-hover/icon:from-amber-400 group-hover/icon:to-amber-600 group-hover/icon:text-black group-hover/icon:border-amber-400 group-hover/icon:shadow-[0_10px_30px_rgba(245,158,11,0.4)] group-hover/icon:-translate-y-1 transition-all duration-500 ease-[0.16,1,0.3,1]">
-                             {React.cloneElement(ind.i as React.ReactElement, { size: 28, strokeWidth: 1.5 })}
-                          </div>
-                          <span className="text-[9px] md:text-[10px] font-bold tracking-[0.2em] text-zinc-500 group-hover/icon:text-white uppercase transition-colors duration-300">{ind.t}</span>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="mt-16 pt-8 border-t border-white/[0.06] text-[10px] md:text-xs text-amber-500/80 uppercase tracking-[0.2em] font-['Space_Mono'] text-center relative z-10">
-                      Structural backbone for India's growing infrastructure.
-                    </div>
-                 </div>
-               </FadeInView>
-            </div>
-          </div>
-        </section> 
+          </motion.div>
 
-        {/* --- 09 GEOGRAPHY & 10 TEAM: MAP CARDS --- */}
-        <section className="py-24 md:py-40 bg-[#000000] border-t border-white/[0.03]">
-          <div className="max-w-[1400px] mx-auto px-6">
-            <div className="grid md:grid-cols-3 gap-6 md:gap-8 mb-32 md:mb-48">
-              {[
-                { l: "Factory Unit", loc: "Ravki Makhavad, Rajkot", i: <Factory /> },
-                { l: "Head Office", loc: "Rajkot, Gujarat", i: <MapPin /> },
-                { l: "Branch & Warehouse", loc: "Surat, Gujarat", i: <Boxes /> },
-              ].map((site, i) => (
-                <FadeInView key={i} delay={0.1 * i}>
-                  <div className="p-10 md:p-12 rounded-[2.5rem] bg-[#0a0a0a]/50 border border-white/[0.04] hover:border-amber-500/30 hover:bg-[#111]/80 backdrop-blur-2xl transition-all duration-700 ease-[0.16,1,0.3,1] h-full group relative overflow-hidden flex flex-col justify-between min-h-[320px] shadow-xl">
-                    <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none opacity-20" />
-                    <div className="absolute -right-8 -bottom-8 text-white/[0.01] group-hover:text-amber-500/[0.03] group-hover:scale-110 transition-all duration-1000 ease-out">
-                       {React.cloneElement(site.i as React.ReactElement, { size: 200 })}
-                    </div>
-                    <div className="text-amber-500 mb-12 w-16 h-16 flex items-center justify-center bg-amber-500/[0.08] rounded-xl group-hover:scale-110 group-hover:bg-amber-500 group-hover:text-black group-hover:shadow-[0_10px_20px_rgba(245,158,11,0.3)] transition-all duration-700 ease-[0.16,1,0.3,1] relative z-10 border border-amber-500/20">
-                       {React.cloneElement(site.i as React.ReactElement, { size: 28, strokeWidth: 1.5 })}
-                    </div>
-                    <div className="relative z-10">
-                       <div className="text-[9px] md:text-[10px] font-bold text-zinc-500 group-hover:text-amber-400 mb-3 uppercase tracking-[0.2em] transition-colors duration-500">{site.l}</div>
-                       <div className="text-3xl md:text-4xl font-['Bebas_Neue'] text-white leading-[1.1]">{site.loc}</div>
-                    </div>
-                  </div>
-                </FadeInView>
-              ))}
-            </div>
-
-            <div className="grid lg:grid-cols-2 gap-16 md:gap-24 items-center">
-              <FadeInView>
-                <div className="font-['Space_Mono'] text-amber-500 text-xs mb-8 tracking-[0.3em] uppercase">08 // HUMAN CAPITAL</div>
-                <h2 className="text-5xl md:text-7xl font-['Bebas_Neue'] leading-none uppercase mb-12 tracking-tight">The Power Of <br/><span className="text-amber-500 italic pr-4">Ownership.</span></h2>
-                <div className="space-y-8 md:space-y-10 text-lg md:text-xl font-light text-slate-300 leading-[1.5]">
-                  <p>DFPL operates with a professional force of <span className="text-white font-semibold underline decoration-amber-500/50 hover:decoration-amber-500 transition-colors duration-300 underline-offset-8">25 experts</span>. We have eliminated the "single point of failure" by empowering every member to own their process.</p>
-                  <p className="border-l-[2px] border-white/10 pl-6 text-slate-400 py-2 text-base md:text-lg">Our commitment: meaningful employment with <span className="text-white italic">Professionalism, Respect, and Absolute Fairness.</span></p>
-                </div>
-              </FadeInView>
-              
-              <div className="relative flex justify-center lg:justify-end">
-                <FadeInView direction="left">
-                  <div className="w-[280px] h-[280px] md:w-[400px] md:h-[400px] rounded-[3rem] bg-gradient-to-br from-[#111] to-black border border-white/[0.06] flex flex-col items-center justify-center relative overflow-hidden group shadow-[0_20px_60px_rgba(0,0,0,0.6)]">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(245,158,11,0.08)_0,transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-1000 ease-out" />
-                    <Users size={140} className="text-white/[0.015] group-hover:text-amber-500/[0.05] group-hover:scale-125 transition-all duration-1000 ease-[0.16,1,0.3,1] absolute" strokeWidth={0.5} />
-                    <div className="text-[8rem] md:text-[12rem] font-['Bebas_Neue'] leading-none text-white z-10 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-b group-hover:from-white group-hover:to-amber-500 transition-all duration-1000 drop-shadow-xl tracking-tighter">25</div>
-                    <div className="font-['Space_Mono'] text-[9px] md:text-[10px] tracking-[0.4em] md:tracking-[0.5em] text-amber-500 uppercase -mt-4 relative z-20 font-bold bg-black/60 px-5 py-2 rounded-full backdrop-blur-xl border border-amber-500/20">Active Professionals</div>
-                  </div>
-                </FadeInView>
-              </div>
-            </div>
-          </div>
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.5, duration: 1 }}
+            className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 cursor-pointer z-20"
+            onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
+          >
+            <span className="text-[10px] text-slate-500 uppercase tracking-[0.2em]">Scroll to explore</span>
+            <motion.div animate={{ y: [0, 10, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>
+              <ChevronDown className="w-5 h-5 text-slate-500" />
+            </motion.div>
+          </motion.div>
         </section>
 
-        {/* --- 11 ROADMAP: FINANCIAL TICKER --- */}
-        <section className="py-24 md:py-40 bg-[#040404] border-y border-white/[0.03] relative">
-          <div className="absolute top-0 w-full h-[1px] bg-gradient-to-r from-transparent via-amber-500/30 to-transparent shadow-[0_0_20px_rgba(245,158,11,0.5)]" />
-          
-          <div className="max-w-[1400px] mx-auto px-6">
-            <FadeInView>
-              <h2 className="text-5xl md:text-7xl font-['Bebas_Neue'] text-center uppercase mb-20 md:mb-28 tracking-tighter drop-shadow-xl">Financial <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-600 italic pr-2">Roadmap.</span></h2>
-              <div className="grid md:grid-cols-3 gap-6 md:gap-8 relative">
-                {/* Connecting Line Desktop */}
-                <div className="hidden md:block absolute top-1/2 left-[10%] right-[10%] h-[1px] bg-white/[0.04] -z-10 -translate-y-1/2 shadow-[0_0_10px_rgba(255,255,255,0.02)]" />
-                
-                {[
-                  { y: "2025-26", v: "₹5.12 Cr", l: "CURRENT TURNOVER", s: "Active", c: "border-emerald-500 text-emerald-400 bg-emerald-500/10 shadow-[0_0_15px_rgba(16,185,129,0.3)]", glow: "from-emerald-500/5" },
-                  { y: "2026-27", v: "₹10 Cr", l: "SCALING TARGET", s: "Projected", c: "border-amber-500 text-amber-400 bg-amber-500/10 shadow-[0_0_15px_rgba(245,158,11,0.3)]", glow: "from-amber-500/5" },
-                  { y: "2030", v: "₹30 Cr", l: "SME IPO VISION", s: "Vision", c: "border-blue-500 text-blue-400 bg-blue-500/10 shadow-[0_0_15px_rgba(59,130,246,0.3)]", glow: "from-blue-500/5" },
-                ].map((item, i) => (
-                  <div key={i} className={`rounded-[2rem] bg-[#0a0a0a]/80 backdrop-blur-3xl p-8 md:p-12 group hover:bg-[#111] transition-all duration-700 ease-[0.16,1,0.3,1] relative overflow-hidden border border-white/[0.05] shadow-xl hover:-translate-y-2 hover:shadow-[0_20px_60px_rgba(0,0,0,0.6)]`}>
-                    <div className={`absolute top-0 left-0 w-full h-full bg-gradient-to-br ${item.glow} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none`} />
-                    <div className="absolute -top-4 -right-4 text-4xl md:text-6xl font-['Bebas_Neue'] text-white/[0.02] group-hover:text-white/[0.06] transition-colors duration-700 pointer-events-none leading-none">{item.y}</div>
-                    <div className="relative z-10 text-center flex flex-col items-center">
-                      <div className="text-[9px] md:text-[10px] font-bold text-zinc-500 mb-6 tracking-[0.2em] uppercase">{item.l}</div>
-                      <div className="text-4xl md:text-5xl font-['Bebas_Neue'] mb-8 text-white group-hover:scale-105 transition-transform duration-700 ease-[0.16,1,0.3,1] drop-shadow-md">{item.v}</div>
-                      <div className={`inline-block px-5 py-2 rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em] border ${item.c} backdrop-blur-sm`}>
-                        {item.s}
+        {/* ========== WHO WE ARE ========== */}
+        <section id="about" className="py-32 px-6 relative">
+          <div className="max-w-[1400px] mx-auto">
+            <div className="grid lg:grid-cols-2 gap-20 items-center">
+              <div>
+                <SectionHeader 
+                  badge="Who We Are"
+                  title="The Story Behind"
+                  highlight="DFPL"
+                  description="Durable Fastener Pvt. Ltd. (DFPL) was founded with a singular purpose: to bridge the gap between heavy-duty manufacturing and professional, system-driven service."
+                  align="left"
+                  className="mb-0"
+                />
+                <ScrollReveal direction="up" delay={0.3}>
+                  <motion.div className="mt-8 p-8 rounded-2xl bg-gradient-to-r from-amber-500/5 to-transparent border-l-3 border-amber-500" whileHover={{ x: 15 }}>
+                    <div className="flex items-center gap-4 mb-4">
+                      <motion.div className="w-14 h-14 rounded-full bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center" whileHover={{ rotate: 360 }}>
+                        <Factory className="w-7 h-7 text-amber-400" />
+                      </motion.div>
+                      <div>
+                        <div className="text-sm text-amber-400 font-semibold uppercase tracking-wider">Factory Location</div>
+                        <div className="text-white font-medium text-lg">Ravki Makhavad, Rajkot</div>
                       </div>
                     </div>
+                    <p className="text-slate-300 leading-relaxed">Operating from <strong className="text-white">Rajkot</strong> — India's industrial nerve center — we have engineered a company built on reliable systems and a deep commitment to uncompromising quality.</p>
+                  </motion.div>
+                </ScrollReveal>
+                <ScrollReveal direction="up" delay={0.4}>
+                  <div className="flex items-start gap-5 p-8 rounded-2xl bg-gradient-to-r from-amber-500/5 to-transparent border-l-3 border-amber-500 mt-6">
+                    <motion.div animate={{ rotate: [0, 10, -10, 0] }} transition={{ duration: 3, repeat: Infinity }} className="flex-shrink-0">
+                      <Quote className="w-8 h-8 text-amber-500" />
+                    </motion.div>
+                    <p className="text-slate-300 italic text-lg leading-relaxed">"We don't just supply fasteners; we engineer the integrity of your structures."</p>
                   </div>
-                ))}
+                </ScrollReveal>
               </div>
-            </FadeInView>
-          </div>
-        </section>
 
-        {/* --- 12/13 MISSION & VALUES: PHILOSOPHY --- */}
-        <section className="py-24 md:py-40 px-6 bg-[#020202]">
-          <div className="max-w-[1400px] mx-auto">
-            <div className="grid lg:grid-cols-2 gap-12 md:gap-16 mb-32 md:mb-48">
-              <FadeInView>
-                <div className="p-10 md:p-14 rounded-[2.5rem] bg-[#0a0a0a]/60 border border-white/[0.04] h-full relative overflow-hidden group shadow-[0_20px_60px_rgba(0,0,0,0.5)] backdrop-blur-2xl">
-                  <div className="absolute top-0 left-0 w-2 h-full bg-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.5)]" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-amber-500/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                  <div className="font-['Space_Mono'] text-amber-500 text-[10px] mb-8 uppercase tracking-[0.2em] relative z-10">09 // MISSION</div>
-                  <h3 className="text-5xl md:text-6xl font-['Bebas_Neue'] mb-10 uppercase tracking-tight leading-[0.9] text-white relative z-10">To Give The <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-600 pr-2">Best.</span></h3>
-                  <p className="text-lg md:text-xl font-light text-slate-300 leading-[1.5] italic border-l-[2px] border-white/10 pl-6 relative z-10">
-                    Improve every single day, across every department and every person in the organization.
-                  </p>
+              <ScrollReveal direction="left" delay={0.2}>
+                <div className="relative">
+                  <motion.div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-zinc-900 to-black border border-white/[0.08] p-1" whileHover={{ scale: 1.02 }}>
+                    <div className="aspect-[4/3] rounded-2xl bg-gradient-to-br from-zinc-800/50 to-zinc-900/50 flex items-center justify-center relative overflow-hidden">
+                      <motion.div animate={{ scale: [1, 1.1, 1], rotate: [0, 5, -5, 0] }} transition={{ duration: 4, repeat: Infinity }} className="text-center z-10">
+                        <div className="relative">
+                          <motion.div className="absolute inset-0 bg-amber-500/20 rounded-full blur-2xl" animate={{ scale: [1, 1.5, 1] }} transition={{ duration: 2, repeat: Infinity }} />
+                          <Factory className="w-32 h-32 text-amber-500/40 relative z-10" />
+                        </div>
+                        <div className="text-sm text-slate-500 font-medium mt-4">State-of-the-art manufacturing facility</div>
+                      </motion.div>
+                      <motion.div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-amber-500 to-transparent" animate={{ top: ["0%", "100%"] }} transition={{ duration: 3, repeat: Infinity, ease: "linear" }} />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                    </div>
+                  </motion.div>
+                  <motion.div className="absolute -top-8 -right-8 w-40 h-40 bg-amber-500/20 rounded-full blur-3xl" animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 4, repeat: Infinity }} />
+                  <motion.div className="absolute -bottom-8 -left-8 w-40 h-40 bg-blue-500/20 rounded-full blur-3xl" animate={{ scale: [1.2, 1, 1.2] }} transition={{ duration: 4, repeat: Infinity, delay: 1 }} />
                 </div>
-              </FadeInView>
-              <FadeInView delay={0.2}>
-                <div className="p-10 md:p-14 rounded-[2.5rem] bg-[#0a0a0a]/60 border border-white/[0.04] h-full relative overflow-hidden group shadow-[0_20px_60px_rgba(0,0,0,0.5)] backdrop-blur-2xl">
-                  <div className="absolute top-0 right-0 w-2 h-full bg-white/20" />
-                  <div className="absolute inset-0 bg-gradient-to-l from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                  <div className="font-['Space_Mono'] text-amber-500 text-[10px] mb-8 uppercase tracking-[0.2em] relative z-10">10 // VISION</div>
-                  <h3 className="text-5xl md:text-6xl font-['Bebas_Neue'] mb-10 uppercase tracking-tight leading-[0.9] text-white relative z-10">IPO Bound <br/><span className="text-white italic pr-2 opacity-40">2030.</span></h3>
-                  <p className="text-lg md:text-xl font-light text-slate-300 leading-[1.5] relative z-10">
-                    DFPL aims to list on SME IPO by 2030 and Graduate to Main Board by 2036. Building India's most trusted fastener brand.
-                  </p>
-                </div>
-              </FadeInView>
+              </ScrollReveal>
             </div>
-
-            <FadeInView>
-              <div className="text-center mb-16 md:mb-20">
-                <span className="inline-block text-[9px] md:text-[10px] font-bold tracking-[0.4em] md:tracking-[0.5em] text-zinc-500 uppercase border border-zinc-800 rounded-full px-8 py-3 bg-white/[0.02] backdrop-blur-sm">Our Core Architecture</span>
-              </div>
-              {/* Modern Bento Grid for Values */}
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-5">
-                {[
-                  { t: "Quality First", d: "Zero compromise.", i: <ShieldCheck />, span: "col-span-2 md:col-span-1 lg:col-span-1" },
-                  { t: "Absolute Ethics", d: "Words are sacred.", i: <Scale />, span: "col-span-1" },
-                  { t: "10x Value", d: "Exceed investment.", i: <Zap />, span: "col-span-1" },
-                  { t: "Human Touch", d: "People before profit.", i: <Users />, span: "col-span-1" },
-                  { t: "Sacred Brand", d: "Protect the trust.", i: <Award />, span: "col-span-2 md:col-span-1 lg:col-span-1" },
-                ].map((val, i) => (
-                  <div key={i} className={`rounded-[2rem] bg-[#0a0a0a]/60 border border-white/[0.04] p-8 text-center hover:bg-[#111] hover:border-amber-500/30 transition-all duration-700 ease-[0.16,1,0.3,1] group flex flex-col items-center justify-center backdrop-blur-xl shadow-lg hover:shadow-[0_15px_40px_rgba(0,0,0,0.4)] hover:-translate-y-1 ${val.span}`}>
-                    <div className="w-14 h-14 md:w-16 md:h-16 rounded-xl bg-[#050505] flex items-center justify-center text-amber-500 mb-6 group-hover:scale-110 group-hover:bg-gradient-to-br group-hover:from-amber-400 group-hover:to-amber-600 group-hover:text-black transition-all duration-700 ease-[0.16,1,0.3,1] shadow-md border border-white/[0.05] group-hover:border-transparent">{React.cloneElement(val.i as React.ReactElement, { strokeWidth: 1.5, size: 24 })}</div>
-                    <h5 className="text-xl md:text-2xl font-['Bebas_Neue'] mb-3 tracking-widest uppercase text-white group-hover:text-amber-400 transition-colors duration-500">{val.t}</h5>
-                    <p className="text-[9px] md:text-[10px] text-zinc-500 uppercase font-bold tracking-[0.15em]">{val.d}</p>
-                  </div>
-                ))}
-              </div>
-            </FadeInView>
           </div>
         </section>
 
-        {/* --- FINAL CLOSURE: FOUNDER SIGNATURE --- */}
-        <section className="py-40 md:py-64 px-6 relative overflow-hidden bg-[#000000] text-center border-t border-white/[0.03]">
-           <div className="max-w-5xl mx-auto relative z-10">
-             <FadeInView blur={false}>
-               <div className="w-20 h-20 md:w-28 md:h-28 rounded-full border border-amber-500/20 bg-amber-500/[0.03] mx-auto mb-12 flex items-center justify-center shadow-[0_0_40px_rgba(245,158,11,0.1)] backdrop-blur-xl relative group">
-                 <div className="absolute inset-0 rounded-full border-t border-amber-500/50 animate-[spin_4s_linear_infinite]" />
-                 <Quote className="text-amber-500/80 group-hover:scale-110 transition-transform duration-700 ease-[0.16,1,0.3,1]" size={36} />
-               </div>
-               <h2 className="text-2xl md:text-4xl lg:text-5xl font-light italic leading-[1.5] md:leading-[1.4] mb-20 text-slate-200 font-['Barlow'] tracking-tight max-w-4xl mx-auto px-4">
-                 "If we said 5 days — you will have it in 4. We have <span className="text-white font-medium not-italic relative inline-block"><span className="relative z-10 px-2">never missed a commitment</span><span className="absolute bottom-1 md:bottom-2 left-0 w-full h-3 md:h-4 bg-amber-500/30 -z-10 rounded-sm skew-x-[-10deg]"></span></span> in 8 years. And we never will."
-               </h2>
-               <div className="space-y-4 md:space-y-6">
-                 <div className="text-5xl md:text-7xl font-['Bebas_Neue'] tracking-wider text-transparent bg-clip-text bg-gradient-to-b from-white via-zinc-300 to-zinc-600 drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)] leading-none">Vipul Sakariya</div>
-                 <div className="text-[9px] md:text-[10px] text-amber-500 font-bold uppercase tracking-[0.3em] md:tracking-[0.4em] bg-amber-500/10 w-fit mx-auto px-6 py-2 rounded-full border border-amber-500/30 shadow-[0_0_15px_rgba(245,158,11,0.15)] backdrop-blur-sm">Founder & Visionary, DFPL</div>
-               </div>
-             </FadeInView>
-           </div>
-           
-           {/* Cinematic Ambient Background */}
-           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-amber-600/[0.08] via-zinc-950 to-[#000000] pointer-events-none mix-blend-screen" />
-           <div className="absolute bottom-0 left-0 w-full h-[30vh] bg-gradient-to-t from-amber-500/[0.03] to-transparent pointer-events-none" />
+        {/* ========== MISSION & VISION ========== */}
+        <section id="mission" className="py-32 px-6 relative bg-gradient-to-b from-transparent via-amber-500/5 to-transparent">
+          <div className="max-w-[1400px] mx-auto">
+            <SectionHeader badge="Our Purpose" title="Mission &" highlight="Vision" description="Driving industrial excellence through uncompromising quality and system-driven reliability" />
+            <div className="grid md:grid-cols-2 gap-8">
+              <ScrollReveal direction="right" delay={0.1}>
+                <TiltCard glow>
+                  <motion.div whileHover={{ y: -8 }} className="group relative p-12 rounded-3xl bg-gradient-to-br from-white/[0.03] to-transparent border border-white/[0.06] hover:border-amber-500/40 transition-all duration-500 overflow-hidden">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 via-amber-400 to-transparent" />
+                    <div className="absolute -top-24 -right-24 w-48 h-48 bg-gradient-to-br from-amber-500/10 to-transparent rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700" />
+                    <div className="relative z-10">
+                      <motion.div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform" whileHover={{ rotate: 360 }}>
+                        <Target className="w-10 h-10 text-amber-400" strokeWidth={1.5} />
+                      </motion.div>
+                      <h3 className="text-4xl font-bold text-white mb-4">Our Mission</h3>
+                      <p className="text-slate-300 leading-relaxed text-xl">"To give the best. Improve every single day, across every department and every person in the organization."</p>
+                      <div className="mt-8 flex items-center gap-2 text-amber-400 group-hover:gap-4 transition-all">
+                        <span className="text-sm font-medium uppercase tracking-wider">Learn more</span>
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </div>
+                  </motion.div>
+                </TiltCard>
+              </ScrollReveal>
+              <ScrollReveal direction="left" delay={0.2}>
+                <TiltCard glow>
+                  <motion.div whileHover={{ y: -8 }} className="group relative p-12 rounded-3xl bg-gradient-to-br from-white/[0.03] to-transparent border border-white/[0.06] hover:border-amber-500/40 transition-all duration-500 overflow-hidden">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 via-amber-400 to-transparent" />
+                    <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-gradient-to-br from-amber-500/10 to-transparent rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700" />
+                    <div className="relative z-10">
+                      <motion.div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform" whileHover={{ rotate: 360 }}>
+                        <Eye className="w-10 h-10 text-amber-400" strokeWidth={1.5} />
+                      </motion.div>
+                      <h3 className="text-4xl font-bold text-white mb-4">Our Vision</h3>
+                      <p className="text-slate-300 leading-relaxed text-xl">"IPO Bound 2030. DFPL aims to list on SME IPO by 2030 and Graduate to Main Board by 2036. Building India's most trusted fastener brand."</p>
+                      <div className="mt-8 flex items-center gap-2 text-amber-400 group-hover:gap-4 transition-all">
+                        <span className="text-sm font-medium uppercase tracking-wider">Learn more</span>
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </div>
+                  </motion.div>
+                </TiltCard>
+              </ScrollReveal>
+            </div>
+          </div>
         </section>
 
-        {/* --- CUSTOM CSS FOR STROKE TEXT & SMOOTHNESS --- */}
+        {/* ========== WHY CHOOSE US ========== */}
+        <section className="py-32 px-6 bg-gradient-to-b from-[#0A0A0F] via-[#050508] to-[#0A0A0F]">
+          <div className="max-w-[1400px] mx-auto">
+            <SectionHeader badge="Why Choose DFPL" title="The Durable" highlight="Advantage" description="What makes us the preferred partner for industry leaders across India" />
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[
+                { icon: ShieldCheck, title: "Uncompromising Quality", description: "QC at every stage—wire, heading, threading, heat treat—ensuring international standard compliance.", gradient: "from-emerald-500", metrics: { value: "100%", label: "Quality Certified" } },
+                { icon: Truck, title: "One-Day Dispatch", description: "Real-time inventory management with floor stock matching system records for guaranteed 1-day dispatch.", gradient: "from-blue-500", metrics: { value: "95%", label: "On-Time Delivery" } },
+                { icon: Scale, title: "Absolute Ethics", description: "Strict adherence to regulations and financial systems. Built for multi-decade sustainable growth.", gradient: "from-purple-500", metrics: { value: "8+", label: "Years Trust" } },
+                { icon: Zap, title: "10x Value Delivery", description: "Delivering 10x value for every rupee invested through superior quality and reliability.", gradient: "from-amber-500", metrics: { value: "10x", label: "ROI Delivered" } },
+                { icon: Microscope, title: "Advanced R&D", description: "Continuous innovation and development of new technologies for evolving industry needs.", gradient: "from-rose-500", metrics: { value: "24/7", label: "Innovation Lab" } },
+                { icon: Users, title: "Customer First", description: "24/7 support and dedicated relationship managers for every client account.", gradient: "from-indigo-500", metrics: { value: "100%", label: "Support Coverage" } }
+              ].map((feature, idx) => (
+                <FeatureCard key={idx} {...feature} delay={idx * 0.1} />
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ========== STATISTICS ========== */}
+        <section className="py-32 px-6 relative overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.08)_0%,transparent_70%)]" />
+          <div className="max-w-[1400px] mx-auto relative z-10">
+            <SectionHeader badge="Performance Metrics" title="Our Numbers" highlight="Speak for Themselves" description="Real-time performance metrics that demonstrate our commitment to excellence" />
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+              <StatCard icon={Truck} label="On-Time Dispatch" value={95} suffix="%" delay={0} trend="+12% YoY" />
+              <StatCard icon={CheckCircle2} label="Order Accuracy" value={99} suffix="%" delay={0.1} trend="+5% YoY" />
+              <StatCard icon={Users} label="Repeat Customers" value={92} suffix="%" delay={0.2} trend="+18% YoY" />
+              <StatCard icon={Timer} label="Avg Response Time" value={45} suffix="min" delay={0.3} trend="-30% YoY" />
+              <StatCard icon={XCircle} label="Rejection Rate" value={1.2} suffix="%" delay={0.4} trend="-40% YoY" />
+              <StatCard icon={TrendingUp} label="Annual Turnover" value={5.12} prefix="₹" suffix="Cr" delay={0.5} trend="+25% YoY" />
+              <StatCard icon={Factory} label="Monthly Capacity" value={100} suffix="Tons" delay={0.6} trend="+15% YoY" />
+              <StatCard icon={Globe} label="Cities Served" value={50} suffix="+" delay={0.7} trend="Expanding" />
+            </div>
+          </div>
+        </section>
+
+        {/* ========== OUR PROCESS ========== */}
+        <section id="process" className="py-32 px-6 bg-gradient-to-b from-[#050508] to-[#0A0A0F]">
+          <div className="max-w-[1400px] mx-auto">
+            <SectionHeader badge="Our Protocol" title="The DFPL" highlight="Process" description="A systematic approach ensuring zero errors and 100% reliability" />
+            <div className="grid lg:grid-cols-2 gap-16">
+              <div className="relative">
+                <div className="absolute left-7 top-0 bottom-0 w-[2px] bg-gradient-to-b from-amber-500 via-amber-500/30 to-transparent hidden md:block" />
+                <div className="space-y-8">
+                  {[
+                    { step: "01", title: "Engineering Flow", desc: "Wire → Heading → Threading → Stock → Heat Treat → Plating → Packing → Dispatch", icon: Settings, color: "from-amber-500" },
+                    { step: "02", title: "Verification Trigger", desc: "Order/PI is printed and handed to the packing floor before a single box moves", icon: FileCheck, color: "from-blue-500" },
+                    { step: "03", title: "Mandatory QC Sign-off", desc: "Size, grade, and quantity are verified against the PI. Sign-off is non-negotiable", icon: ClipboardCheck, color: "from-emerald-500" },
+                    { step: "04", title: "Third-Party Cross-Check", desc: "Dedicated validator audits the shipment independently before billing", icon: Users, color: "from-purple-500" },
+                    { step: "05", title: "Final Confirmation", desc: "Billing team verifies physical stock. LR and transport details shared instantly", icon: Truck, color: "from-rose-500" }
+                  ].map((step, idx) => (
+                    <ScrollReveal key={idx} direction="right" delay={idx * 0.1}>
+                      <motion.div className="group flex items-start gap-6 p-6 rounded-xl bg-gradient-to-r from-white/[0.02] to-transparent border border-white/[0.04] hover:border-amber-500/30 transition-all duration-500 relative" whileHover={{ x: 15 }}>
+                        <div className="hidden md:block absolute -left-[31px] top-8 w-4 h-4 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 shadow-glow" />
+                        <motion.div className={`flex-shrink-0 w-16 h-16 rounded-xl bg-gradient-to-br ${step.color}/20 to-transparent flex items-center justify-center text-2xl font-bold text-amber-400 group-hover:scale-110 transition-transform`} whileHover={{ rotate: 360 }}>
+                          {step.step}
+                        </motion.div>
+                        <div>
+                          <h4 className="text-xl font-bold text-white mb-2">{step.title}</h4>
+                          <p className="text-sm text-slate-400 leading-relaxed">{step.desc}</p>
+                        </div>
+                      </motion.div>
+                    </ScrollReveal>
+                  ))}
+                </div>
+              </div>
+              <ScrollReveal direction="left" delay={0.2}>
+                <div className="sticky top-32">
+                  <TiltCard glow>
+                    <motion.div className="p-10 rounded-3xl bg-gradient-to-br from-amber-500/10 to-transparent border border-amber-500/20 overflow-hidden" whileHover={{ scale: 1.02 }}>
+                      <div className="text-center mb-8">
+                        <motion.div animate={{ rotate: 360 }} transition={{ duration: 20, repeat: Infinity, ease: "linear" }} className="w-24 h-24 rounded-full bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center mx-auto mb-4">
+                          <Shield className="w-12 h-12 text-amber-400" />
+                        </motion.div>
+                        <h3 className="text-3xl font-bold text-white mb-4">Our Commitment</h3>
+                        <p className="text-slate-300 text-xl leading-relaxed">"If wrong material is sent, DFPL covers 100% of replacement costs. If a delay occurs, we deliver before the deadline with 2 buffer days."</p>
+                      </div>
+                      <div className="border-t border-white/10 pt-8">
+                        <div className="flex items-center justify-between mb-4">
+                          <span className="text-sm text-slate-400 font-medium">Zero error rate in material accuracy</span>
+                          <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 2, repeat: Infinity }}><ThumbsUp className="w-5 h-5 text-amber-400" /></motion.div>
+                        </div>
+                        <div className="w-full bg-white/10 rounded-full h-2 overflow-hidden">
+                          <motion.div className="bg-gradient-to-r from-amber-500 to-amber-400 h-2 rounded-full" initial={{ width: "0%" }} whileInView={{ width: "100%" }} transition={{ duration: 1.5, delay: 0.5 }} />
+                        </div>
+                        <div className="mt-6 grid grid-cols-2 gap-4 text-center">
+                          <div className="p-3 rounded-xl bg-white/5"><div className="text-2xl font-bold text-amber-400">100%</div><div className="text-xs text-slate-500">Accountability</div></div>
+                          <div className="p-3 rounded-xl bg-white/5"><div className="text-2xl font-bold text-amber-400">0%</div><div className="text-xs text-slate-500">Compromise</div></div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  </TiltCard>
+                </div>
+              </ScrollReveal>
+            </div>
+          </div>
+        </section>
+
+        {/* ========== CORE VALUES ========== */}
+        <section id="values" className="py-32 px-6">
+          <div className="max-w-[1400px] mx-auto">
+            <SectionHeader badge="Core Values" title="The Principles That" highlight="Guide Us" description="Our foundational values that shape every decision we make" />
+            <div className="grid grid-cols-2 lg:grid-cols-5 gap-5">
+              {[
+                { icon: ShieldCheck, title: "Quality First", description: "Zero compromise", color: "from-emerald-500", metric: "ISO Certified" },
+                { icon: Scale, title: "Absolute Ethics", description: "Words are sacred", color: "from-blue-500", metric: "100% Trust" },
+                { icon: Zap, title: "10x Value", description: "Exceed investment", color: "from-amber-500", metric: "ROI Focus" },
+                { icon: Users, title: "Human Touch", description: "People before profit", color: "from-purple-500", metric: "Employee First" },
+                { icon: Award, title: "Sacred Brand", description: "Protect the trust", color: "from-rose-500", metric: "Legacy Builder" },
+              ].map((value, idx) => (
+                <ScrollReveal key={idx} direction="up" delay={idx * 0.05}>
+                  <TiltCard><motion.div className="group text-center p-6 rounded-2xl bg-gradient-to-br from-white/[0.02] to-transparent border border-white/[0.04] hover:border-amber-500/40 transition-all duration-500 h-full" whileHover={{ y: -5 }}>
+                    <motion.div className={`w-14 h-14 rounded-full bg-gradient-to-br ${value.color}/20 to-transparent flex items-center justify-center mx-auto mb-4`} whileHover={{ rotate: 360, scale: 1.1 }}><value.icon className="w-7 h-7 text-amber-400" /></motion.div>
+                    <h4 className="text-base font-bold text-white mb-1">{value.title}</h4>
+                    <p className="text-xs text-slate-400 mb-2">{value.description}</p>
+                    <div className="text-[10px] text-amber-400/60 uppercase tracking-wider">{value.metric}</div>
+                  </motion.div></TiltCard>
+                </ScrollReveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ========== TEAM ========== */}
+        <section id="team" className="py-32 px-6 bg-gradient-to-b from-[#0A0A0F] to-[#050508]">
+          <div className="max-w-[1400px] mx-auto">
+            <SectionHeader badge="Leadership" title="Meet Our" highlight="Team" description="The dedicated professionals driving DFPL's success" />
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <TeamMemberCard name="Vipul Sakariya" role="Founder & CEO" delay={0} socialLinks={[{ icon: 'linkedin' }, { icon: 'mail' }]} />
+              <TeamMemberCard name="Rajesh Mehta" role="Operations Head" delay={0.1} socialLinks={[{ icon: 'linkedin' }, { icon: 'mail' }]} />
+              <TeamMemberCard name="Priya Sharma" role="Quality Control" delay={0.2} socialLinks={[{ icon: 'linkedin' }, { icon: 'mail' }]} />
+              <TeamMemberCard name="Amit Patel" role="Sales Director" delay={0.3} socialLinks={[{ icon: 'linkedin' }, { icon: 'mail' }]} />
+            </div>
+          </div>
+        </section>
+
+        {/* ========== TESTIMONIALS ========== */}
+        <section className="py-32 px-6">
+          <div className="max-w-[1400px] mx-auto">
+            <SectionHeader badge="Client Love" title="What Our" highlight="Clients Say" description="Trusted by industry leaders across India" />
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <TestimonialCard quote="DFPL has been our trusted partner for over 5 years. Their quality standards and on-time delivery are unmatched in the industry." author="Ramesh Patel" role="Director, Bhumi Associates" delay={0} />
+              <TestimonialCard quote="The professionalism and system-driven approach of DFPL sets them apart. They treat fasteners as precision-engineered products, not just hardware." author="Suresh Mehta" role="Owner, Ramdev Hardware" delay={0.1} />
+              <TestimonialCard quote="Zero defects, zero delays, zero excuses. That's the DFPL promise they've delivered consistently for years." author="Ankit Shah" role="Purchase Head, Leading OEM" delay={0.2} />
+            </div>
+          </div>
+        </section>
+
+        {/* ========== ROADMAP ========== */}
+        <section className="py-32 px-6 bg-gradient-to-b from-[#0A0A0F] via-[#050508] to-[#0A0A0F] relative overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.05)_0%,transparent_70%)]" />
+          <div className="max-w-[1400px] mx-auto relative z-10">
+            <SectionHeader badge="Future Roadmap" title="Financial" highlight="Journey" description="Our ambitious growth trajectory towards becoming India's most trusted fastener brand" />
+            <div className="grid md:grid-cols-3 gap-8">
+              {[
+                { year: "2025-26", value: "₹5.12 Cr", label: "Current Turnover", status: "Active", color: "from-emerald-500", icon: Target, achievements: ["95% Dispatch", "99% Accuracy"] },
+                { year: "2026-27", value: "₹10 Cr", label: "Scaling Target", status: "Projected", color: "from-amber-500", icon: TrendingUp, achievements: ["PAN India", "New Verticals"] },
+                { year: "2030", value: "₹30 Cr", label: "SME IPO Vision", status: "Vision", color: "from-blue-500", icon: Rocket, achievements: ["IPO Listing", "Global Reach"] },
+              ].map((item, idx) => (
+                <ScrollReveal key={idx} direction="up" delay={idx * 0.1}>
+                  <TiltCard glow>
+                    <motion.div whileHover={{ y: -8 }} className="relative p-8 rounded-3xl bg-gradient-to-br from-white/[0.02] to-transparent border border-white/[0.06] text-center overflow-hidden group h-full">
+                      <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${item.color} to-transparent`} />
+                      <div className="absolute -top-20 -right-20 w-40 h-40 bg-amber-500/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700" />
+                      <div className="relative z-10">
+                        <motion.div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${item.color}/20 to-transparent flex items-center justify-center mx-auto mb-4`} whileHover={{ rotate: 360 }}><item.icon className="w-7 h-7 text-amber-400" /></motion.div>
+                        <div className="text-3xl font-bold text-white mb-2">{item.year}</div>
+                        <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text text-transparent mb-3">{item.value}</div>
+                        <div className="text-sm text-slate-400 mb-4">{item.label}</div>
+                        <div className={`inline-block px-4 py-1 rounded-full text-xs font-medium bg-gradient-to-r ${item.color}/20 to-transparent text-amber-400 mb-4`}>{item.status}</div>
+                        <div className="flex flex-wrap justify-center gap-2 mt-4">{item.achievements.map((ach, i) => (<span key={i} className="text-[10px] px-2 py-1 rounded-full bg-white/5 text-slate-400">{ach}</span>))}</div>
+                      </div>
+                    </motion.div>
+                  </TiltCard>
+                </ScrollReveal>
+              ))}
+            </div>
+            <div className="hidden md:flex justify-between items-center mt-12 px-8">
+              {[1, 2].map((_, idx) => (<motion.div key={idx} className="flex-1 h-[2px] bg-gradient-to-r from-amber-500/30 to-transparent" initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} transition={{ duration: 1, delay: idx * 0.5 }} />))}
+            </div>
+          </div>
+        </section>
+
+        {/* ========== FOUNDER'S NOTE ========== */}
+        <section className="py-40 px-6 relative overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(245,158,11,0.12)_0%,transparent_70%)]" />
+          <div className="max-w-5xl mx-auto text-center relative z-10">
+            <ScrollReveal direction="up">
+              <motion.div className="w-24 h-24 rounded-full bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center mx-auto mb-8 border-2 border-amber-500/30" whileHover={{ rotate: 360, scale: 1.1 }}><Quote className="w-12 h-12 text-amber-400" strokeWidth={1.5} /></motion.div>
+              <motion.h2 className="text-2xl md:text-4xl lg:text-5xl font-light italic text-slate-200 leading-relaxed mb-12" initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.2 }}>
+                "If we said 5 days — you will have it in 4. We have <span className="text-white font-bold not-italic relative inline-block">never missed a commitment<motion.span className="absolute bottom-1 left-0 w-full h-4 bg-amber-500/40 -z-10 rounded-sm" initial={{ width: "0%" }} whileInView={{ width: "100%" }} transition={{ duration: 1, delay: 0.5 }} /></span> in 8 years. And we never will."
+              </motion.h2>
+              <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5, delay: 0.4 }}>
+                <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-white to-amber-200 bg-clip-text text-transparent mb-3">Vipul Sakariya</div>
+                <div className="text-sm text-amber-400 font-medium uppercase tracking-[0.2em]">Founder & Visionary, DFPL</div>
+                <motion.div className="w-20 h-[2px] bg-amber-500 mx-auto mt-6" initial={{ width: 0 }} whileInView={{ width: 80 }} transition={{ duration: 0.6, delay: 0.6 }} />
+              </motion.div>
+            </ScrollReveal>
+          </div>
+        </section>
+
+        {/* ========== CTA SECTION ========== */}
+        <section id="contact" className="py-24 px-6">
+          <div className="max-w-[1200px] mx-auto">
+            <ScrollReveal direction="up">
+              <motion.div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-amber-600 via-amber-700 to-amber-800 p-12 md:p-16 text-center" whileHover={{ scale: 1.01 }}>
+                <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E')] opacity-10" />
+                {[...Array(8)].map((_, i) => (<motion.div key={i} className="absolute w-1 h-1 bg-white rounded-full" initial={{ x: Math.random() * 600 - 300, y: Math.random() * 300 - 150, scale: 0 }} animate={{ scale: [0, 1, 0], opacity: [0, 1, 0] }} transition={{ duration: 3, delay: i * 0.4, repeat: Infinity }} style={{ left: `${Math.random() * 100}%`, top: `${Math.random() * 100}%` }} />))}
+                <div className="relative z-10">
+                  <motion.div animate={{ y: [0, -5, 0] }} transition={{ duration: 2, repeat: Infinity }} className="inline-block mb-6"><Gem className="w-12 h-12 text-white/80" /></motion.div>
+                  <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-4">Ready to Partner with Excellence?</h2>
+                  <p className="text-amber-100 text-lg mb-10 max-w-2xl mx-auto leading-relaxed">Join India's most trusted fastener manufacturer. Experience the DFPL difference with guaranteed quality and on-time delivery.</p>
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="group relative px-8 py-4 bg-white text-amber-700 font-bold rounded-full flex items-center justify-center gap-2 shadow-xl overflow-hidden">
+                      <span className="relative z-10">Contact Sales</span>
+                      <motion.div className="relative z-10" animate={{ x: [0, 5, 0] }} transition={{ duration: 1, repeat: Infinity }}><Send className="w-5 h-5" /></motion.div>
+                      <motion.div className="absolute inset-0 bg-gradient-to-r from-amber-100 to-white" initial={{ x: "100%" }} whileHover={{ x: "0%" }} transition={{ duration: 0.3 }} />
+                    </motion.button>
+                    <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="px-8 py-4 border-2 border-white/50 text-white font-semibold rounded-full hover:bg-white/10 transition-all duration-300 backdrop-blur-sm flex items-center justify-center gap-2"><Phone className="w-4 h-4" />Request Quote</motion.button>
+                  </div>
+                  <div className="flex flex-wrap justify-center gap-6 mt-10 pt-6 border-t border-white/20">
+                    <div className="flex items-center gap-2 text-amber-100 text-sm"><CheckCircle className="w-4 h-4" /><span>ISO Certified</span></div>
+                    <div className="flex items-center gap-2 text-amber-100 text-sm"><Shield className="w-4 h-4" /><span>100% Guarantee</span></div>
+                    <div className="flex items-center gap-2 text-amber-100 text-sm"><Truck className="w-4 h-4" /><span>PAN India Delivery</span></div>
+                  </div>
+                </div>
+              </motion.div>
+            </ScrollReveal>
+          </div>
+        </section>
+
+        {/* ========== FOOTER ========== */}
+        <footer className="py-12 px-6 border-t border-white/10">
+          <div className="max-w-[1400px] mx-auto">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+              <div className="flex items-center gap-4">
+                <span className="text-sm text-slate-500">© 2025 Durable Fastener Pvt. Ltd. All rights reserved.</span>
+              </div>
+              <div className="flex gap-4">
+                <motion.a whileHover={{ y: -2 }} href="#" className="text-slate-500 hover:text-amber-400 transition-colors">Privacy Policy</motion.a>
+                <motion.a whileHover={{ y: -2 }} href="#" className="text-slate-500 hover:text-amber-400 transition-colors">Terms of Service</motion.a>
+                <motion.a whileHover={{ y: -2 }} href="#" className="text-slate-500 hover:text-amber-400 transition-colors">Sitemap</motion.a>
+              </div>
+            </div>
+          </div>
+        </footer>
+
         <style dangerouslySetInnerHTML={{ __html: `
-          html {
-            scroll-behavior: smooth;
-            background-color: #000;
-          }
-          body {
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            background-color: #000;
-          }
-          .border-text {
-            -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.25);
-            color: transparent;
-          }
-          @media (max-width: 768px) {
-            .border-text { -webkit-text-stroke: 1px rgba(255, 255, 255, 0.35); }
-          }
-          ::selection {
-            background-color: #f59e0b;
-            color: #000;
-          }
-          /* Custom scrollbar for premium feel */
-          ::-webkit-scrollbar {
-            width: 10px;
-          }
-          ::-webkit-scrollbar-track {
-            background: #050505; 
-          }
-          ::-webkit-scrollbar-thumb {
-            background: #27272a; 
-            border-radius: 10px;
-          }
-          ::-webkit-scrollbar-thumb:hover {
-            background: #f59e0b; 
-          }
+          * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+          ::-webkit-scrollbar { width: 10px; }
+          ::-webkit-scrollbar-track { background: #0A0A0F; }
+          ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 5px; }
+          ::-webkit-scrollbar-thumb:hover { background: #d97706; }
+          ::selection { background: #f59e0b; color: #000; }
+          html { scroll-behavior: smooth; }
+          @keyframes float { 0%,100%{transform:translateY(0) translateX(0)}25%{transform:translateY(-10px) translateX(5px)}75%{transform:translateY(10px) translateX(-5px)}}
+          @keyframes pulse-glow { 0%,100%{opacity:0.2;filter:blur(100px)}50%{opacity:0.4;filter:blur(120px)}}
+          @keyframes shimmer { 0%{background-position:-200% 0}100%{background-position:200% 0}}
+          .animate-float { animation: float 8s ease-in-out infinite; }
+          .animate-pulse-glow { animation: pulse-glow 4s ease-in-out infinite; }
+          .shimmer-text { background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent); background-size: 200% 100%; animation: shimmer 2s infinite; }
+          .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
+          .hide-scrollbar::-webkit-scrollbar { display: none; }
+          .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         `}} />
       </div>
     </HelmetProvider>
