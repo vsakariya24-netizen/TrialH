@@ -1099,7 +1099,11 @@ const About: React.FC = () => {
                 </div>
               </ScrollReveal>
               
-              
+              <ScrollReveal direction="left" delay={0.3}>
+                <div className="space-y-8">
+                
+                  
+                 
                   
                   <motion.div 
                     whileHover={{ scale: 1.02 }}
@@ -1444,19 +1448,19 @@ const About: React.FC = () => {
                 socialLinks={[{ icon: 'linkedin' }, { icon: 'mail' }]}
               />
               <TeamMemberCard 
-                name="Rajesh Mehta" 
+                name="Kishan Shiroya" 
                 role="Operations Head" 
                 delay={0.1} 
                 socialLinks={[{ icon: 'linkedin' }, { icon: 'mail' }]}
               />
               <TeamMemberCard 
-                name="Priya Sharma" 
+                name="Dipti Shiroya" 
                 role="Quality Control" 
                 delay={0.2} 
                 socialLinks={[{ icon: 'linkedin' }, { icon: 'mail' }]}
               />
               <TeamMemberCard 
-                name="Amit Patel" 
+                name="Dhaval Vataliya" 
                 role="Sales Director" 
                 delay={0.3} 
                 socialLinks={[{ icon: 'linkedin' }, { icon: 'mail' }]}
@@ -1487,7 +1491,7 @@ const About: React.FC = () => {
               />
               <TestimonialCard 
                 quote="The professionalism and system-driven approach of DFPL sets them apart. They treat fasteners as precision-engineered products, not just hardware."
-                author="Mr Suresh"
+                author="Suresh Mehta"
                 role="Owner, Ramdev Hardware"
                 delay={0.1}
               />
