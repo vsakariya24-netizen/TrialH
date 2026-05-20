@@ -344,25 +344,25 @@ const FeatureCard = ({ icon: Icon, title, description, delay = 0, gradient = "fr
         <div className="relative z-10">
           {/* Icon Container with Animation */}
           <motion.div 
-            className="w-14 h-14 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-gradient-to-br group-hover:from-amber-500 group-hover:to-amber-600 transition-all duration-500"
+            className="w-16 h-16 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-gradient-to-br group-hover:from-amber-500 group-hover:to-amber-600 transition-all duration-500"
             whileHover={{ rotate: [0, -10, 10, -5, 5, 0] }}
             transition={{ duration: 0.5 }}
           >
-            <Icon className="w-7 h-7 text-amber-400 group-hover:text-white transition-colors" strokeWidth={1.5} />
+            <Icon className="w-8 h-8 text-amber-400 group-hover:text-white transition-colors" strokeWidth={1.5} />
           </motion.div>
           
-          <h3 className="text-xl font-bold text-white mb-3 group-hover:text-amber-400 transition-colors">
+          <h3 className="text-2xl md:text-3xl font-bold text-white mb-4 group-hover:text-amber-400 transition-colors">
             {title}
           </h3>
-          <p className="text-slate-400 text-sm leading-relaxed">
+          <p className="text-slate-400 text-base md:text-lg leading-relaxed">
             {description}
           </p>
           
           {/* Optional Metrics Display */}
           {metrics && (
-            <div className="mt-4 pt-4 border-t border-white/10">
-              <div className="text-2xl font-bold text-amber-400">{metrics.value}</div>
-              <div className="text-xs text-slate-500">{metrics.label}</div>
+            <div className="mt-6 pt-4 border-t border-white/10">
+              <div className="text-3xl md:text-4xl font-bold text-amber-400">{metrics.value}</div>
+              <div className="text-sm text-slate-500 mt-1">{metrics.label}</div>
             </div>
           )}
         </div>
@@ -384,7 +384,7 @@ const StatCard = ({ icon: Icon, label, value, suffix = "", prefix = "", delay = 
   <ScrollReveal direction="up" delay={delay}>
     <motion.div 
       whileHover={{ scale: 1.05, y: -5 }}
-      className="text-center p-6 rounded-2xl bg-gradient-to-br from-white/[0.02] to-transparent border border-white/[0.04] hover:border-amber-500/40 transition-all duration-500 group backdrop-blur-sm relative overflow-hidden"
+      className="text-center p-8 rounded-2xl bg-gradient-to-br from-white/[0.02] to-transparent border border-white/[0.04] hover:border-amber-500/40 transition-all duration-500 group backdrop-blur-sm relative overflow-hidden"
     >
       {/* Hover Glow Effect */}
       <motion.div 
@@ -392,23 +392,23 @@ const StatCard = ({ icon: Icon, label, value, suffix = "", prefix = "", delay = 
       />
       
       <div className="relative z-10">
-        <div className="w-14 h-14 rounded-full bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:bg-gradient-to-br group-hover:from-amber-500 group-hover:to-amber-600 transition-all duration-500">
-          <Icon className="w-7 h-7 text-amber-400 group-hover:text-white" strokeWidth={1.5} />
+        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center mx-auto mb-5 group-hover:scale-110 group-hover:bg-gradient-to-br group-hover:from-amber-500 group-hover:to-amber-600 transition-all duration-500">
+          <Icon className="w-8 h-8 text-amber-400 group-hover:text-white" strokeWidth={1.5} />
         </div>
-        <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-white to-amber-200 bg-clip-text text-transparent mb-2">
+        <div className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-white to-amber-200 bg-clip-text text-transparent mb-3">
           <AnimatedCounter value={value} suffix={suffix} prefix={prefix} delay={delay} />
         </div>
-        <div className="text-xs text-slate-400 uppercase tracking-wider font-medium">{label}</div>
+        <div className="text-sm text-slate-400 uppercase tracking-wider font-medium">{label}</div>
         
         {/* Trend Indicator */}
         {trend && (
           <motion.div 
-            className="mt-2 text-xs text-emerald-400 flex items-center justify-center gap-1"
+            className="mt-3 text-sm text-emerald-400 flex items-center justify-center gap-1"
             initial={{ opacity: 0, y: 5 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: delay + 0.5 }}
           >
-            <TrendingUp className="w-3 h-3" />
+            <TrendingUp className="w-4 h-4" />
             <span>{trend}</span>
           </motion.div>
         )}
@@ -426,14 +426,14 @@ const SectionHeader = ({ badge, title, highlight, description = "", align = "cen
           animate={{ rotate: 360 }}
           transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
         >
-          <Sparkles className="w-4 h-4 text-amber-400" />
+          <Sparkles className="w-5 h-5 text-amber-400" />
         </motion.div>
-        <span className="text-xs font-medium text-amber-400 uppercase tracking-wider">{badge}</span>
+        <span className="text-sm font-medium text-amber-400 uppercase tracking-wider">{badge}</span>
       </div>
     </ScrollReveal>
     
     <ScrollReveal direction="up" delay={0.1}>
-      <h2 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-4 leading-[1.1] tracking-tight">
+      <h2 className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white mb-5 leading-[1.1] tracking-tight">
         {title}{" "}
         <span className="bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 bg-clip-text text-transparent relative inline-block">
           {highlight}
@@ -449,7 +449,7 @@ const SectionHeader = ({ badge, title, highlight, description = "", align = "cen
     
     {description && (
       <ScrollReveal direction="up" delay={0.2}>
-        <p className="text-slate-400 text-lg max-w-3xl mx-auto leading-relaxed">
+        <p className="text-slate-400 text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed">
           {description}
         </p>
       </ScrollReveal>
@@ -463,23 +463,23 @@ const TeamMemberCard = ({ name, role, image = null, delay, socialLinks = [] }) =
     <TiltCard glow>
       <motion.div 
         whileHover={{ y: -10 }}
-        className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-800/50 to-zinc-900/50 p-6 text-center border border-white/[0.06] hover:border-amber-500/30 transition-all duration-500"
+        className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-800/50 to-zinc-900/50 p-8 text-center border border-white/[0.06] hover:border-amber-500/30 transition-all duration-500"
       >
         {/* Avatar with animated ring */}
-        <div className="relative w-32 h-32 mx-auto mb-4">
+        <div className="relative w-36 h-36 mx-auto mb-5">
           <motion.div 
             className="absolute inset-0 rounded-full border-2 border-transparent group-hover:border-amber-500/50 transition-all duration-500"
             animate={{ rotate: 360 }}
             transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
           />
           <div className="w-full h-full rounded-full bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
-            <Users className="w-12 h-12 text-amber-400" />
+            <Users className="w-14 h-14 text-amber-400" />
           </div>
         </div>
         
-        <h3 className="text-xl font-bold text-white mb-1">{name}</h3>
-        <p className="text-amber-400 text-sm mb-3">{role}</p>
-        <p className="text-slate-400 text-sm">
+        <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">{name}</h3>
+        <p className="text-amber-400 text-base md:text-lg mb-4">{role}</p>
+        <p className="text-slate-400 text-base">
           Leading DFPL's {role.toLowerCase()} initiatives with excellence and innovation
         </p>
         
@@ -488,12 +488,12 @@ const TeamMemberCard = ({ name, role, image = null, delay, socialLinks = [] }) =
           {socialLinks.map((link, idx) => (
             <motion.div 
               key={idx}
-              className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-amber-500 transition-all duration-300 cursor-pointer"
+              className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-amber-500 transition-all duration-300 cursor-pointer"
               whileHover={{ scale: 1.1, rotate: 360 }}
               transition={{ duration: 0.3 }}
             >
-              {link.icon === 'linkedin' && <Linkedin className="w-4 h-4 text-white hover:text-black" />}
-              {link.icon === 'mail' && <Mail className="w-4 h-4 text-white hover:text-black" />}
+              {link.icon === 'linkedin' && <Linkedin className="w-5 h-5 text-white hover:text-black" />}
+              {link.icon === 'mail' && <Mail className="w-5 h-5 text-white hover:text-black" />}
             </motion.div>
           ))}
         </div>
@@ -509,11 +509,11 @@ const TestimonialCard = ({ quote, author, role, delay }) => (
       whileHover={{ y: -5 }}
       className="p-8 rounded-2xl bg-gradient-to-br from-white/[0.02] to-transparent border border-white/[0.06] hover:border-amber-500/30 transition-all duration-500"
     >
-      <Quote className="w-10 h-10 text-amber-500/30 mb-4" />
-      <p className="text-slate-300 leading-relaxed mb-6">{quote}</p>
+      <Quote className="w-12 h-12 text-amber-500/30 mb-4" />
+      <p className="text-slate-300 text-lg md:text-xl leading-relaxed mb-6">{quote}</p>
       <div>
-        <p className="text-white font-semibold">{author}</p>
-        <p className="text-amber-400 text-sm">{role}</p>
+        <p className="text-white font-semibold text-lg">{author}</p>
+        <p className="text-amber-400 text-base">{role}</p>
       </div>
     </motion.div>
   </ScrollReveal>
@@ -632,12 +632,12 @@ const About: React.FC = () => {
                       <div className="absolute inset-0 rounded-full bg-amber-400 animate-ping" />
                       <div className="relative rounded-full w-2 h-2 bg-amber-400" />
                     </motion.div>
-                    <span className="text-xs font-medium text-amber-400 uppercase tracking-wider">Est. 2018 // Industrial Excellence</span>
+                    <span className="text-sm font-medium text-amber-400 uppercase tracking-wider">Est. 2018 // Industrial Excellence</span>
                   </motion.div>
                 </ScrollReveal>
 
                 <ScrollReveal direction="up" delay={0.1}>
-                  <h1 className="text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold leading-[0.9] mb-8 tracking-tighter">
+                  <h1 className="text-7xl md:text-8xl lg:text-9xl xl:text-9xl font-bold leading-[0.9] mb-8 tracking-tighter">
                     Engineering{" "}
                     <motion.span 
                       className="bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 bg-clip-text text-transparent inline-block"
@@ -650,14 +650,14 @@ const About: React.FC = () => {
                       Integrity.
                     </motion.span>
                     <br />
-                    <span className="text-4xl md:text-5xl text-slate-500 block mt-4 font-light">
+                    <span className="text-5xl md:text-6xl text-slate-500 block mt-4 font-light">
                       Built To Last.
                     </span>
                   </h1>
                 </ScrollReveal>
 
                 <ScrollReveal direction="up" delay={0.2}>
-                  <p className="text-lg md:text-xl text-slate-300 leading-relaxed mb-10 max-w-xl">
+                  <p className="text-xl md:text-2xl text-slate-300 leading-relaxed mb-10 max-w-xl">
                     Defining the future of fasteners through <span className="text-white font-semibold relative inline-block group">
                       system-driven reliability
                       <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-amber-500 group-hover:w-full transition-all duration-300"></span>
@@ -666,11 +666,11 @@ const About: React.FC = () => {
                 </ScrollReveal>
 
                 <ScrollReveal direction="up" delay={0.3}>
-                  <div className="flex flex-col sm:flex-row gap-4">
+                  <div className="flex flex-col sm:flex-row gap-5">
                     <motion.button 
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="group relative px-8 py-4 bg-gradient-to-r from-amber-500 to-amber-600 text-black font-semibold rounded-full flex items-center justify-center gap-2 overflow-hidden shadow-lg shadow-amber-500/25 hover:shadow-amber-500/50 transition-all duration-300"
+                      className="group relative px-8 py-4 bg-gradient-to-r from-amber-500 to-amber-600 text-black font-semibold rounded-full flex items-center justify-center gap-2 overflow-hidden shadow-lg shadow-amber-500/25 hover:shadow-amber-500/50 transition-all duration-300 text-lg"
                     >
                       <span className="relative z-10">Explore Our Products</span>
                       <motion.div
@@ -690,7 +690,7 @@ const About: React.FC = () => {
                     <motion.button 
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="px-8 py-4 border border-white/20 rounded-full font-semibold hover:border-amber-500 hover:text-amber-400 transition-all duration-300 backdrop-blur-sm"
+                      className="px-8 py-4 border border-white/20 rounded-full font-semibold hover:border-amber-500 hover:text-amber-400 transition-all duration-300 backdrop-blur-sm text-lg"
                     >
                       Download Brochure
                     </motion.button>
@@ -714,13 +714,13 @@ const About: React.FC = () => {
                     >
                       <div className={`absolute inset-0 bg-gradient-to-br ${stat.color}/0 group-hover:${stat.color}/10 transition-all duration-500`} />
                       <div className="relative z-10">
-                        <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                          <stat.icon className="w-5 h-5 text-amber-400" strokeWidth={1.5} />
+                        <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                          <stat.icon className="w-6 h-6 text-amber-400" strokeWidth={1.5} />
                         </div>
-                        <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-white to-amber-200 bg-clip-text text-transparent mb-1">
+                        <div className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-white to-amber-200 bg-clip-text text-transparent mb-2">
                           {stat.value}{stat.suffix}
                         </div>
-                        <div className="text-xs text-slate-400 font-medium">{stat.label}</div>
+                        <div className="text-sm text-slate-400 font-medium">{stat.label}</div>
                       </div>
                     </motion.div>
                   ))}
@@ -737,7 +737,7 @@ const About: React.FC = () => {
             className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 cursor-pointer z-20"
             onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
           >
-            <span className="text-[10px] text-slate-500 uppercase tracking-[0.2em]">Scroll to explore</span>
+            <span className="text-xs text-slate-500 uppercase tracking-[0.2em]">Scroll to explore</span>
             <motion.div
               animate={{ y: [0, 10, 0] }}
               transition={{ duration: 1.5, repeat: Infinity }}
@@ -773,15 +773,15 @@ const About: React.FC = () => {
                   >
                     <div className="flex items-start gap-5">
                       <motion.div 
-                        className="w-14 h-14 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:bg-gradient-to-br group-hover:from-amber-500 group-hover:to-amber-600 transition-all duration-500"
+                        className="w-16 h-16 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:bg-gradient-to-br group-hover:from-amber-500 group-hover:to-amber-600 transition-all duration-500"
                         whileHover={{ rotate: 360 }}
                         transition={{ duration: 0.5 }}
                       >
-                        <Factory className="w-7 h-7 text-amber-400 group-hover:text-white transition-colors" />
+                        <Factory className="w-8 h-8 text-amber-400 group-hover:text-white transition-colors" />
                       </motion.div>
                       <div>
                         <div className="text-sm font-bold text-amber-400 uppercase tracking-wider mb-1">The Factory</div>
-                        <div className="text-white font-medium text-lg">Ravki Makhavad, Rajkot, Gujarat</div>
+                        <div className="text-white font-medium text-xl">Ravki Makhavad, Rajkot, Gujarat</div>
                         <div className="text-xs text-slate-500 font-mono mt-2 inline-block px-2 py-1 rounded bg-white/5">Log Code: RAJKOT_GUJ_IND</div>
                       </div>
                     </div>
@@ -794,15 +794,15 @@ const About: React.FC = () => {
                   >
                     <div className="flex items-start gap-5">
                       <motion.div 
-                        className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-600/10 flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:bg-gradient-to-br group-hover:from-blue-500 group-hover:to-blue-600 transition-all duration-500"
+                        className="w-16 h-16 rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-600/10 flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:bg-gradient-to-br group-hover:from-blue-500 group-hover:to-blue-600 transition-all duration-500"
                         whileHover={{ rotate: 360 }}
                         transition={{ duration: 0.5 }}
                       >
-                        <Globe className="w-7 h-7 text-blue-400 group-hover:text-white transition-colors" />
+                        <Globe className="w-8 h-8 text-blue-400 group-hover:text-white transition-colors" />
                       </motion.div>
                       <div>
                         <div className="text-sm font-bold text-blue-400 uppercase tracking-wider mb-1">Global Presence</div>
-                        <div className="text-white font-medium text-lg">Surat Branch & Warehouse serving Pan-India</div>
+                        <div className="text-white font-medium text-xl">Surat Branch & Warehouse serving Pan-India</div>
                         <div className="text-xs text-slate-500 font-mono mt-2 inline-block px-2 py-1 rounded bg-white/5">Log Code: PAN_INDIA</div>
                       </div>
                     </div>
@@ -813,7 +813,7 @@ const About: React.FC = () => {
               {/* Right Column - Content */}
               <ScrollReveal direction="left" delay={0.3}>
                 <div className="space-y-8">
-                  <p className="text-slate-300 text-lg leading-relaxed">
+                  <p className="text-slate-300 text-xl md:text-2xl leading-relaxed">
                     Operating from <strong className="text-white">Rajkot</strong> — India's industrial nerve center, DFPL is built on reliable systems, precision engineering, and a deep commitment to customer satisfaction.
                   </p>
                   
@@ -821,8 +821,8 @@ const About: React.FC = () => {
                     <motion.div 
                       className="absolute -top-12 -right-12 w-32 h-32 bg-amber-500/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"
                     />
-                    <Quote className="w-10 h-10 text-amber-500/40 mb-4 relative z-10" />
-                    <p className="text-white text-xl md:text-2xl font-medium italic leading-relaxed relative z-10">
+                    <Quote className="w-12 h-12 text-amber-500/40 mb-4 relative z-10" />
+                    <p className="text-white text-2xl md:text-3xl font-medium italic leading-relaxed relative z-10">
                       "We don't just supply fasteners — we engineer the integrity of your structures."
                     </p>
                     <motion.div 
@@ -834,8 +834,8 @@ const About: React.FC = () => {
                   </div>
                   
                   <div className="flex items-center gap-3">
-                    <Sparkles className="w-5 h-5 text-amber-400" />
-                    <p className="text-amber-400 font-semibold tracking-wide text-lg">
+                    <Sparkles className="w-6 h-6 text-amber-400" />
+                    <p className="text-amber-400 font-semibold tracking-wide text-xl">
                       We transformed traditional hardware supply into a system-driven engineering service.
                     </p>
                   </div>
@@ -855,12 +855,12 @@ const About: React.FC = () => {
                     animate={{ rotate: 360 }}
                     transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
                   >
-                    <Sparkles className="w-5 h-5 text-amber-400" />
+                    <Sparkles className="w-6 h-6 text-amber-400" />
                   </motion.div>
-                  <span className="text-sm font-medium text-slate-300 uppercase tracking-wider">Founded on</span>
-                  <span className="text-lg font-bold bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text text-transparent">29th August 2018</span>
+                  <span className="text-base font-medium text-slate-300 uppercase tracking-wider">Founded on</span>
+                  <span className="text-xl font-bold bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text text-transparent">29th August 2018</span>
                   <div className="w-px h-6 bg-white/10" />
-                  <span className="text-sm text-slate-400">8+ Years of Excellence</span>
+                  <span className="text-base text-slate-400">8+ Years of Excellence</span>
                 </motion.div>
               </div>
             </ScrollReveal>
@@ -897,19 +897,19 @@ const About: React.FC = () => {
                     <div className="relative z-10">
                       <div className="flex items-center gap-3 mb-5">
                         <motion.div 
-                          className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center"
+                          className="w-14 h-14 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center"
                           whileHover={{ rotate: 360 }}
                           transition={{ duration: 0.5 }}
                         >
-                          <AlertTriangle className="w-6 h-6 text-amber-400" />
+                          <AlertTriangle className="w-7 h-7 text-amber-400" />
                         </motion.div>
-                        <h3 className="text-2xl font-bold text-white">The Market Gap</h3>
+                        <h3 className="text-3xl font-bold text-white">The Market Gap</h3>
                       </div>
-                      <p className="text-slate-300 leading-relaxed mb-4">
+                      <p className="text-slate-300 text-lg leading-relaxed mb-4">
                         Manufacturers in Rajkot were producing quality fasteners, but lacked structured sales systems and proper quality control.
                       </p>
-                      <div className="mt-4 p-4 rounded-xl bg-amber-500/5 border-l-2 border-amber-500">
-                        <p className="text-amber-400 font-medium">
+                      <div className="mt-4 p-5 rounded-xl bg-amber-500/5 border-l-2 border-amber-500">
+                        <p className="text-amber-400 text-lg font-medium">
                           Mr. Sakariya identified a critical shift:<br/>
                           <span className="text-white">Fasteners are not just hardware — they are precision-engineered mechanical components.</span>
                         </p>
@@ -928,29 +928,29 @@ const About: React.FC = () => {
                     <div className="relative z-10">
                       <div className="flex items-center gap-3 mb-5">
                         <motion.div 
-                          className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-600/10 flex items-center justify-center"
+                          className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-600/10 flex items-center justify-center"
                           whileHover={{ rotate: 360 }}
                           transition={{ duration: 0.5 }}
                         >
-                          <Target className="w-6 h-6 text-blue-400" />
+                          <Target className="w-7 h-7 text-blue-400" />
                         </motion.div>
-                        <h3 className="text-2xl font-bold text-white">The Dual Purpose</h3>
+                        <h3 className="text-3xl font-bold text-white">The Dual Purpose</h3>
                       </div>
-                      <p className="text-slate-300 leading-relaxed mb-4">
+                      <p className="text-slate-300 text-lg leading-relaxed mb-4">
                         DFPL was built with a dual mission:
                       </p>
                       <ul className="space-y-3 mb-5">
-                        <li className="flex items-center gap-3 text-slate-300">
-                          <CheckCircle className="w-5 h-5 text-emerald-400" />
+                        <li className="flex items-center gap-3 text-slate-300 text-base">
+                          <CheckCircle className="w-6 h-6 text-emerald-400" />
                           <span>To eliminate internal system failures for employees</span>
                         </li>
-                        <li className="flex items-center gap-3 text-slate-300">
-                          <CheckCircle className="w-5 h-5 text-emerald-400" />
+                        <li className="flex items-center gap-3 text-slate-300 text-base">
+                          <CheckCircle className="w-6 h-6 text-emerald-400" />
                           <span>To deliver consistent, reliable service to customers</span>
                         </li>
                       </ul>
-                      <div className="mt-4 p-4 rounded-xl bg-emerald-500/5 border-l-2 border-emerald-500">
-                        <p className="text-emerald-400 font-medium">
+                      <div className="mt-4 p-5 rounded-xl bg-emerald-500/5 border-l-2 border-emerald-500">
+                        <p className="text-emerald-400 text-lg font-medium">
                           This led to the creation of a one-day dispatch system, backed by strict quality control protocols.
                         </p>
                       </div>
@@ -975,10 +975,10 @@ const About: React.FC = () => {
                         transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
                         className="mx-auto mb-6"
                       >
-                        <Quote className="w-20 h-20 text-amber-500/30 mx-auto" />
+                        <Quote className="w-24 h-24 text-amber-500/30 mx-auto" />
                       </motion.div>
                       
-                      <p className="text-2xl md:text-3xl lg:text-4xl font-medium text-white leading-relaxed italic relative z-10">
+                      <p className="text-3xl md:text-4xl lg:text-5xl font-medium text-white leading-relaxed italic relative z-10">
                         "What we sell is not just a product — we sell a service. The screw is just the beginning."
                       </p>
                       
@@ -990,10 +990,10 @@ const About: React.FC = () => {
                       />
                       
                       <div className="mt-6 relative z-10">
-                        <p className="text-lg font-bold bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text text-transparent">
+                        <p className="text-xl font-bold bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text text-transparent">
                           Vipul Sakariya
                         </p>
-                        <p className="text-sm text-slate-400 mt-1">Founder & CEO, DFPL</p>
+                        <p className="text-base text-slate-400 mt-1">Founder & CEO, DFPL</p>
                       </div>
                       
                       {/* Animated border effect */}
@@ -1038,23 +1038,23 @@ const About: React.FC = () => {
                 
                 <div className="relative z-10">
                   <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-500/20 border border-red-500/30 mb-6">
-                    <AlertTriangle className="w-4 h-4 text-red-400" />
-                    <span className="text-xs font-bold text-red-400 uppercase tracking-wider">Critical Incident</span>
+                    <AlertTriangle className="w-5 h-5 text-red-400" />
+                    <span className="text-sm font-bold text-red-400 uppercase tracking-wider">Critical Incident</span>
                   </div>
                   
-                  <h3 className="text-3xl md:text-5xl font-bold text-white mb-4">The ₹8 Lakh Rejection</h3>
+                  <h3 className="text-4xl md:text-6xl font-bold text-white mb-5">The ₹8 Lakh Rejection</h3>
                   
-                  <p className="text-slate-300 text-lg md:text-xl mb-4 max-w-2xl mx-auto">
+                  <p className="text-slate-300 text-xl md:text-2xl mb-4 max-w-2xl mx-auto">
                     A major order of <strong className="text-white">5,000 kg</strong> was rejected due to a head-cutting issue.
                   </p>
                   
                   <motion.div 
-                    className="mt-6 p-4 rounded-xl bg-gradient-to-r from-amber-500/10 to-transparent inline-block"
+                    className="mt-6 p-5 rounded-xl bg-gradient-to-r from-amber-500/10 to-transparent inline-block"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
                   >
-                    <p className="text-amber-400 font-medium">
+                    <p className="text-amber-400 text-lg font-medium">
                       🔍 Upon investigation, the root cause was identified: <span className="text-white">Seasonal variation in plywood density during winter.</span>
                     </p>
                   </motion.div>
@@ -1075,22 +1075,22 @@ const About: React.FC = () => {
                     
                     <div className="flex items-center gap-3 mb-5">
                       <motion.div 
-                        className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-600/10 flex items-center justify-center"
+                        className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-600/10 flex items-center justify-center"
                         whileHover={{ rotate: 360 }}
                         transition={{ duration: 0.5 }}
                       >
-                        <RefreshCw className="w-6 h-6 text-blue-400" />
+                        <RefreshCw className="w-7 h-7 text-blue-400" />
                       </motion.div>
-                      <h3 className="text-2xl font-bold text-white">Turning Point</h3>
+                      <h3 className="text-3xl font-bold text-white">Turning Point</h3>
                     </div>
                     
-                    <p className="text-slate-300 leading-relaxed mb-5">
+                    <p className="text-slate-300 text-lg leading-relaxed mb-5">
                       This failure became a breakthrough. DFPL shifted focus toward <strong className="text-white">application engineering</strong>, studying real-world usage conditions instead of just manufacturing standards.
                     </p>
                     
                     <div className="mt-5 p-5 rounded-xl bg-gradient-to-r from-emerald-500/10 to-transparent border-l-3 border-emerald-500">
-                      <p className="text-emerald-400 font-semibold mb-2">🎯 Key Learning:</p>
-                      <p className="text-slate-300">
+                      <p className="text-emerald-400 text-base font-semibold mb-2">🎯 Key Learning:</p>
+                      <p className="text-slate-300 text-base">
                         Quality is not just about product — it depends on environment, material behavior, and application conditions.
                       </p>
                     </div>
@@ -1105,31 +1105,31 @@ const About: React.FC = () => {
                     
                     <div className="flex items-center gap-3 mb-5">
                       <motion.div 
-                        className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 flex items-center justify-center"
+                        className="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 flex items-center justify-center"
                         whileHover={{ rotate: 360 }}
                         transition={{ duration: 0.5 }}
                       >
-                        <Cog className="w-6 h-6 text-emerald-400" />
+                        <Cog className="w-7 h-7 text-emerald-400" />
                       </motion.div>
-                      <h3 className="text-2xl font-bold text-white">Strategic Shift</h3>
+                      <h3 className="text-3xl font-bold text-white">Strategic Shift</h3>
                     </div>
                     
-                    <p className="text-slate-300 mb-4">
+                    <p className="text-slate-300 text-lg mb-4">
                       We began analyzing international standards and building systems that account for:
                     </p>
                     
                     <div className="grid grid-cols-1 gap-3">
                       <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5">
-                        <CheckCircle className="w-5 h-5 text-emerald-400" />
-                        <span className="text-slate-300">Material science & metallurgy</span>
+                        <CheckCircle className="w-6 h-6 text-emerald-400" />
+                        <span className="text-slate-300 text-base">Material science & metallurgy</span>
                       </div>
                       <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5">
-                        <CheckCircle className="w-5 h-5 text-emerald-400" />
-                        <span className="text-slate-300">Seasonal variations & environmental factors</span>
+                        <CheckCircle className="w-6 h-6 text-emerald-400" />
+                        <span className="text-slate-300 text-base">Seasonal variations & environmental factors</span>
                       </div>
                       <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5">
-                        <CheckCircle className="w-5 h-5 text-emerald-400" />
-                        <span className="text-slate-300">Real-world application conditions</span>
+                        <CheckCircle className="w-6 h-6 text-emerald-400" />
+                        <span className="text-slate-300 text-base">Real-world application conditions</span>
                       </div>
                     </div>
                   </motion.div>
@@ -1139,7 +1139,7 @@ const About: React.FC = () => {
               {/* Right Column */}
               <ScrollReveal direction="left" delay={0.3}>
                 <div className="space-y-8">
-                  {/* Breakthrough Achievements Card */}
+                  {/* 
                   <motion.div 
                     whileHover={{ y: -8 }}
                     className="group p-8 rounded-2xl bg-gradient-to-br from-amber-500/10 to-transparent border border-amber-500/30 hover:border-amber-500/50 transition-all duration-500 relative overflow-hidden"
@@ -1148,8 +1148,8 @@ const About: React.FC = () => {
                     <div className="absolute -top-24 -right-24 w-48 h-48 bg-amber-500/20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700" />
                     
                     <div className="relative z-10">
-                      <h3 className="text-2xl font-bold text-white mb-6 text-center flex items-center justify-center gap-2">
-                        <Trophy className="w-6 h-6 text-amber-400" />
+                      <h3 className="text-3xl font-bold text-white mb-6 text-center flex items-center justify-center gap-2">
+                        <Trophy className="w-7 h-7 text-amber-400" />
                         Breakthrough Achievements
                       </h3>
                       
@@ -1158,42 +1158,42 @@ const About: React.FC = () => {
                           className="text-center p-5 rounded-xl bg-gradient-to-br from-white/[0.05] to-transparent border border-white/[0.06]"
                           whileHover={{ scale: 1.05 }}
                         >
-                          <div className="text-4xl font-bold bg-gradient-to-r from-amber-400 to-amber-500 bg-clip-text text-transparent">120</div>
-                          <div className="text-sm text-slate-400 mt-1">Cartons Delivered</div>
-                          <div className="text-xs text-emerald-400 mt-2 font-medium">Value: ₹5 Lakh</div>
+                          <div className="text-5xl font-bold bg-gradient-to-r from-amber-400 to-amber-500 bg-clip-text text-transparent">120</div>
+                          <div className="text-base text-slate-400 mt-1">Cartons Delivered</div>
+                          <div className="text-sm text-emerald-400 mt-2 font-medium">Value: ₹5 Lakh</div>
                         </motion.div>
                         
                         <motion.div 
                           className="text-center p-5 rounded-xl bg-gradient-to-br from-white/[0.05] to-transparent border border-white/[0.06]"
                           whileHover={{ scale: 1.05 }}
                         >
-                          <div className="text-4xl font-bold bg-gradient-to-r from-amber-400 to-amber-500 bg-clip-text text-transparent">200</div>
-                          <div className="text-sm text-slate-400 mt-1">Cartons Delivered</div>
-                          <div className="text-xs text-emerald-400 mt-2 font-medium">Value: ₹12 Lakh</div>
+                          <div className="text-5xl font-bold bg-gradient-to-r from-amber-400 to-amber-500 bg-clip-text text-transparent">200</div>
+                          <div className="text-base text-slate-400 mt-1">Cartons Delivered</div>
+                          <div className="text-sm text-emerald-400 mt-2 font-medium">Value: ₹12 Lakh</div>
                         </motion.div>
                       </div>
                     </div>
                   </motion.div>
                   
-                  {/* Early Trusted Partners Card */}
+                  {/* 
                   <motion.div 
                     whileHover={{ y: -8 }}
                     className="group p-8 rounded-2xl bg-gradient-to-br from-white/[0.03] to-transparent border border-white/[0.06] hover:border-amber-500/40 transition-all duration-500"
                   >
-                    <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                      <Users className="w-5 h-5 text-amber-400" />
+                    <h3 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                      <Users className="w-6 h-6 text-amber-400" />
                       Early Trusted Partners
                     </h3>
                     
                     <div className="flex flex-wrap gap-3">
                       <motion.span 
-                        className="px-4 py-2 rounded-full bg-gradient-to-r from-amber-500/10 to-transparent border border-amber-500/20 text-slate-300 text-sm"
+                        className="px-4 py-2 rounded-full bg-gradient-to-r from-amber-500/10 to-transparent border border-amber-500/20 text-slate-300 text-base"
                         whileHover={{ scale: 1.05, x: 5 }}
                       >
                         Bhumi Associates
                       </motion.span>
                       <motion.span 
-                        className="px-4 py-2 rounded-full bg-gradient-to-r from-amber-500/10 to-transparent border border-amber-500/20 text-slate-300 text-sm"
+                        className="px-4 py-2 rounded-full bg-gradient-to-r from-amber-500/10 to-transparent border border-amber-500/20 text-slate-300 text-base"
                         whileHover={{ scale: 1.05, x: 5 }}
                       >
                         Ramdev Hardware
@@ -1210,8 +1210,8 @@ const About: React.FC = () => {
                       className="absolute inset-0 bg-gradient-to-r from-amber-500/0 to-amber-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                     />
                     <div className="relative z-10">
-                      <Quote className="w-8 h-8 text-amber-500/40 mb-3" />
-                      <p className="text-slate-300 text-lg font-medium italic leading-relaxed">
+                      <Quote className="w-10 h-10 text-amber-500/40 mb-3" />
+                      <p className="text-slate-300 text-xl font-medium italic leading-relaxed">
                         "This phase defined DFPL's core philosophy: We don't react to problems — we engineer systems that prevent them."
                       </p>
                       <motion.div 
@@ -1305,8 +1305,8 @@ const About: React.FC = () => {
                         "To give the best. Improve every single day, across every department and every person in the organization."
                       </p>
                       <div className="mt-8 flex items-center gap-2 text-amber-400 group-hover:gap-4 transition-all">
-                        <span className="text-sm font-medium uppercase tracking-wider">Learn more</span>
-                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        <span className="text-base font-medium uppercase tracking-wider">Learn more</span>
+                        <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                       </div>
                     </div>
                   </motion.div>
@@ -1336,8 +1336,8 @@ const About: React.FC = () => {
                         "IPO Bound 2030. DFPL aims to list on SME IPO by 2030 and Graduate to Main Board by 2036. Building India's most trusted fastener brand."
                       </p>
                       <div className="mt-8 flex items-center gap-2 text-amber-400 group-hover:gap-4 transition-all">
-                        <span className="text-sm font-medium uppercase tracking-wider">Learn more</span>
-                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        <span className="text-base font-medium uppercase tracking-wider">Learn more</span>
+                        <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                       </div>
                     </div>
                   </motion.div>
@@ -1396,7 +1396,7 @@ const About: React.FC = () => {
                 
                 <div className="space-y-8">
                   {[
-                    { step: "01", title: "Engineering Flow", desc: "Wire → Heading → Threading → Stock → Heat Treat → Plating → Packing → Dispatch", icon: Settings, color: "from-amber-500" },
+                    { step: "01", title: "Forging Instead of Heading", desc: "Wire → Heading → Threading → Stock → Heat Treat → Plating → Packing → Dispatch", icon: Settings, color: "from-amber-500" },
                     { step: "02", title: "Verification Trigger", desc: "Order/PI is printed and handed to the packing floor before a single box moves", icon: FileCheck, color: "from-blue-500" },
                     { step: "03", title: "Mandatory QC Sign-off", desc: "Size, grade, and quantity are verified against the PI. Sign-off is non-negotiable", icon: ClipboardCheck, color: "from-emerald-500" },
                     { step: "04", title: "Third-Party Cross-Check", desc: "Dedicated validator audits the shipment independently before billing", icon: Users, color: "from-purple-500" },
@@ -1418,8 +1418,8 @@ const About: React.FC = () => {
                           {step.step}
                         </motion.div>
                         <div>
-                          <h4 className="text-xl font-bold text-white mb-2">{step.title}</h4>
-                          <p className="text-sm text-slate-400 leading-relaxed">{step.desc}</p>
+                          <h4 className="text-2xl font-bold text-white mb-2">{step.title}</h4>
+                          <p className="text-base text-slate-400 leading-relaxed">{step.desc}</p>
                         </div>
                       </motion.div>
                     </ScrollReveal>
@@ -1451,7 +1451,7 @@ const About: React.FC = () => {
                       
                       <div className="border-t border-white/10 pt-8">
                         <div className="flex items-center justify-between mb-4">
-                          <span className="text-sm text-slate-400 font-medium">Zero error rate in material accuracy</span>
+                          <span className="text-base text-slate-400 font-medium">Zero error rate in material accuracy</span>
                           <motion.div
                             animate={{ scale: [1, 1.2, 1] }}
                             transition={{ duration: 2, repeat: Infinity }}
@@ -1470,11 +1470,11 @@ const About: React.FC = () => {
                         <div className="mt-6 grid grid-cols-2 gap-4 text-center">
                           <div className="p-3 rounded-xl bg-white/5">
                             <div className="text-2xl font-bold text-amber-400">100%</div>
-                            <div className="text-xs text-slate-500">Accountability</div>
+                            <div className="text-sm text-slate-500">Accountability</div>
                           </div>
                           <div className="p-3 rounded-xl bg-white/5">
                             <div className="text-2xl font-bold text-amber-400">0%</div>
-                            <div className="text-xs text-slate-500">Compromise</div>
+                            <div className="text-sm text-slate-500">Compromise</div>
                           </div>
                         </div>
                       </div>
@@ -1514,15 +1514,15 @@ const About: React.FC = () => {
                       whileHover={{ y: -5 }}
                     >
                       <motion.div 
-                        className={`w-14 h-14 rounded-full bg-gradient-to-br ${value.color}/20 to-transparent flex items-center justify-center mx-auto mb-4`}
+                        className={`w-16 h-16 rounded-full bg-gradient-to-br ${value.color}/20 to-transparent flex items-center justify-center mx-auto mb-4`}
                         whileHover={{ rotate: 360, scale: 1.1 }}
                         transition={{ duration: 0.5 }}
                       >
-                        <value.icon className="w-7 h-7 text-amber-400" />
+                        <value.icon className="w-8 h-8 text-amber-400" />
                       </motion.div>
-                      <h4 className="text-base font-bold text-white mb-1">{value.title}</h4>
-                      <p className="text-xs text-slate-400 mb-2">{value.description}</p>
-                      <div className="text-[10px] text-amber-400/60 uppercase tracking-wider">{value.metric}</div>
+                      <h4 className="text-lg font-bold text-white mb-2">{value.title}</h4>
+                      <p className="text-sm text-slate-400 mb-3">{value.description}</p>
+                      <div className="text-xs text-amber-400/60 uppercase tracking-wider">{value.metric}</div>
                     </motion.div>
                   </TiltCard>
                 </ScrollReveal>
@@ -1641,23 +1641,23 @@ const About: React.FC = () => {
                       
                       <div className="relative z-10">
                         <motion.div 
-                          className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${item.color}/20 to-transparent flex items-center justify-center mx-auto mb-4`}
+                          className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${item.color}/20 to-transparent flex items-center justify-center mx-auto mb-4`}
                           whileHover={{ rotate: 360 }}
                           transition={{ duration: 0.5 }}
                         >
-                          <item.icon className="w-7 h-7 text-amber-400" />
+                          <item.icon className="w-8 h-8 text-amber-400" />
                         </motion.div>
-                        <div className="text-3xl font-bold text-white mb-2">{item.year}</div>
-                        <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text text-transparent mb-3">{item.value}</div>
-                        <div className="text-sm text-slate-400 mb-4">{item.label}</div>
-                        <div className={`inline-block px-4 py-1 rounded-full text-xs font-medium bg-gradient-to-r ${item.color}/20 to-transparent text-amber-400 mb-4`}>
+                        <div className="text-4xl font-bold text-white mb-2">{item.year}</div>
+                        <div className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text text-transparent mb-3">{item.value}</div>
+                        <div className="text-base text-slate-400 mb-4">{item.label}</div>
+                        <div className={`inline-block px-4 py-1 rounded-full text-sm font-medium bg-gradient-to-r ${item.color}/20 to-transparent text-amber-400 mb-4`}>
                           {item.status}
                         </div>
                         
                         {/* Achievement Badges */}
                         <div className="flex flex-wrap justify-center gap-2 mt-4">
                           {item.achievements.map((ach, i) => (
-                            <span key={i} className="text-[10px] px-2 py-1 rounded-full bg-white/5 text-slate-400">
+                            <span key={i} className="text-xs px-2 py-1 rounded-full bg-white/5 text-slate-400">
                               {ach}
                             </span>
                           ))}
@@ -1694,15 +1694,15 @@ const About: React.FC = () => {
           <div className="max-w-5xl mx-auto text-center relative z-10">
             <ScrollReveal direction="up">
               <motion.div 
-                className="w-24 h-24 rounded-full bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center mx-auto mb-8 border-2 border-amber-500/30"
+                className="w-28 h-28 rounded-full bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center mx-auto mb-8 border-2 border-amber-500/30"
                 whileHover={{ rotate: 360, scale: 1.1 }}
                 transition={{ duration: 0.5 }}
               >
-                <Quote className="w-12 h-12 text-amber-400" strokeWidth={1.5} />
+                <Quote className="w-14 h-14 text-amber-400" strokeWidth={1.5} />
               </motion.div>
               
               <motion.h2 
-                className="text-2xl md:text-4xl lg:text-5xl font-light italic text-slate-200 leading-relaxed mb-12"
+                className="text-3xl md:text-5xl lg:text-6xl font-light italic text-slate-200 leading-relaxed mb-12"
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
@@ -1725,10 +1725,10 @@ const About: React.FC = () => {
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5, delay: 0.4 }}
               >
-                <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-white to-amber-200 bg-clip-text text-transparent mb-3">
+                <div className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-white to-amber-200 bg-clip-text text-transparent mb-3">
                   Vipul Sakariya
                 </div>
-                <div className="text-sm text-amber-400 font-medium uppercase tracking-[0.2em]">Founder & Visionary, DFPL</div>
+                <div className="text-base text-amber-400 font-medium uppercase tracking-[0.2em]">Founder & Visionary, DFPL</div>
                 
                 {/* Signature Line */}
                 <motion.div 
@@ -1786,18 +1786,18 @@ const About: React.FC = () => {
                     transition={{ duration: 2, repeat: Infinity }}
                     className="inline-block mb-6"
                   >
-                    <Gem className="w-12 h-12 text-white/80" />
+                    <Gem className="w-14 h-14 text-white/80" />
                   </motion.div>
                   
-                  <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-4">Ready to Partner with Excellence?</h2>
-                  <p className="text-amber-100 text-lg mb-10 max-w-2xl mx-auto leading-relaxed">
+                  <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-4">Ready to Partner with Excellence?</h2>
+                  <p className="text-amber-100 text-xl mb-10 max-w-2xl mx-auto leading-relaxed">
                     Join India's most trusted fastener manufacturer. Experience the DFPL difference with guaranteed quality and on-time delivery.
                   </p>
-                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <div className="flex flex-col sm:flex-row gap-5 justify-center">
                     <motion.button 
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="group relative px-8 py-4 bg-white text-amber-700 font-bold rounded-full flex items-center justify-center gap-2 shadow-xl overflow-hidden"
+                      className="group relative px-8 py-4 bg-white text-amber-700 font-bold rounded-full flex items-center justify-center gap-2 shadow-xl overflow-hidden text-lg"
                     >
                       <span className="relative z-10">Contact Sales</span>
                       <motion.div
@@ -1817,25 +1817,25 @@ const About: React.FC = () => {
                     <motion.button 
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="px-8 py-4 border-2 border-white/50 text-white font-semibold rounded-full hover:bg-white/10 transition-all duration-300 backdrop-blur-sm flex items-center justify-center gap-2"
+                      className="px-8 py-4 border-2 border-white/50 text-white font-semibold rounded-full hover:bg-white/10 transition-all duration-300 backdrop-blur-sm flex items-center justify-center gap-2 text-lg"
                     >
-                      <Phone className="w-4 h-4" />
+                      <Phone className="w-5 h-5" />
                       Request Quote
                     </motion.button>
                   </div>
                   
                   {/* Trust Badges */}
                   <div className="flex flex-wrap justify-center gap-6 mt-10 pt-6 border-t border-white/20">
-                    <div className="flex items-center gap-2 text-amber-100 text-sm">
-                      <CheckCircle className="w-4 h-4" />
+                    <div className="flex items-center gap-2 text-amber-100 text-base">
+                      <CheckCircle className="w-5 h-5" />
                       <span>ISO Certified</span>
                     </div>
-                    <div className="flex items-center gap-2 text-amber-100 text-sm">
-                      <Shield className="w-4 h-4" />
+                    <div className="flex items-center gap-2 text-amber-100 text-base">
+                      <Shield className="w-5 h-5" />
                       <span>100% Guarantee</span>
                     </div>
-                    <div className="flex items-center gap-2 text-amber-100 text-sm">
-                      <Truck className="w-4 h-4" />
+                    <div className="flex items-center gap-2 text-amber-100 text-base">
+                      <Truck className="w-5 h-5" />
                       <span>PAN India Delivery</span>
                     </div>
                   </div>
