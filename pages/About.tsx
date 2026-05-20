@@ -757,7 +757,7 @@ const About: React.FC = () => {
                       <div>
                         <div className="text-sm md:text-base font-bold text-amber-400 uppercase tracking-wider mb-1">The Factory</div>
                         <div className="text-white font-semibold text-xl md:text-2xl">Ravki Makhavad, Rajkot, Gujarat</div>
-                        <div className="text-xs md:text-sm text-slate-400 font-mono mt-2 inline-block px-2 py-1 rounded bg-white/5">Log Code: RAJKOT_GUJ_IND</div>
+                        
                       </div>
                     </div>
                   </motion.div>
@@ -777,7 +777,7 @@ const About: React.FC = () => {
                       <div>
                         <div className="text-sm md:text-base font-bold text-blue-400 uppercase tracking-wider mb-1">Global Presence</div>
                         <div className="text-white font-semibold text-xl md:text-2xl">Surat Branch & Warehouse serving Pan-India</div>
-                        <div className="text-xs md:text-sm text-slate-400 font-mono mt-2 inline-block px-2 py-1 rounded bg-white/5">Log Code: PAN_INDIA</div>
+                        
                       </div>
                     </div>
                   </motion.div>
@@ -1561,10 +1561,7 @@ const About: React.FC = () => {
           </div>
         </section>
 
-        {/* ============================================ */}
-        {/* SECTION: ROADMAP - FUTURE JOURNEY (ORIGINAL) */}
-        {/* ============================================ */}
-
+        {/* ============================================
         <section className="py-32 px-6 bg-gradient-to-b from-[#0A0A0F] via-[#050508] to-[#0A0A0F] relative overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.05)_0%,transparent_70%)]" />
           
