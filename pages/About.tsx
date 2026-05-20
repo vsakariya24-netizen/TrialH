@@ -1099,67 +1099,7 @@ const About: React.FC = () => {
                 </div>
               </ScrollReveal>
               
-              <ScrollReveal direction="left" delay={0.3}>
-                <div className="space-y-8">
-                  <motion.div 
-                    whileHover={{ y: -8 }}
-                    className="group p-8 rounded-2xl bg-gradient-to-br from-white/[0.03] to-transparent border border-white/[0.06] hover:border-amber-500/40 transition-all duration-500 relative overflow-hidden"
-                  >
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 via-amber-400 to-transparent" />
-                    <div className="absolute -top-24 -right-24 w-48 h-48 bg-amber-500/20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700" />
-                    
-                    <div className="relative z-10">
-                      <h3 className="text-3xl md:text-4xl font-bold text-white mb-6 text-center flex items-center justify-center gap-2">
-                        <Trophy className="w-7 h-7 text-amber-400" />
-                        Breakthrough Achievements
-                      </h3>
-                      
-                      <div className="grid grid-cols-2 gap-5">
-                        <motion.div 
-                          className="text-center p-5 rounded-xl bg-gradient-to-br from-white/[0.05] to-transparent border border-white/[0.06]"
-                          whileHover={{ scale: 1.05 }}
-                        >
-                          <div className="text-5xl font-bold bg-gradient-to-r from-amber-400 to-amber-500 bg-clip-text text-transparent">120</div>
-                          <div className="text-base md:text-lg text-slate-300 mt-1">Cartons Delivered</div>
-                          <div className="text-sm md:text-base text-emerald-400 mt-2 font-semibold">Value: ₹5 Lakh</div>
-                        </motion.div>
-                        
-                        <motion.div 
-                          className="text-center p-5 rounded-xl bg-gradient-to-br from-white/[0.05] to-transparent border border-white/[0.06]"
-                          whileHover={{ scale: 1.05 }}
-                        >
-                          <div className="text-5xl font-bold bg-gradient-to-r from-amber-400 to-amber-500 bg-clip-text text-transparent">200</div>
-                          <div className="text-base md:text-lg text-slate-300 mt-1">Cartons Delivered</div>
-                          <div className="text-sm md:text-base text-emerald-400 mt-2 font-semibold">Value: ₹12 Lakh</div>
-                        </motion.div>
-                      </div>
-                    </div>
-                  </motion.div>
-                  
-                  <motion.div 
-                    whileHover={{ y: -8 }}
-                    className="group p-8 rounded-2xl bg-gradient-to-br from-white/[0.03] to-transparent border border-white/[0.06] hover:border-amber-500/40 transition-all duration-500"
-                  >
-                    <h3 className="text-2xl md:text-3xl font-bold text-white mb-4 flex items-center gap-2">
-                      <Users className="w-6 h-6 text-amber-400" />
-                      Early Trusted Partners
-                    </h3>
-                    
-                    <div className="flex flex-wrap gap-3">
-                      <motion.span 
-                        className="px-4 py-2 rounded-full bg-gradient-to-r from-amber-500/10 to-transparent border border-amber-500/20 text-slate-300 text-base md:text-lg"
-                        whileHover={{ scale: 1.05, x: 5 }}
-                      >
-                        Bhumi Associates
-                      </motion.span>
-                      <motion.span 
-                        className="px-4 py-2 rounded-full bg-gradient-to-r from-amber-500/10 to-transparent border border-amber-500/20 text-slate-300 text-base md:text-lg"
-                        whileHover={{ scale: 1.05, x: 5 }}
-                      >
-                        Ramdev Hardware
-                      </motion.span>
-                    </div>
-                  </motion.div>
+              
                   
                   <motion.div 
                     whileHover={{ scale: 1.02 }}
