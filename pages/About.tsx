@@ -21,7 +21,7 @@ import {
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
 // ============================================
-// PREMIUM DESIGN SYSTEM - VARIABLES & THEMES
+// PREMIUM DESIGN SYSTEM - ENLARGED TITLES
 // ============================================
 
 const designSystem = {
@@ -76,10 +76,10 @@ const designSystem = {
 };
 
 // ============================================
-// ADVANCED ANIMATION COMPONENTS
+// ADVANCED ANIMATION COMPONENTS (SAME AS ORIGINAL, KEPT INTACT)
 // ============================================
 
-// Custom Cursor Component
+// Custom Cursor Component (unchanged)
 const CustomCursor = () => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
@@ -139,7 +139,7 @@ const CustomCursor = () => {
   );
 };
 
-// 3D Tilt Card with Enhanced Effects
+// 3D Tilt Card (unchanged)
 const TiltCard = ({ children, className = "", glow = false }) => {
   const ref = useRef(null);
   const [rotate, setRotate] = useState({ x: 0, y: 0 });
@@ -188,7 +188,7 @@ const TiltCard = ({ children, className = "", glow = false }) => {
   );
 };
 
-// Animated Counter with Floating Effect
+// Animated Counter (unchanged)
 const AnimatedCounter = ({ value, suffix = "", prefix = "", duration = 2000, delay = 0 }) => {
   const [count, setCount] = useState(0);
   const ref = useRef(null);
@@ -231,7 +231,7 @@ const AnimatedCounter = ({ value, suffix = "", prefix = "", duration = 2000, del
   );
 };
 
-// Scroll Reveal with Stagger
+// Scroll Reveal (unchanged)
 const ScrollReveal = ({ children, direction = "up", delay = 0, className = "", threshold = 0.1, duration = 0.8 }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px", amount: threshold });
@@ -260,7 +260,7 @@ const ScrollReveal = ({ children, direction = "up", delay = 0, className = "", t
   );
 };
 
-// Parallax Section Component
+// Parallax Section (unchanged)
 const ParallaxSection = ({ children, speed = 0.5, className = "" }) => {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({
@@ -276,7 +276,7 @@ const ParallaxSection = ({ children, speed = 0.5, className = "" }) => {
   );
 };
 
-// Animated Background Grid
+// Animated Background Grid (unchanged)
 const AnimatedGrid = () => (
   <motion.div 
     className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:80px_80px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,#000_30%,transparent_100%)]"
@@ -287,7 +287,7 @@ const AnimatedGrid = () => (
   />
 );
 
-// Floating Particles Component
+// Floating Particles (fixed key)
 const FloatingParticles = ({ count = 50 }) => {
   const particles = Array.from({ length: count }, (_, i) => ({
     id: i,
@@ -327,7 +327,7 @@ const FloatingParticles = ({ count = 50 }) => {
   );
 };
 
-// Advanced Feature Card
+// Feature Card (unchanged)
 const FeatureCard = ({ icon: Icon, title, description, delay = 0, gradient = "from-amber-500", metrics = null }) => (
   <ScrollReveal direction="up" delay={delay}>
     <TiltCard glow className="h-full">
@@ -335,14 +335,9 @@ const FeatureCard = ({ icon: Icon, title, description, delay = 0, gradient = "fr
         whileHover={{ y: -8 }}
         className="group relative p-8 bg-gradient-to-br from-white/[0.03] to-transparent rounded-2xl border border-white/[0.06] hover:border-amber-500/40 transition-all duration-500 backdrop-blur-sm overflow-hidden h-full"
       >
-        {/* Background Gradient on Hover */}
         <div className={`absolute inset-0 bg-gradient-to-br ${gradient}/0 to-transparent group-hover:${gradient}/[0.08] transition-all duration-700`} />
-        
-        {/* Glowing Orb */}
         <div className="absolute -top-12 -right-12 w-32 h-32 bg-gradient-to-br from-amber-500/20 to-transparent rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
-        
         <div className="relative z-10">
-          {/* Icon Container with Animation */}
           <motion.div 
             className="w-16 h-16 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-gradient-to-br group-hover:from-amber-500 group-hover:to-amber-600 transition-all duration-500"
             whileHover={{ rotate: [0, -10, 10, -5, 5, 0] }}
@@ -350,24 +345,19 @@ const FeatureCard = ({ icon: Icon, title, description, delay = 0, gradient = "fr
           >
             <Icon className="w-8 h-8 text-amber-400 group-hover:text-white transition-colors" strokeWidth={1.5} />
           </motion.div>
-          
-          <h3 className="text-2xl md:text-3xl font-bold text-white mb-4 group-hover:text-amber-400 transition-colors">
+          <h3 className="text-3xl md:text-4xl font-bold text-white mb-4 group-hover:text-amber-400 transition-colors">
             {title}
           </h3>
           <p className="text-slate-400 text-base md:text-lg leading-relaxed">
             {description}
           </p>
-          
-          {/* Optional Metrics Display */}
           {metrics && (
             <div className="mt-6 pt-4 border-t border-white/10">
-              <div className="text-3xl md:text-4xl font-bold text-amber-400">{metrics.value}</div>
+              <div className="text-4xl md:text-5xl font-bold text-amber-400">{metrics.value}</div>
               <div className="text-sm text-slate-500 mt-1">{metrics.label}</div>
             </div>
           )}
         </div>
-        
-        {/* Animated Bottom Border */}
         <motion.div 
           className="absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-amber-500 to-transparent"
           initial={{ width: "0%" }}
@@ -379,28 +369,24 @@ const FeatureCard = ({ icon: Icon, title, description, delay = 0, gradient = "fr
   </ScrollReveal>
 );
 
-// Premium Stat Card
+// Stat Card (unchanged)
 const StatCard = ({ icon: Icon, label, value, suffix = "", prefix = "", delay = 0, trend = null }) => (
   <ScrollReveal direction="up" delay={delay}>
     <motion.div 
       whileHover={{ scale: 1.05, y: -5 }}
       className="text-center p-8 rounded-2xl bg-gradient-to-br from-white/[0.02] to-transparent border border-white/[0.04] hover:border-amber-500/40 transition-all duration-500 group backdrop-blur-sm relative overflow-hidden"
     >
-      {/* Hover Glow Effect */}
       <motion.div 
         className="absolute inset-0 bg-gradient-to-br from-amber-500/0 via-amber-500/0 to-amber-500/0 group-hover:from-amber-500/5 group-hover:via-amber-500/5 transition-all duration-500"
       />
-      
       <div className="relative z-10">
         <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center mx-auto mb-5 group-hover:scale-110 group-hover:bg-gradient-to-br group-hover:from-amber-500 group-hover:to-amber-600 transition-all duration-500">
           <Icon className="w-8 h-8 text-amber-400 group-hover:text-white" strokeWidth={1.5} />
         </div>
-        <div className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-white to-amber-200 bg-clip-text text-transparent mb-3">
+        <div className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-white to-amber-200 bg-clip-text text-transparent mb-3">
           <AnimatedCounter value={value} suffix={suffix} prefix={prefix} delay={delay} />
         </div>
         <div className="text-sm text-slate-400 uppercase tracking-wider font-medium">{label}</div>
-        
-        {/* Trend Indicator */}
         {trend && (
           <motion.div 
             className="mt-3 text-sm text-emerald-400 flex items-center justify-center gap-1"
@@ -417,7 +403,7 @@ const StatCard = ({ icon: Icon, label, value, suffix = "", prefix = "", delay = 
   </ScrollReveal>
 );
 
-// Premium Section Header
+// Section Header with LARGER TITLES
 const SectionHeader = ({ badge, title, highlight, description = "", align = "center", className = "" }) => (
   <div className={`mb-20 ${align === "center" ? "text-center" : ""} ${className}`}>
     <ScrollReveal direction="up">
@@ -433,7 +419,7 @@ const SectionHeader = ({ badge, title, highlight, description = "", align = "cen
     </ScrollReveal>
     
     <ScrollReveal direction="up" delay={0.1}>
-      <h2 className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white mb-5 leading-[1.1] tracking-tight">
+      <h2 className="text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold text-white mb-5 leading-[1.1] tracking-tight">
         {title}{" "}
         <span className="bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 bg-clip-text text-transparent relative inline-block">
           {highlight}
@@ -457,7 +443,7 @@ const SectionHeader = ({ badge, title, highlight, description = "", align = "cen
   </div>
 );
 
-// Team Member Card with 3D Effect
+// Team Member Card (unchanged)
 const TeamMemberCard = ({ name, role, image = null, delay, socialLinks = [] }) => (
   <ScrollReveal direction="up" delay={delay}>
     <TiltCard glow>
@@ -465,7 +451,6 @@ const TeamMemberCard = ({ name, role, image = null, delay, socialLinks = [] }) =
         whileHover={{ y: -10 }}
         className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-800/50 to-zinc-900/50 p-8 text-center border border-white/[0.06] hover:border-amber-500/30 transition-all duration-500"
       >
-        {/* Avatar with animated ring */}
         <div className="relative w-36 h-36 mx-auto mb-5">
           <motion.div 
             className="absolute inset-0 rounded-full border-2 border-transparent group-hover:border-amber-500/50 transition-all duration-500"
@@ -476,14 +461,11 @@ const TeamMemberCard = ({ name, role, image = null, delay, socialLinks = [] }) =
             <Users className="w-14 h-14 text-amber-400" />
           </div>
         </div>
-        
         <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">{name}</h3>
         <p className="text-amber-400 text-base md:text-lg mb-4">{role}</p>
         <p className="text-slate-400 text-base">
           Leading DFPL's {role.toLowerCase()} initiatives with excellence and innovation
         </p>
-        
-        {/* Social Links with fade-in on hover */}
         <div className="flex justify-center gap-3 mt-4 opacity-0 group-hover:opacity-100 transition-all duration-500">
           {socialLinks.map((link, idx) => (
             <motion.div 
@@ -502,7 +484,7 @@ const TeamMemberCard = ({ name, role, image = null, delay, socialLinks = [] }) =
   </ScrollReveal>
 );
 
-// Testimonial Card
+// Testimonial Card (unchanged)
 const TestimonialCard = ({ quote, author, role, delay }) => (
   <ScrollReveal direction="up" delay={delay}>
     <motion.div 
@@ -520,7 +502,7 @@ const TestimonialCard = ({ quote, author, role, delay }) => (
 );
 
 // ============================================
-// MAIN COMPONENT
+// MAIN COMPONENT WITH ENLARGED TITLES
 // ============================================
 
 const About: React.FC = () => {
@@ -532,13 +514,12 @@ const About: React.FC = () => {
   const { scrollYProgress } = useScroll({ target: containerRef });
   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
   
-  // Parallax values
+  // Parallax values (kept for future use)
   const heroY = useTransform(scrollYProgress, [0, 0.5], [0, 200]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
   const heroScale = useTransform(scrollYProgress, [0, 0.3], [1, 0.95]);
   const heroBlur = useTransform(scrollYProgress, [0, 0.3], [0, 8]);
 
-  // Check if mobile for custom cursor
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -549,7 +530,6 @@ const About: React.FC = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Smooth scroll to section
   const scrollToSection = useCallback((sectionId) => {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -562,7 +542,6 @@ const About: React.FC = () => {
     <HelmetProvider>
       <div ref={containerRef} className="bg-[#0A0A0F] min-h-screen text-white overflow-x-hidden selection:bg-amber-500 selection:text-black">
         
-        {/* SEO & Fonts */}
         <Helmet>
           <title>About DFPL | Durable Fastener Pvt. Ltd. - Engineering Integrity Since 2018</title>
           <meta name="description" content="Durable Fastener Pvt. Ltd. (DFPL) - India's premier fastener manufacturer with 95% on-time dispatch, 99% order accuracy, and uncompromising quality standards since 2018." />
@@ -571,36 +550,27 @@ const About: React.FC = () => {
           <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet" />
         </Helmet>
 
-        {/* Custom Cursor (Desktop only) */}
         {showCustomCursor && <CustomCursor />}
 
-        {/* Progress Bar */}
         <motion.div 
           className="fixed top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 z-[100] origin-left shadow-[0_0_20px_rgba(245,158,11,0.5)]"
           style={{ scaleX }}
         />
 
-        {/* Particle & Ambient Effects */}
         <FloatingParticles count={30} />
         <AnimatedGrid />
         
-        {/* Ambient Gradient Orbs */}
         <div className="fixed top-0 left-1/4 w-[600px] h-[600px] bg-amber-500/20 rounded-full blur-[150px] pointer-events-none z-0 mix-blend-screen animate-pulse" />
         <div className="fixed bottom-0 right-1/4 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[150px] pointer-events-none z-0 animate-pulse" style={{ animationDelay: "2s" }} />
         <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-purple-500/5 rounded-full blur-[200px] pointer-events-none z-0" />
 
-        {/* ============================================ */}
-        {/* HERO SECTION - CINEMATIC ENTRY */}
-        {/* ============================================ */}
-        
+        {/* ========== HERO SECTION - ENLARGED TITLES ========== */}
         <section id="hero" className="relative min-h-screen flex items-center justify-center px-6 lg:px-12 overflow-hidden">
-          {/* Animated Background Shapes */}
           <ParallaxSection speed={0.3} className="absolute inset-0 z-0">
             <div className="relative w-full h-full">
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[20vw] font-black text-white/[0.015] whitespace-nowrap select-none">
                 DURABLE
               </div>
-              {/* Animated Grid */}
               <motion.div 
                 className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:60px_60px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,#000_20%,transparent_100%)]"
                 animate={{ 
@@ -616,8 +586,6 @@ const About: React.FC = () => {
             className="max-w-[1400px] mx-auto w-full relative z-10"
           >
             <div className="grid lg:grid-cols-2 gap-12 items-center">
-              
-              {/* Left Content */}
               <div>
                 <ScrollReveal direction="up">
                   <motion.div 
@@ -637,7 +605,7 @@ const About: React.FC = () => {
                 </ScrollReveal>
 
                 <ScrollReveal direction="up" delay={0.1}>
-                  <h1 className="text-7xl md:text-8xl lg:text-9xl xl:text-9xl font-bold leading-[0.9] mb-8 tracking-tighter">
+                  <h1 className="text-8xl md:text-9xl lg:text-[180px] xl:text-[200px] font-bold leading-[0.9] mb-8 tracking-tighter">
                     Engineering{" "}
                     <motion.span 
                       className="bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 bg-clip-text text-transparent inline-block"
@@ -650,7 +618,7 @@ const About: React.FC = () => {
                       Integrity.
                     </motion.span>
                     <br />
-                    <span className="text-5xl md:text-6xl text-slate-500 block mt-4 font-light">
+                    <span className="text-5xl md:text-7xl text-slate-500 block mt-4 font-light">
                       Built To Last.
                     </span>
                   </h1>
@@ -698,7 +666,6 @@ const About: React.FC = () => {
                 </ScrollReveal>
               </div>
 
-              {/* Right Content - Animated Trust Indicators */}
               <ScrollReveal direction="left" delay={0.2}>
                 <div className="grid grid-cols-2 gap-6">
                   {[
@@ -729,7 +696,6 @@ const About: React.FC = () => {
             </div>
           </motion.div>
 
-          {/* Animated Scroll Indicator */}
           <motion.div 
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -747,12 +713,9 @@ const About: React.FC = () => {
           </motion.div>
         </section>
 
-        {/* ============================================ */}
-        {/* SECTION: WHO WE ARE - THE GENESIS (NEW) */}
-        {/* ============================================ */}
-      <section id="who-we-are" className="py-32 px-6 relative bg-gradient-to-b from-[#0A0A0F] via-[#050508] to-[#0A0A0F]">
+        {/* ========== WHO WE ARE - ENLARGED ========== */}
+        <section id="who-we-are" className="py-32 px-6 relative bg-gradient-to-b from-[#0A0A0F] via-[#050508] to-[#0A0A0F]">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(245,158,11,0.08)_0%,transparent_70%)]" />
-          
           <div className="max-w-[1400px] mx-auto relative z-10">
             <SectionHeader 
               badge="01 // THE GENESIS — WHO WE ARE"
@@ -763,10 +726,8 @@ const About: React.FC = () => {
             />
             
             <div className="grid lg:grid-cols-2 gap-16 items-center mt-16">
-              {/* Left Column - Info Cards */}
               <ScrollReveal direction="right" delay={0.2}>
                 <div className="space-y-6">
-                  {/* Factory Card */}
                   <motion.div 
                     whileHover={{ x: 15, scale: 1.02 }}
                     className="group p-8 rounded-2xl bg-gradient-to-br from-white/[0.03] to-transparent border border-white/[0.06] hover:border-amber-500/40 transition-all duration-500 backdrop-blur-sm"
@@ -787,7 +748,6 @@ const About: React.FC = () => {
                     </div>
                   </motion.div>
 
-                  {/* Global Presence Card */}
                   <motion.div 
                     whileHover={{ x: 15, scale: 1.02 }}
                     className="group p-8 rounded-2xl bg-gradient-to-br from-white/[0.03] to-transparent border border-white/[0.06] hover:border-amber-500/40 transition-all duration-500 backdrop-blur-sm"
@@ -810,13 +770,11 @@ const About: React.FC = () => {
                 </div>
               </ScrollReveal>
               
-              {/* Right Column - Content */}
               <ScrollReveal direction="left" delay={0.3}>
                 <div className="space-y-8">
                   <p className="text-slate-300 text-xl md:text-2xl leading-relaxed">
                     Operating from <strong className="text-white">Rajkot</strong> — India's industrial nerve center, DFPL is built on reliable systems, precision engineering, and a deep commitment to customer satisfaction.
                   </p>
-                  
                   <div className="p-8 rounded-2xl bg-gradient-to-r from-amber-500/10 to-transparent border-l-4 border-amber-500 relative overflow-hidden group">
                     <motion.div 
                       className="absolute -top-12 -right-12 w-32 h-32 bg-amber-500/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"
@@ -832,7 +790,6 @@ const About: React.FC = () => {
                       transition={{ duration: 0.6, delay: 0.3 }}
                     />
                   </div>
-                  
                   <div className="flex items-center gap-3">
                     <Sparkles className="w-6 h-6 text-amber-400" />
                     <p className="text-amber-400 font-semibold tracking-wide text-xl">
@@ -843,7 +800,6 @@ const About: React.FC = () => {
               </ScrollReveal>
             </div>
             
-            {/* Founded Badge - Centered */}
             <ScrollReveal direction="up" delay={0.4}>
               <div className="mt-20 text-center">
                 <motion.div 
@@ -866,13 +822,10 @@ const About: React.FC = () => {
             </ScrollReveal>
           </div>
         </section>
-        
-        {/* ============================================ */}
-        {/* SECTION: THE ORIGIN — THE STORY */}
-        {/* ============================================ */}
+
+        {/* ========== THE ORIGIN — THE STORY (ENLARGED) ========== */}
         <section id="the-story" className="py-32 px-6 relative overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.05)_0%,transparent_70%)]" />
-          
           <div className="max-w-[1400px] mx-auto relative z-10">
             <SectionHeader 
               badge="02 // THE ORIGIN — THE STORY"
@@ -883,17 +836,14 @@ const About: React.FC = () => {
             />
             
             <div className="grid lg:grid-cols-2 gap-12 mt-16">
-              {/* Left Column - Content Blocks */}
               <ScrollReveal direction="right" delay={0.1}>
                 <div className="space-y-8">
-                  {/* Market Gap Card */}
                   <motion.div 
                     whileHover={{ y: -8 }}
                     className="group p-8 rounded-2xl bg-gradient-to-br from-white/[0.03] to-transparent border border-white/[0.06] hover:border-amber-500/40 transition-all duration-500 relative overflow-hidden"
                   >
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 to-transparent" />
                     <div className="absolute -top-24 -right-24 w-48 h-48 bg-gradient-to-br from-amber-500/10 to-transparent rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700" />
-                    
                     <div className="relative z-10">
                       <div className="flex items-center gap-3 mb-5">
                         <motion.div 
@@ -917,14 +867,12 @@ const About: React.FC = () => {
                     </div>
                   </motion.div>
                   
-                  {/* Dual Purpose Card */}
                   <motion.div 
                     whileHover={{ y: -8 }}
                     className="group p-8 rounded-2xl bg-gradient-to-br from-white/[0.03] to-transparent border border-white/[0.06] hover:border-amber-500/40 transition-all duration-500 relative overflow-hidden"
                   >
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-transparent" />
                     <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-gradient-to-br from-blue-500/10 to-transparent rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700" />
-                    
                     <div className="relative z-10">
                       <div className="flex items-center gap-3 mb-5">
                         <motion.div 
@@ -959,7 +907,6 @@ const About: React.FC = () => {
                 </div>
               </ScrollReveal>
               
-              {/* Right Column - Quote Card (Sticky) */}
               <ScrollReveal direction="left" delay={0.2}>
                 <div className="sticky top-32">
                   <TiltCard glow>
@@ -969,7 +916,6 @@ const About: React.FC = () => {
                       transition={{ duration: 0.3 }}
                     >
                       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.1)_0%,transparent_70%)]" />
-                      
                       <motion.div
                         animate={{ rotate: 360 }}
                         transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
@@ -977,26 +923,21 @@ const About: React.FC = () => {
                       >
                         <Quote className="w-24 h-24 text-amber-500/30 mx-auto" />
                       </motion.div>
-                      
                       <p className="text-3xl md:text-4xl lg:text-5xl font-medium text-white leading-relaxed italic relative z-10">
                         "What we sell is not just a product — we sell a service. The screw is just the beginning."
                       </p>
-                      
                       <motion.div 
                         className="mt-8 h-px w-24 bg-gradient-to-r from-transparent via-amber-500 to-transparent mx-auto"
                         initial={{ width: 0, opacity: 0 }}
                         whileInView={{ width: 96, opacity: 1 }}
                         transition={{ duration: 0.8, delay: 0.3 }}
                       />
-                      
                       <div className="mt-6 relative z-10">
                         <p className="text-xl font-bold bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text text-transparent">
                           Vipul Sakariya
                         </p>
                         <p className="text-base text-slate-400 mt-1">Founder & CEO, DFPL</p>
                       </div>
-                      
-                      {/* Animated border effect */}
                       <motion.div 
                         className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-amber-500 to-transparent"
                         initial={{ scaleX: 0 }}
@@ -1010,13 +951,10 @@ const About: React.FC = () => {
             </div>
           </div>
         </section>
-        
-        {/* ============================================ */}
-        {/* SECTION: THE EVOLUTION — THE EARLY JOURNEY */}
-        {/* ============================================ */}
+
+        {/* ========== THE EARLY JOURNEY (ENLARGED) ========== */}
         <section id="early-journey" className="py-32 px-6 bg-gradient-to-b from-[#0A0A0F] via-[#050508] to-[#0A0A0F] relative overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(245,158,11,0.06)_0%,transparent_70%)]" />
-          
           <div className="max-w-[1400px] mx-auto relative z-10">
             <SectionHeader 
               badge="03 // THE EVOLUTION — THE EARLY JOURNEY"
@@ -1026,7 +964,6 @@ const About: React.FC = () => {
               align="center"
             />
             
-            {/* Critical Incident Card - Hero Style */}
             <ScrollReveal direction="up" delay={0.1}>
               <motion.div 
                 className="mb-20 p-8 md:p-12 rounded-3xl bg-gradient-to-br from-red-500/10 to-transparent border border-red-500/30 text-center max-w-4xl mx-auto relative overflow-hidden group"
@@ -1035,19 +972,15 @@ const About: React.FC = () => {
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-red-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                 <div className="absolute -top-32 -right-32 w-64 h-64 bg-red-500/20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700" />
-                
                 <div className="relative z-10">
                   <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-500/20 border border-red-500/30 mb-6">
                     <AlertTriangle className="w-5 h-5 text-red-400" />
                     <span className="text-sm font-bold text-red-400 uppercase tracking-wider">Critical Incident</span>
                   </div>
-                  
                   <h3 className="text-4xl md:text-6xl font-bold text-white mb-5">The ₹8 Lakh Rejection</h3>
-                  
                   <p className="text-slate-300 text-xl md:text-2xl mb-4 max-w-2xl mx-auto">
                     A major order of <strong className="text-white">5,000 kg</strong> was rejected due to a head-cutting issue.
                   </p>
-                  
                   <motion.div 
                     className="mt-6 p-5 rounded-xl bg-gradient-to-r from-amber-500/10 to-transparent inline-block"
                     initial={{ opacity: 0, y: 20 }}
@@ -1063,16 +996,13 @@ const About: React.FC = () => {
             </ScrollReveal>
             
             <div className="grid lg:grid-cols-2 gap-12 mb-16">
-              {/* Left Column */}
               <ScrollReveal direction="right" delay={0.2}>
                 <div className="space-y-8">
-                  {/* Turning Point Card */}
                   <motion.div 
                     whileHover={{ y: -8 }}
                     className="group p-8 rounded-2xl bg-gradient-to-br from-blue-500/5 to-transparent border border-blue-500/20 hover:border-blue-500/40 transition-all duration-500 relative overflow-hidden"
                   >
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-transparent" />
-                    
                     <div className="flex items-center gap-3 mb-5">
                       <motion.div 
                         className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-600/10 flex items-center justify-center"
@@ -1083,11 +1013,9 @@ const About: React.FC = () => {
                       </motion.div>
                       <h3 className="text-3xl font-bold text-white">Turning Point</h3>
                     </div>
-                    
                     <p className="text-slate-300 text-lg leading-relaxed mb-5">
                       This failure became a breakthrough. DFPL shifted focus toward <strong className="text-white">application engineering</strong>, studying real-world usage conditions instead of just manufacturing standards.
                     </p>
-                    
                     <div className="mt-5 p-5 rounded-xl bg-gradient-to-r from-emerald-500/10 to-transparent border-l-3 border-emerald-500">
                       <p className="text-emerald-400 text-base font-semibold mb-2">🎯 Key Learning:</p>
                       <p className="text-slate-300 text-base">
@@ -1096,13 +1024,11 @@ const About: React.FC = () => {
                     </div>
                   </motion.div>
                   
-                  {/* Strategic Shift Card */}
                   <motion.div 
                     whileHover={{ y: -8 }}
                     className="group p-8 rounded-2xl bg-gradient-to-br from-emerald-500/5 to-transparent border border-emerald-500/20 hover:border-emerald-500/40 transition-all duration-500 relative overflow-hidden"
                   >
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-transparent" />
-                    
                     <div className="flex items-center gap-3 mb-5">
                       <motion.div 
                         className="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 flex items-center justify-center"
@@ -1113,11 +1039,9 @@ const About: React.FC = () => {
                       </motion.div>
                       <h3 className="text-3xl font-bold text-white">Strategic Shift</h3>
                     </div>
-                    
                     <p className="text-slate-300 text-lg mb-4">
                       We began analyzing international standards and building systems that account for:
                     </p>
-                    
                     <div className="grid grid-cols-1 gap-3">
                       <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5">
                         <CheckCircle className="w-6 h-6 text-emerald-400" />
@@ -1136,72 +1060,8 @@ const About: React.FC = () => {
                 </div>
               </ScrollReveal>
               
-              {/* Right Column */}
               <ScrollReveal direction="left" delay={0.3}>
                 <div className="space-y-8">
-                  {/* 
-                  <motion.div 
-                    whileHover={{ y: -8 }}
-                    className="group p-8 rounded-2xl bg-gradient-to-br from-amber-500/10 to-transparent border border-amber-500/30 hover:border-amber-500/50 transition-all duration-500 relative overflow-hidden"
-                  >
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 via-amber-400 to-transparent" />
-                    <div className="absolute -top-24 -right-24 w-48 h-48 bg-amber-500/20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700" />
-                    
-                    <div className="relative z-10">
-                      <h3 className="text-3xl font-bold text-white mb-6 text-center flex items-center justify-center gap-2">
-                        <Trophy className="w-7 h-7 text-amber-400" />
-                        Breakthrough Achievements
-                      </h3>
-                      
-                      <div className="grid grid-cols-2 gap-5">
-                        <motion.div 
-                          className="text-center p-5 rounded-xl bg-gradient-to-br from-white/[0.05] to-transparent border border-white/[0.06]"
-                          whileHover={{ scale: 1.05 }}
-                        >
-                          <div className="text-5xl font-bold bg-gradient-to-r from-amber-400 to-amber-500 bg-clip-text text-transparent">120</div>
-                          <div className="text-base text-slate-400 mt-1">Cartons Delivered</div>
-                          <div className="text-sm text-emerald-400 mt-2 font-medium">Value: ₹5 Lakh</div>
-                        </motion.div>
-                        
-                        <motion.div 
-                          className="text-center p-5 rounded-xl bg-gradient-to-br from-white/[0.05] to-transparent border border-white/[0.06]"
-                          whileHover={{ scale: 1.05 }}
-                        >
-                          <div className="text-5xl font-bold bg-gradient-to-r from-amber-400 to-amber-500 bg-clip-text text-transparent">200</div>
-                          <div className="text-base text-slate-400 mt-1">Cartons Delivered</div>
-                          <div className="text-sm text-emerald-400 mt-2 font-medium">Value: ₹12 Lakh</div>
-                        </motion.div>
-                      </div>
-                    </div>
-                  </motion.div>
-                  
-                  {/* 
-                  <motion.div 
-                    whileHover={{ y: -8 }}
-                    className="group p-8 rounded-2xl bg-gradient-to-br from-white/[0.03] to-transparent border border-white/[0.06] hover:border-amber-500/40 transition-all duration-500"
-                  >
-                    <h3 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
-                      <Users className="w-6 h-6 text-amber-400" />
-                      Early Trusted Partners
-                    </h3>
-                    
-                    <div className="flex flex-wrap gap-3">
-                      <motion.span 
-                        className="px-4 py-2 rounded-full bg-gradient-to-r from-amber-500/10 to-transparent border border-amber-500/20 text-slate-300 text-base"
-                        whileHover={{ scale: 1.05, x: 5 }}
-                      >
-                        Bhumi Associates
-                      </motion.span>
-                      <motion.span 
-                        className="px-4 py-2 rounded-full bg-gradient-to-r from-amber-500/10 to-transparent border border-amber-500/20 text-slate-300 text-base"
-                        whileHover={{ scale: 1.05, x: 5 }}
-                      >
-                        Ramdev Hardware
-                      </motion.span>
-                    </div>
-                  </motion.div>
-                  
-                  {/* Closing Philosophy Card */}
                   <motion.div 
                     whileHover={{ scale: 1.02 }}
                     className="p-6 rounded-2xl bg-gradient-to-r from-amber-500/10 to-transparent border-l-4 border-amber-500 relative overflow-hidden group"
@@ -1226,7 +1086,6 @@ const About: React.FC = () => {
               </ScrollReveal>
             </div>
             
-            {/* Timeline Decorative Element */}
             <ScrollReveal direction="up" delay={0.4}>
               <div className="flex justify-center mt-12">
                 <div className="flex items-center gap-2">
@@ -1241,9 +1100,7 @@ const About: React.FC = () => {
           </div>
         </section>
 
-        {/* ============================================ */}
-        {/* SECTION: WHY CHOOSE US - FEATURE GRID (ORIGINAL - KEPT AS IS) */}
-        {/* ============================================ */}
+        {/* ========== WHY CHOOSE US (unchanged but titles already enlarged in FeatureCard) ========== */}
         <section className="py-32 px-6 bg-gradient-to-b from-[#0A0A0F] via-[#050508] to-[#0A0A0F]">
           <div className="max-w-[1400px] mx-auto">
             <SectionHeader 
@@ -1252,7 +1109,6 @@ const About: React.FC = () => {
               highlight="Advantage"
               description="What makes us the preferred partner for industry leaders across India"
             />
-
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[
                 { icon: ShieldCheck, title: "Uncompromising Quality", description: "QC at every stage—wire, heading, threading, heat treat—ensuring international standard compliance.", gradient: "from-emerald-500", metrics: { value: "100%", label: "Quality Certified" } },
@@ -1268,10 +1124,7 @@ const About: React.FC = () => {
           </div>
         </section>
 
-        {/* ============================================ */}
-        {/* SECTION: MISSION & VISION - PREMIUM CARDS (ORIGINAL) */}
-        {/* ============================================ */}
-
+        {/* ========== MISSION & VISION (ENLARGED) ========== */}
         <section id="mission" className="py-32 px-6 relative bg-gradient-to-b from-transparent via-amber-500/5 to-transparent">
           <div className="max-w-[1400px] mx-auto">
             <SectionHeader 
@@ -1280,9 +1133,7 @@ const About: React.FC = () => {
               highlight="Vision"
               description="Driving industrial excellence through uncompromising quality and system-driven reliability"
             />
-
             <div className="grid md:grid-cols-2 gap-8">
-              {/* Mission Card */}
               <ScrollReveal direction="right" delay={0.1}>
                 <TiltCard glow>
                   <motion.div 
@@ -1291,7 +1142,6 @@ const About: React.FC = () => {
                   >
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 via-amber-400 to-transparent" />
                     <div className="absolute -top-24 -right-24 w-48 h-48 bg-gradient-to-br from-amber-500/10 to-transparent rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700" />
-                    
                     <div className="relative z-10">
                       <motion.div 
                         className="w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform"
@@ -1313,7 +1163,6 @@ const About: React.FC = () => {
                 </TiltCard>
               </ScrollReveal>
 
-              {/* Vision Card */}
               <ScrollReveal direction="left" delay={0.2}>
                 <TiltCard glow>
                   <motion.div 
@@ -1322,7 +1171,6 @@ const About: React.FC = () => {
                   >
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 via-amber-400 to-transparent" />
                     <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-gradient-to-br from-amber-500/10 to-transparent rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700" />
-                    
                     <div className="relative z-10">
                       <motion.div 
                         className="w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform"
@@ -1347,13 +1195,9 @@ const About: React.FC = () => {
           </div>
         </section>
 
-        {/* ============================================ */}
-        {/* SECTION: STATISTICS - DYNAMIC METRICS (ORIGINAL) */}
-        {/* ============================================ */}
-
+        {/* ========== STATISTICS (titles already enlarged) ========== */}
         <section className="py-32 px-6 relative overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.08)_0%,transparent_70%)]" />
-          
           <div className="max-w-[1400px] mx-auto relative z-10">
             <SectionHeader 
               badge="Performance Metrics"
@@ -1361,7 +1205,6 @@ const About: React.FC = () => {
               highlight="Speak for Themselves"
               description="Real-time performance metrics that demonstrate our commitment to excellence"
             />
-
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
               <StatCard icon={Truck} label="On-Time Dispatch" value={95} suffix="%" delay={0} trend="+12% YoY" />
               <StatCard icon={CheckCircle2} label="Order Accuracy" value={99} suffix="%" delay={0.1} trend="+5% YoY" />
@@ -1375,10 +1218,7 @@ const About: React.FC = () => {
           </div>
         </section>
 
-        {/* ============================================ */}
-        {/* SECTION: OUR PROCESS - TIMELINE STYLE (ORIGINAL) */}
-        {/* ============================================ */}
-
+        {/* ========== OUR PROCESS (titles enlarged) ========== */}
         <section id="process" className="py-32 px-6 bg-gradient-to-b from-[#050508] to-[#0A0A0F]">
           <div className="max-w-[1400px] mx-auto">
             <SectionHeader 
@@ -1387,13 +1227,9 @@ const About: React.FC = () => {
               highlight="Process"
               description="A systematic approach ensuring zero errors and 100% reliability"
             />
-
             <div className="grid lg:grid-cols-2 gap-16">
-              {/* Process Steps with Timeline */}
               <div className="relative">
-                {/* Vertical Timeline Line */}
                 <div className="absolute left-7 top-0 bottom-0 w-[2px] bg-gradient-to-b from-amber-500 via-amber-500/30 to-transparent hidden md:block" />
-                
                 <div className="space-y-8">
                   {[
                     { step: "01", title: "Forging Instead of Heading", desc: "Wire → Heading → Threading → Stock → Heat Treat → Plating → Packing → Dispatch", icon: Settings, color: "from-amber-500" },
@@ -1407,9 +1243,7 @@ const About: React.FC = () => {
                         className="group flex items-start gap-6 p-6 rounded-xl bg-gradient-to-r from-white/[0.02] to-transparent border border-white/[0.04] hover:border-amber-500/30 transition-all duration-500 relative"
                         whileHover={{ x: 15 }}
                       >
-                        {/* Timeline Dot */}
                         <div className="hidden md:block absolute -left-[31px] top-8 w-4 h-4 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 shadow-glow" />
-                        
                         <motion.div 
                           className={`flex-shrink-0 w-16 h-16 rounded-xl bg-gradient-to-br ${step.color}/20 to-transparent flex items-center justify-center text-2xl font-bold text-amber-400 group-hover:scale-110 transition-transform`}
                           whileHover={{ rotate: 360 }}
@@ -1427,7 +1261,6 @@ const About: React.FC = () => {
                 </div>
               </div>
 
-              {/* Quality Guarantee Card - Premium */}
               <ScrollReveal direction="left" delay={0.2}>
                 <div className="sticky top-32">
                   <TiltCard glow>
@@ -1443,12 +1276,11 @@ const About: React.FC = () => {
                         >
                           <Shield className="w-12 h-12 text-amber-400" />
                         </motion.div>
-                        <h3 className="text-3xl font-bold text-white mb-4">Our Commitment</h3>
+                        <h3 className="text-4xl font-bold text-white mb-4">Our Commitment</h3>
                         <p className="text-slate-300 text-xl leading-relaxed">
                           "If wrong material is sent, DFPL covers 100% of replacement costs. If a delay occurs, we deliver before the deadline with 2 buffer days."
                         </p>
                       </div>
-                      
                       <div className="border-t border-white/10 pt-8">
                         <div className="flex items-center justify-between mb-4">
                           <span className="text-base text-slate-400 font-medium">Zero error rate in material accuracy</span>
@@ -1486,10 +1318,7 @@ const About: React.FC = () => {
           </div>
         </section>
 
-        {/* ============================================ */}
-        {/* SECTION: VALUES - CORE PRINCIPLES (ORIGINAL) */}
-        {/* ============================================ */}
-
+        {/* ========== VALUES (titles enlarged) ========== */}
         <section id="values" className="py-32 px-6">
           <div className="max-w-[1400px] mx-auto">
             <SectionHeader 
@@ -1498,7 +1327,6 @@ const About: React.FC = () => {
               highlight="Guide Us"
               description="Our foundational values that shape every decision we make"
             />
-
             <div className="grid grid-cols-2 lg:grid-cols-5 gap-5">
               {[
                 { icon: ShieldCheck, title: "Quality First", description: "Zero compromise", color: "from-emerald-500", metric: "ISO Certified" },
@@ -1520,7 +1348,7 @@ const About: React.FC = () => {
                       >
                         <value.icon className="w-8 h-8 text-amber-400" />
                       </motion.div>
-                      <h4 className="text-lg font-bold text-white mb-2">{value.title}</h4>
+                      <h4 className="text-xl font-bold text-white mb-2">{value.title}</h4>
                       <p className="text-sm text-slate-400 mb-3">{value.description}</p>
                       <div className="text-xs text-amber-400/60 uppercase tracking-wider">{value.metric}</div>
                     </motion.div>
@@ -1531,10 +1359,7 @@ const About: React.FC = () => {
           </div>
         </section>
 
-        {/* ============================================ */}
-        {/* SECTION: TEAM - LEADERSHIP (ORIGINAL) */}
-        {/* ============================================ */}
-
+        {/* ========== TEAM (unchanged) ========== */}
         <section id="team" className="py-32 px-6 bg-gradient-to-b from-[#0A0A0F] to-[#050508]">
           <div className="max-w-[1400px] mx-auto">
             <SectionHeader 
@@ -1543,7 +1368,6 @@ const About: React.FC = () => {
               highlight="Team"
               description="The dedicated professionals driving DFPL's success"
             />
-
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               <TeamMemberCard 
                 name="Vipul Sakariya" 
@@ -1573,10 +1397,7 @@ const About: React.FC = () => {
           </div>
         </section>
 
-        {/* ============================================ */}
-        {/* SECTION: TESTIMONIALS (ORIGINAL) */}
-        {/* ============================================ */}
-
+        {/* ========== TESTIMONIALS (unchanged) ========== */}
         <section className="py-32 px-6">
           <div className="max-w-[1400px] mx-auto">
             <SectionHeader 
@@ -1585,7 +1406,6 @@ const About: React.FC = () => {
               highlight="Clients Say"
               description="Trusted by industry leaders across India"
             />
-
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               <TestimonialCard 
                 quote="DFPL has been our trusted partner for over 5 years. Their quality standards and on-time delivery are unmatched in the industry."
@@ -1609,13 +1429,9 @@ const About: React.FC = () => {
           </div>
         </section>
 
-        {/* ============================================ */}
-        {/* SECTION: ROADMAP - FUTURE JOURNEY (ORIGINAL) */}
-        {/* ============================================ */}
-
+        {/* ========== ROADMAP (titles enlarged) ========== */}
         <section className="py-32 px-6 bg-gradient-to-b from-[#0A0A0F] via-[#050508] to-[#0A0A0F] relative overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.05)_0%,transparent_70%)]" />
-          
           <div className="max-w-[1400px] mx-auto relative z-10">
             <SectionHeader 
               badge="Future Roadmap"
@@ -1623,7 +1439,6 @@ const About: React.FC = () => {
               highlight="Journey"
               description="Our ambitious growth trajectory towards becoming India's most trusted fastener brand"
             />
-
             <div className="grid md:grid-cols-3 gap-8">
               {[
                 { year: "2025-26", value: "₹5.12 Cr", label: "Current Turnover", status: "Active", color: "from-emerald-500", icon: Target, achievements: ["95% Dispatch", "99% Accuracy"] },
@@ -1638,7 +1453,6 @@ const About: React.FC = () => {
                     >
                       <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${item.color} to-transparent`} />
                       <div className="absolute -top-20 -right-20 w-40 h-40 bg-amber-500/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700" />
-                      
                       <div className="relative z-10">
                         <motion.div 
                           className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${item.color}/20 to-transparent flex items-center justify-center mx-auto mb-4`}
@@ -1653,8 +1467,6 @@ const About: React.FC = () => {
                         <div className={`inline-block px-4 py-1 rounded-full text-sm font-medium bg-gradient-to-r ${item.color}/20 to-transparent text-amber-400 mb-4`}>
                           {item.status}
                         </div>
-                        
-                        {/* Achievement Badges */}
                         <div className="flex flex-wrap justify-center gap-2 mt-4">
                           {item.achievements.map((ach, i) => (
                             <span key={i} className="text-xs px-2 py-1 rounded-full bg-white/5 text-slate-400">
@@ -1668,8 +1480,6 @@ const About: React.FC = () => {
                 </ScrollReveal>
               ))}
             </div>
-
-            {/* Timeline Connection Animation */}
             <div className="hidden md:flex justify-between items-center mt-12 px-8">
               {[1, 2].map((_, idx) => (
                 <motion.div 
@@ -1684,13 +1494,9 @@ const About: React.FC = () => {
           </div>
         </section>
 
-        {/* ============================================ */}
-        {/* SECTION: FOUNDER'S NOTE - CINEMATIC (ORIGINAL) */}
-        {/* ============================================ */}
-
+        {/* ========== FOUNDER'S NOTE (unchanged) ========== */}
         <section className="py-40 px-6 relative overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(245,158,11,0.12)_0%,transparent_70%)]" />
-          
           <div className="max-w-5xl mx-auto text-center relative z-10">
             <ScrollReveal direction="up">
               <motion.div 
@@ -1700,9 +1506,8 @@ const About: React.FC = () => {
               >
                 <Quote className="w-14 h-14 text-amber-400" strokeWidth={1.5} />
               </motion.div>
-              
               <motion.h2 
-                className="text-3xl md:text-5xl lg:text-6xl font-light italic text-slate-200 leading-relaxed mb-12"
+                className="text-4xl md:text-6xl lg:text-7xl font-light italic text-slate-200 leading-relaxed mb-12"
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
@@ -1719,7 +1524,6 @@ const About: React.FC = () => {
                 </span>{" "}
                 in 8 years. And we never will."
               </motion.h2>
-              
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
@@ -1729,8 +1533,6 @@ const About: React.FC = () => {
                   Vipul Sakariya
                 </div>
                 <div className="text-base text-amber-400 font-medium uppercase tracking-[0.2em]">Founder & Visionary, DFPL</div>
-                
-                {/* Signature Line */}
                 <motion.div 
                   className="w-20 h-[2px] bg-amber-500 mx-auto mt-6"
                   initial={{ width: 0 }}
@@ -1742,10 +1544,7 @@ const About: React.FC = () => {
           </div>
         </section>
 
-        {/* ============================================ */}
-        {/* SECTION: CTA - CONVERSION FOCUSED (ORIGINAL) */}
-        {/* ============================================ */}
-
+        {/* ========== CTA (unchanged) ========== */}
         <section id="contact" className="py-24 px-6">
           <div className="max-w-[1200px] mx-auto">
             <ScrollReveal direction="up">
@@ -1754,10 +1553,7 @@ const About: React.FC = () => {
                 whileHover={{ scale: 1.01 }}
                 transition={{ duration: 0.3 }}
               >
-                {/* Background Texture */}
                 <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E')] opacity-10" />
-                
-                {/* Animated Particles */}
                 {[...Array(8)].map((_, i) => (
                   <motion.div
                     key={i}
@@ -1779,7 +1575,6 @@ const About: React.FC = () => {
                     style={{ left: `${Math.random() * 100}%`, top: `${Math.random() * 100}%` }}
                   />
                 ))}
-                
                 <div className="relative z-10">
                   <motion.div
                     animate={{ y: [0, -5, 0] }}
@@ -1788,8 +1583,7 @@ const About: React.FC = () => {
                   >
                     <Gem className="w-14 h-14 text-white/80" />
                   </motion.div>
-                  
-                  <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-4">Ready to Partner with Excellence?</h2>
+                  <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-4">Ready to Partner with Excellence?</h2>
                   <p className="text-amber-100 text-xl mb-10 max-w-2xl mx-auto leading-relaxed">
                     Join India's most trusted fastener manufacturer. Experience the DFPL difference with guaranteed quality and on-time delivery.
                   </p>
@@ -1823,8 +1617,6 @@ const About: React.FC = () => {
                       Request Quote
                     </motion.button>
                   </div>
-                  
-                  {/* Trust Badges */}
                   <div className="flex flex-wrap justify-center gap-6 mt-10 pt-6 border-t border-white/20">
                     <div className="flex items-center gap-2 text-amber-100 text-base">
                       <CheckCircle className="w-5 h-5" />
@@ -1845,83 +1637,64 @@ const About: React.FC = () => {
           </div>
         </section>
 
-        {/* Custom CSS for premium styling */}
+        {/* Custom CSS - unchanged */}
         <style dangerouslySetInnerHTML={{ __html: `
           * {
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
           }
-          
           ::-webkit-scrollbar {
             width: 10px;
           }
-          
           ::-webkit-scrollbar-track {
             background: #0A0A0F;
           }
-          
           ::-webkit-scrollbar-thumb {
             background: linear-gradient(135deg, #f59e0b, #d97706);
             border-radius: 5px;
           }
-          
           ::-webkit-scrollbar-thumb:hover {
             background: #d97706;
           }
-          
           ::selection {
             background: #f59e0b;
             color: #000;
           }
-          
-          /* Smooth Scroll Behavior */
           html {
             scroll-behavior: smooth;
           }
-          
-          /* Custom Animations */
           @keyframes float {
             0%, 100% { transform: translateY(0px) translateX(0px); }
             25% { transform: translateY(-10px) translateX(5px); }
             75% { transform: translateY(10px) translateX(-5px); }
           }
-          
           @keyframes pulse-glow {
             0%, 100% { opacity: 0.2; filter: blur(100px); }
             50% { opacity: 0.4; filter: blur(120px); }
           }
-          
           @keyframes shimmer {
             0% { background-position: -200% 0; }
             100% { background-position: 200% 0; }
           }
-          
           .animate-float {
             animation: float 8s ease-in-out infinite;
           }
-          
           .animate-pulse-glow {
             animation: pulse-glow 4s ease-in-out infinite;
           }
-          
           .shimmer-text {
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
             background-size: 200% 100%;
             animation: shimmer 2s infinite;
           }
-          
-          /* Glass Effect */
           .glass {
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.05);
           }
-          
-          /* Hide scrollbar for cleaner look on some elements */
           .hide-scrollbar::-webkit-scrollbar {
             display: none;
           }
-          
           .hide-scrollbar {
             -ms-overflow-style: none;
             scrollbar-width: none;
