@@ -1011,7 +1011,7 @@ const About: React.FC = () => {
                   <h3 className="text-4xl md:text-6xl font-bold text-white mb-5">The ₹1 Crore PCS Rejection</h3>
                   
                   <p className="text-slate-300 text-xl md:text-2xl mb-4 max-w-2xl mx-auto">
-                    A major order of <strong className="text-white">5,000 kg</strong> was rejected due to a head-cutting issue.
+                    A major order of <strong className="text-white">1 crore / 10 million</strong> was rejected due to a head-cutting issue.
                   </p>
                   
                   <motion.div 
