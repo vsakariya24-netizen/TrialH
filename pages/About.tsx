@@ -922,6 +922,8 @@ const About: React.FC = () => {
                         <p className="text-emerald-400 text-lg md:text-xl font-semibold">
                           This led to the creation of a one-day dispatch(Running Item) system, backed by strict quality control protocols.
                         </p>
+
+                        
                       </div>
                     </div>
                   </motion.div>
@@ -1158,7 +1160,7 @@ const About: React.FC = () => {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[
                 { icon: ShieldCheck, title: "Uncompromising Quality", description: "QC at every stage—wire, heading, threading, heat treat—ensuring international standard compliance.", gradient: "from-emerald-500", metrics: { value: "100%", label: "Quality Certified" } },
-                { icon: Truck, title: "One-Day Dispatch", description: "Real-time inventory management with floor stock matching system records for guaranteed 1-day dispatch(Running Item).", gradient: "from-blue-500", metrics: { value: "95%", label: "On-Time Delivery" } },
+                { icon: Truck, title: "One-Day Dispatch(Running Item) ", description: "Real-time inventory management with floor stock matching system records for guaranteed 1-day dispatch(Running Item).", gradient: "from-blue-500", metrics: { value: "95%", label: "On-Time Delivery" } },
                 { icon: Scale, title: "Absolute Ethics", description: "Strict adherence to regulations and financial systems. Built for multi-decade sustainable growth.", gradient: "from-purple-500", metrics: { value: "8+", label: "Years Trust" } },
                 { icon: Zap, title: "10x Value Delivery", description: "Delivering 10x value for every rupee invested through superior quality and reliability.", gradient: "from-amber-500", metrics: { value: "10x", label: "ROI Delivered" } },
                 { icon: Microscope, title: "Advanced R&D", description: "Continuous innovation and development of new technologies for evolving industry needs.", gradient: "from-rose-500", metrics: { value: "24/7", label: "Innovation Lab" } },
