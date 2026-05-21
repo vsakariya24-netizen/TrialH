@@ -1493,7 +1493,7 @@ const About: React.FC = () => {
               />
               <TestimonialCard 
                 quote="The professionalism and system-driven approach of DFPL sets them apart. They treat fasteners as precision-engineered products, not just hardware."
-                author="Suresh Mehta"
+                author="Mr.Suresh"
                 role="Owner, Ramdev Hardware"
                 delay={0.1}
               />
