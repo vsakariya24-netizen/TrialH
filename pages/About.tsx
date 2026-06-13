@@ -9,7 +9,7 @@ import {
   Truck, Timer, BarChart3, Binary, HardHat, Package, PackageCheck,
   FileCheck, Database, ClipboardCheck,
   History, Repeat, XCircle, CheckCircle, ArrowRight, 
-  ArrowUp, 
+  ArrowUp, ArrowDown,
   Globe, Rocket, Quote, MoveRight, Layers, Building2,
   Play, Star, Crown, Sparkles, Clock, Shield, ThumbsUp, ChevronDown,
   Hexagon, Activity, Cpu, CircuitBoard, Globe2, Award as AwardIcon,
@@ -22,7 +22,7 @@ import {
   TriangleAlert, Crosshair, 
   ShieldX,
   Lightbulb,
-  BarChart, ArrowDown, Handshake,
+  BarChart, Handshake,
 } from 'lucide-react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
@@ -63,23 +63,25 @@ const designSystem = {
 };
 
 // ============================================
-// AI-INSPIRED PREMIUM ICON COMPONENTS
+// AI-INSPIRED PREMIUM ICON COMPONENTS (FIXED PROPS)
 // ============================================
-const AIIconWrapper = ({ children, size = 24, color = "currentColor" }: { children: React.ReactNode, size?: number, color?: string }) => (
+const AIIconWrapper = ({ children, size = 24, color = "currentColor", className = "", ...props }: any) => (
   <svg
     width={size}
     height={size}
     viewBox="0 0 24 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    className={className}
     style={{ filter: "drop-shadow(0 0 6px rgba(245,158,11,0.5))" }}
+    {...props}
   >
     {children}
   </svg>
 );
 
-const QualityIcon = ({ size = 24, color = "#f59e0b" }) => (
-  <AIIconWrapper size={size} color={color}>
+const QualityIcon = ({ size = 24, color = "#f59e0b", className = "", ...props }: any) => (
+  <AIIconWrapper size={size} color={color} className={className} {...props}>
     <path d="M12 2L15 8L22 9L17 14L18 21L12 18L6 21L7 14L2 9L9 8L12 2Z" stroke={color} strokeWidth="1.5" fill="none" strokeLinejoin="round"/>
     <circle cx="12" cy="12" r="3" stroke={color} strokeWidth="1.5" fill="none"/>
     <path d="M12 9V12L14 14" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
@@ -89,8 +91,8 @@ const QualityIcon = ({ size = 24, color = "#f59e0b" }) => (
   </AIIconWrapper>
 );
 
-const LogisticsIcon = ({ size = 24, color = "#f59e0b" }) => (
-  <AIIconWrapper size={size} color={color}>
+const LogisticsIcon = ({ size = 24, color = "#f59e0b", className = "", ...props }: any) => (
+  <AIIconWrapper size={size} color={color} className={className} {...props}>
     <path d="M4 6H20V18H4V6Z" stroke={color} strokeWidth="1.5" fill="none" strokeLinejoin="round"/>
     <circle cx="8" cy="12" r="1.5" fill={color} stroke="none"/>
     <circle cx="16" cy="12" r="1.5" fill={color} stroke="none"/>
@@ -101,8 +103,8 @@ const LogisticsIcon = ({ size = 24, color = "#f59e0b" }) => (
   </AIIconWrapper>
 );
 
-const EthicsIcon = ({ size = 24, color = "#f59e0b" }) => (
-  <AIIconWrapper size={size} color={color}>
+const EthicsIcon = ({ size = 24, color = "#f59e0b", className = "", ...props }: any) => (
+  <AIIconWrapper size={size} color={color} className={className} {...props}>
     <path d="M12 2V22" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
     <path d="M4 6L12 10L20 6" stroke={color} strokeWidth="1.5" fill="none" strokeLinejoin="round"/>
     <path d="M4 14L12 18L20 14" stroke={color} strokeWidth="1.5" fill="none" strokeLinejoin="round"/>
@@ -112,8 +114,8 @@ const EthicsIcon = ({ size = 24, color = "#f59e0b" }) => (
   </AIIconWrapper>
 );
 
-const ValueIcon = ({ size = 24, color = "#f59e0b" }) => (
-  <AIIconWrapper size={size} color={color}>
+const ValueIcon = ({ size = 24, color = "#f59e0b", className = "", ...props }: any) => (
+  <AIIconWrapper size={size} color={color} className={className} {...props}>
     <path d="M12 2L20 7L12 12L4 7L12 2Z" stroke={color} strokeWidth="1.5" fill="none" strokeLinejoin="round"/>
     <path d="M4 7L12 12L20 7" stroke={color} strokeWidth="1.5" fill="none" strokeLinejoin="round"/>
     <path d="M12 12V22" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
@@ -123,8 +125,8 @@ const ValueIcon = ({ size = 24, color = "#f59e0b" }) => (
   </AIIconWrapper>
 );
 
-const InnovationIcon = ({ size = 24, color = "#f59e0b" }) => (
-  <AIIconWrapper size={size} color={color}>
+const InnovationIcon = ({ size = 24, color = "#f59e0b", className = "", ...props }: any) => (
+  <AIIconWrapper size={size} color={color} className={className} {...props}>
     <circle cx="12" cy="12" r="8" stroke={color} strokeWidth="1.5" fill="none"/>
     <path d="M12 4V8" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
     <path d="M12 16V20" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
@@ -137,8 +139,8 @@ const InnovationIcon = ({ size = 24, color = "#f59e0b" }) => (
   </AIIconWrapper>
 );
 
-const CustomerIcon = ({ size = 24, color = "#f59e0b" }) => (
-  <AIIconWrapper size={size} color={color}>
+const CustomerIcon = ({ size = 24, color = "#f59e0b", className = "", ...props }: any) => (
+  <AIIconWrapper size={size} color={color} className={className} {...props}>
     <path d="M12 21C12 21 20 15 20 10C20 6 17 4 12 4C7 4 4 6 4 10C4 15 12 21 12 21Z" stroke={color} strokeWidth="1.5" fill="none"/>
     <path d="M12 7V13" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
     <circle cx="12" cy="16" r="1" fill={color} stroke="none"/>
@@ -146,8 +148,8 @@ const CustomerIcon = ({ size = 24, color = "#f59e0b" }) => (
   </AIIconWrapper>
 );
 
-const ManufacturingIcon = ({ size = 24, color = "#f59e0b" }) => (
-  <AIIconWrapper size={size} color={color}>
+const ManufacturingIcon = ({ size = 24, color = "#f59e0b", className = "", ...props }: any) => (
+  <AIIconWrapper size={size} color={color} className={className} {...props}>
     <path d="M6 10L10 8V16L6 14V10Z" stroke={color} strokeWidth="1.5" fill="none" strokeLinejoin="round"/>
     <path d="M18 14L14 16V8L18 6V14Z" stroke={color} strokeWidth="1.5" fill="none" strokeLinejoin="round"/>
     <path d="M10 8L14 6" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
@@ -157,8 +159,8 @@ const ManufacturingIcon = ({ size = 24, color = "#f59e0b" }) => (
   </AIIconWrapper>
 );
 
-const VerifyIcon = ({ size = 24, color = "#f59e0b" }) => (
-  <AIIconWrapper size={size} color={color}>
+const VerifyIcon = ({ size = 24, color = "#f59e0b", className = "", ...props }: any) => (
+  <AIIconWrapper size={size} color={color} className={className} {...props}>
     <circle cx="12" cy="12" r="9" stroke={color} strokeWidth="1.5" fill="none"/>
     <path d="M9 12L11 14L15 10" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
     <path d="M12 3V5" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
@@ -168,8 +170,8 @@ const VerifyIcon = ({ size = 24, color = "#f59e0b" }) => (
   </AIIconWrapper>
 );
 
-const DispatchIcon = ({ size = 24, color = "#f59e0b" }) => (
-  <AIIconWrapper size={size} color={color}>
+const DispatchIcon = ({ size = 24, color = "#f59e0b", className = "", ...props }: any) => (
+  <AIIconWrapper size={size} color={color} className={className} {...props}>
     <path d="M4 6H16V16H4V6Z" stroke={color} strokeWidth="1.5" fill="none" strokeLinejoin="round"/>
     <path d="M16 10H20L22 13V16H16V10Z" stroke={color} strokeWidth="1.5" fill="none" strokeLinejoin="round"/>
     <circle cx="7" cy="17" r="2" stroke={color} strokeWidth="1.5" fill="none"/>
@@ -179,8 +181,8 @@ const DispatchIcon = ({ size = 24, color = "#f59e0b" }) => (
   </AIIconWrapper>
 );
 
-const RejectionIcon = ({ size = 24, color = "#f59e0b" }) => (
-  <AIIconWrapper size={size} color={color}>
+const RejectionIcon = ({ size = 24, color = "#f59e0b", className = "", ...props }: any) => (
+  <AIIconWrapper size={size} color={color} className={className} {...props}>
     <circle cx="12" cy="12" r="9" stroke={color} strokeWidth="1.5" fill="none"/>
     <path d="M9 9L15 15" stroke={color} strokeWidth="2" strokeLinecap="round"/>
     <path d="M15 9L9 15" stroke={color} strokeWidth="2" strokeLinecap="round"/>
@@ -689,7 +691,7 @@ const TestimonialCard = ({ quote, author, role, delay }: any) => (
 // ============================================
 // FIXED FULL SCREEN SNAP WRAPPER COMPONENT
 // ============================================
-const FullScreenSection = ({ id, children, className = "" }) => (
+const FullScreenSection = ({ id, children, className = "" }: { id: string; children: React.ReactNode; className?: string }) => (
   <section id={id} className={`snap-start min-h-screen w-full relative flex flex-col justify-center ${className}`}>
     <div className="w-full py-8 md:py-12 lg:py-16">
       {children}
@@ -700,7 +702,7 @@ const FullScreenSection = ({ id, children, className = "" }) => (
 // ============================================
 // MAIN PROCESS SECTION COMPONENT
 // ============================================
-const StepConnector = ({ borderColor, dotColor }) => (
+const StepConnector = ({ borderColor, dotColor }: { borderColor: string; dotColor: string }) => (
   <div className="hidden lg:block absolute -right-[24px] w-[24px] z-10 pointer-events-none"
        style={{ top: '180px', bottom: '60px' }}>
     <div className={`absolute left-0 bottom-0 w-[12px] h-[0%] border-b-2 border-r-2 rounded-br-[16px] ${borderColor}`} />
@@ -715,15 +717,15 @@ const DFPLProcessSection = () => {
   const EngineeringProcess = () => (
     <div className="flex flex-col items-center flex-1 justify-between w-full h-full mt-2">
       <FlowStep title="Material Inspection" icon={SearchCheck} color="blue" />
-      <ArrowDown className="text-blue-400" />
+      <ArrowDown className="text-blue-400" size={16} />
       <FlowStep title="Wire Drawing" icon={Cable} color="blue" />
-      <ArrowDown className="text-blue-400" />
+      <ArrowDown className="text-blue-400" size={16} />
       <FlowStep title="Cold Heading" icon={Hammer} color="blue" />
-      <ArrowDown className="text-blue-400" />
+      <ArrowDown className="text-blue-400" size={16} />
       <FlowStep title="Thread Rolling" icon={Cog} color="blue" />
-      <ArrowDown className="text-blue-400" />
+      <ArrowDown className="text-blue-400" size={16} />
       <FlowStep title="Heat Treatment" icon={Flame} color="blue" />
-      <ArrowDown className="text-blue-400" />
+      <ArrowDown className="text-blue-400" size={16} />
       <FlowStep title="Surface Coating" icon={Layers} color="blue" />
     </div>
   );
@@ -737,16 +739,16 @@ const DFPLProcessSection = () => {
       >
         <Microscope size={28} className="sm:w-9 sm:h-9 text-purple-400" />
       </motion.div>
-      <ArrowDown className="text-purple-400/50" />
+      <ArrowDown className="text-purple-400/50" size={16} />
       
       <FlowStep title="Size Validation" icon={Scale} color="purple" />
-      <ArrowDown className="text-purple-400" />
+      <ArrowDown className="text-purple-400" size={16} />
       
       <FlowStep title="Grade Verification" icon={SearchCheck} color="purple" />
-      <ArrowDown className="text-purple-400" />
+      <ArrowDown className="text-purple-400" size={16} />
       
       <FlowStep title="Quantity Audit" icon={BarChart3} color="purple" />
-      <ArrowDown className="text-purple-400" />
+      <ArrowDown className="text-purple-400" size={16} />
       
       <FlowStep title="Sign-off" icon={CheckCircle2} color="purple" />
     </div>
@@ -761,16 +763,16 @@ const DFPLProcessSection = () => {
       >
         <ClipboardCheck size={28} className="sm:w-9 sm:h-9 text-emerald-400" />
       </motion.div>
-      <ArrowDown className="text-emerald-400/50" />
+      <ArrowDown className="text-emerald-400/50" size={16} />
       
       <FlowStep title="Order/PI Printing" icon={ClipboardCheck} color="emerald" />
-      <ArrowDown className="text-emerald-400" />
+      <ArrowDown className="text-emerald-400" size={16} />
       
       <FlowStep title="Packing Floor Handover" icon={Package} color="emerald" />
-      <ArrowDown className="text-emerald-400" />
+      <ArrowDown className="text-emerald-400" size={16} />
       
       <FlowStep title="Document Audit" icon={FileCheck} color="emerald" />
-      <ArrowDown className="text-emerald-400" />
+      <ArrowDown className="text-emerald-400" size={16} />
       
       <FlowStep title="Verification Complete" icon={CheckCircle2} color="emerald" />
     </div>
@@ -785,22 +787,22 @@ const DFPLProcessSection = () => {
       >
         <Truck size={28} className="sm:w-9 sm:h-9 text-amber-400" />
       </motion.div>
-      <ArrowDown className="text-amber-400/50" />
+      <ArrowDown className="text-amber-400/50" size={16} />
       
       <FlowStep title="Stock Verification" icon={Truck} color="amber" />
-      <ArrowDown className="text-amber-400" />
+      <ArrowDown className="text-amber-400" size={16} />
       
       <FlowStep title="Dispatch" icon={CheckCircle2} color="amber" />
-      <ArrowDown className="text-amber-400" />
+      <ArrowDown className="text-amber-400" size={16} />
       
       <FlowStep title="LR Detail Generation" icon={FileCheck} color="amber" />
-      <ArrowDown className="text-amber-400" />
+      <ArrowDown className="text-amber-400" size={16} />
       
       <FlowStep title="Instant Sharing" icon={Rocket} color="amber" />
     </div>
   );
 
-  const FlowStep = ({ title, icon: Icon, color }) => (
+  const FlowStep = ({ title, icon: Icon, color }: { title: string; icon: any; color: string }) => (
     <motion.div 
       whileHover={{ scale: 1.02 }}
       className={`
@@ -1399,7 +1401,7 @@ const About: React.FC = () => {
 </FullScreenSection>
 
         {/* SECTION: THE ORIGIN — THE STORY */}
-        < FullScreenSection id="the-journey"
+        <FullScreenSection id="the-journey"
       className="relative w-full bg-[#050508] font-sans overflow-hidden"
     >
       {/* Ambient backgrounds - softer to improve text contrast */}
@@ -1554,7 +1556,7 @@ const About: React.FC = () => {
         </FullScreenSection>
 
         {/* SECTION: WHY CHOOSE US - FULLY OPTIMIZED FOR ONE SCREEN */}
-        <FullScreenSection className="bg-gradient-to-b from-[#0A0A0F] via-[#050508] to-[#0A0A0F] relative overflow-hidden">
+        <FullScreenSection id="why-choose-us" className="bg-gradient-to-b from-[#0A0A0F] via-[#050508] to-[#0A0A0F] relative overflow-hidden">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] bg-amber-500/5 blur-[120px] rounded-full pointer-events-none"></div>
 
           <div className="max-w-[1350px] mx-auto relative z-10 px-4 sm:px-6 flex-1 flex flex-col justify-center">
@@ -1665,7 +1667,7 @@ const About: React.FC = () => {
         </FullScreenSection>
 
         {/* SECTION: STATISTICS - NOW FULLY OPTIMIZED FOR ALL SCREEN SIZES */}
-        <FullScreenSection className="relative overflow-hidden">
+        <FullScreenSection id="statistics" className="relative overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.06)_0%,transparent_70%)]" />
           <div className="max-w-[1400px] mx-auto relative z-10 px-4 sm:px-6">
             
@@ -1697,7 +1699,7 @@ const About: React.FC = () => {
         </FullScreenSection>
 
         {/* SECTION: OUR PROCESS */}
-        <FullScreenSection className="py-6 md:py-8">
+        <FullScreenSection id="process" className="py-6 md:py-8">
           <DFPLProcessSection />
         </FullScreenSection>
 
@@ -1785,19 +1787,19 @@ const About: React.FC = () => {
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
             <SectionHeader badge="The Execution Force" title="Meet Our" highlight="Expert Team" />
             <div className="flex flex-wrap justify-center gap-4 sm:gap-5 md:gap-6 lg:gap-8 mt-8 sm:mt-10 md:mt-12">
-              <EmployeeCard name="Ms.Ayushi" role="Office Executive" delay={0.05} initials="AE" image="/ayushi.jpg" />
-              <EmployeeCard name="Mr.Rohit" role="Business Development Executive" delay={0.1} initials="PP" image="/rohit.jpg" />
-              <EmployeeCard name="Mr.Daniel" role="Business Development Executive" delay={0.15} initials="DL" image="/daniel.png" />
-              <EmployeeCard name="Ms.Payal" role="Business Development Executive" delay={0.2} initials="PT" image="/payal.png" />
-              <EmployeeCard name="Ms.Prinsi" role="Office Executive" delay={0.25} initials="PA" image="/prinsi123.png" />
-              <EmployeeCard name="Ms.Asmita" role="Business Development Executive" delay={0.3} initials="AD" image="/asmita.png" />
-              <EmployeeCard name="Ms.Yagni" role="Business Development Executive" delay={0.35} initials="YG" image="/yagni.png" />
+              <EmployeeCard name="Ms.Ayushi" role="Office Executive" delay={0.05} image="/ayushi.jpg" />
+              <EmployeeCard name="Mr.Rohit" role="Business Development Executive" delay={0.1} image="/rohit.jpg" />
+              <EmployeeCard name="Mr.Daniel" role="Business Development Executive" delay={0.15} image="/daniel.png" />
+              <EmployeeCard name="Ms.Payal" role="Business Development Executive" delay={0.2} image="/payal.png" />
+              <EmployeeCard name="Ms.Prinsi" role="Office Executive" delay={0.25} image="/prinsi123.png" />
+              <EmployeeCard name="Ms.Asmita" role="Business Development Executive" delay={0.3} image="/asmita.png" />
+              <EmployeeCard name="Ms.Yagni" role="Business Development Executive" delay={0.35} image="/yagni.png" />
             </div>
           </div>
         </FullScreenSection>
 
         {/* SECTION: TESTIMONIALS */}
-        <FullScreenSection>
+        <FullScreenSection id="testimonials">
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
             <SectionHeader badge="Client Love" title="What Our" highlight="Clients Say" description="Trusted by precision-driven industries across the globe" />
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
@@ -1809,7 +1811,7 @@ const About: React.FC = () => {
         </FullScreenSection>
 
         {/* SECTION: FOUNDER'S QUOTE */}
-        <FullScreenSection className="relative overflow-hidden">
+        <FullScreenSection id="quote" className="relative overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(245,158,11,0.12)_0%,transparent_70%)]" />
           <div className="max-w-5xl mx-auto text-center relative z-10 px-4 sm:px-6">
             <ScrollReveal direction="up">
