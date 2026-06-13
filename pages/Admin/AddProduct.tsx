@@ -58,7 +58,13 @@ type FastenerSize = {
   length: string; 
   unit: 'mm' | 'inch'; 
 };
-type FastenerFinish = { name: string; image: string; loading: boolean };
+type FastenerFinish = { 
+  name: string; 
+  image: string;      
+  icon: string;       
+  loading: boolean; 
+  iconLoading: boolean; 
+};
 type FastenerType = { name: string; image: string; loading: boolean }; 
 
 // --- CONSTANTS ---
@@ -77,6 +83,89 @@ const DEFAULT_PERFORMANCE_KEYS = [
   "Core Hardness", "Surface Hardness", "Tensile Strength",
   "Shear Strength", "Salt Spray Resistance", "Installation Speed", "Temperature Range"
 ];
+// Add this function inside your component
+const collectAllImageUrls = (productData: any, variantGroupsData: any, fastenerData: any) => {
+  const urls: string[] = [];
+  
+  // Product gallery images
+  if (productData.images) urls.push(...productData.images);
+  
+  // Technical drawing
+  if (productData.technical_drawing) urls.push(productData.technical_drawing);
+  
+  // Size images
+  if (productData.size_images) {
+    productData.size_images.forEach((si: any) => {
+      if (si.image) urls.push(si.image);
+    });
+  }
+  
+  // Applications images
+  if (productData.applications) {
+    productData.applications.forEach((app: any) => {
+      if (app.image) urls.push(app.image);
+    });
+  }
+  
+  // Fitting variants
+  if (variantGroupsData) {
+    variantGroupsData.forEach((group: any) => {
+      group.finishes.forEach((finish: any) => {
+        if (finish.image) urls.push(finish.image);
+      });
+    });
+  }
+  
+  // Fastener variants
+  if (fastenerData) {
+    if (fastenerData.finishes) {
+      fastenerData.finishes.forEach((f: any) => {
+        if (f.image) urls.push(f.image);
+        if (f.icon) urls.push(f.icon);
+      });
+    }
+    if (fastenerData.types) {
+      fastenerData.types.forEach((t: any) => {
+        if (t.image) urls.push(t.image);
+      });
+    }
+  }
+  
+  // Filter out empty strings and duplicates
+  return [...new Set(urls.filter(url => url && url.trim() !== ''))];
+};
+
+// --- ✅ UPLOAD FUNCTION ---
+const uploadFile = async (file: File, folder: string): Promise<string> => {
+  const fileExt = file.name.split('.').pop();
+  const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
+  const filePath = `${folder}/${fileName}`;
+
+  const CLOUDFLARE_WORKER_URL = "https://supabase-proxy-dfpl.vsakariya24.workers.dev/api/upload";
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("filePath", filePath);
+
+  try {
+    const response = await fetch(CLOUDFLARE_WORKER_URL, {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => null);
+      const exactError = errorData?.error || `HTTP Error ${response.status}`;
+      throw new Error(exactError);
+    }
+
+    const data = await response.json();
+    return data.url; 
+  } catch (error: any) {
+    console.error("Upload Error:", error);
+    throw new Error(error.message || "Network Error: Could not reach Cloudflare Worker");
+  }
+};
 
 const AddProduct: React.FC = () => {
   const { id } = useParams();
@@ -95,7 +184,9 @@ const AddProduct: React.FC = () => {
   const [fastenerSizes, setFastenerSizes] = useState<FastenerSize[]>([
     { diameter: '', diameterUnit: 'mm', length: '', unit: 'mm' }
   ]);
-  const [fastenerFinishes, setFastenerFinishes] = useState<FastenerFinish[]>([{ name: '', image: '', loading: false }]);
+  const [fastenerFinishes, setFastenerFinishes] = useState<FastenerFinish[]>([
+    { name: '', image: '', icon: '', loading: false, iconLoading: false }
+  ]);
   const [fastenerTypes, setFastenerTypes] = useState<FastenerType[]>([{ name: '', image: '', loading: false }]); 
 
   // --- SIZE IMAGES STATE ---
@@ -170,7 +261,7 @@ const AddProduct: React.FC = () => {
     fetchCategories();
   }, []);
 
-  // --- 2. FETCH PRODUCT (Updated for diameter_unit) ---
+  // --- 2. FETCH PRODUCT ---
   useEffect(() => {
     if (isEditMode) {
       const fetchProduct = async () => {
@@ -178,7 +269,6 @@ const AddProduct: React.FC = () => {
         if (error) { console.error(error); return; }
 
         if (product) {
-          // --- 1. DETECT CATEGORY IMMEDIATELY (Fix for Disappearing Data) ---
           const cat = product.category?.toLowerCase() || '';
           const sub = product.sub_category?.toLowerCase() || '';
           const productIsFitting = (
@@ -187,7 +277,6 @@ const AddProduct: React.FC = () => {
               sub.includes('fitting') || sub.includes('channel')
           );
 
-          // Applications loading logic
           let loadedApps: AppItem[] = [];
           if (Array.isArray(product.applications)) {
               loadedApps = product.applications.map((app: any) => {
@@ -196,7 +285,6 @@ const AddProduct: React.FC = () => {
               });
           }
 
-          // Material loading logic
           let parsedRows: MaterialRow[] = [{ name: '', grades: '' }];
           if (product.material) {
               const smartSplitRegex = /\s*\|\s*(?![^()]*\))/g;
@@ -210,7 +298,6 @@ const AddProduct: React.FC = () => {
           }
           setMaterialRows(parsedRows.length > 0 ? parsedRows : [{ name: '', grades: '' }]);
 
-          // Size Images logic
           if (product.size_images && Array.isArray(product.size_images)) {
               const formattedSizeImages = product.size_images.map((si: any) => ({
                   labels: si.labels || '',
@@ -221,7 +308,6 @@ const AddProduct: React.FC = () => {
               setSizeImages(formattedSizeImages);
           }
 
-          // Specs logic
           const specs = Array.isArray(product.specifications) ? product.specifications : [];
           setExpertData({ seo_keywords: specs.find((s:any) => s.key === 'seo_keywords')?.value || '' });
           setFittingExtras({
@@ -296,7 +382,6 @@ const AddProduct: React.FC = () => {
           const { data: variantData } = await supabase.from('product_variants').select('*').eq('product_id', id);
           
           if (variantData && variantData.length > 0) {
-            
             if (productIsFitting) {
                 const finishImagesMap = product.finish_images || {};
                 const grouped: Record<string, VariantFinish[]> = {};
@@ -304,7 +389,6 @@ const AddProduct: React.FC = () => {
                 variantData.forEach((v: any) => {
                     const sizeKey = v.diameter || v.length || "Standard"; 
                     if (!grouped[sizeKey]) grouped[sizeKey] = [];
-                    
                     const savedImage = v.image ? v.image : (finishImagesMap[v.finish] || '');
                     
                     grouped[sizeKey].push({
@@ -324,7 +408,6 @@ const AddProduct: React.FC = () => {
                 setVariantGroups(reconstructedGroups);
 
             } else {
-                // --- FASTENER LOGIC ---
                 const uniqueSizesMap = new Map();
                 variantData.forEach((v: any) => {
                     const key = `${v.diameter}|${v.length}`;
@@ -400,34 +483,50 @@ const AddProduct: React.FC = () => {
   const removeFinishFromGroup = (groupIdx: number, finishIdx: number) => setVariantGroups(prev => { const n = [...prev]; n[groupIdx].finishes = n[groupIdx].finishes.filter((_, i) => i !== finishIdx); return n; });
   const updateFinishName = (groupIdx: number, finishIdx: number, val: string) => setVariantGroups(prev => { const n = [...prev]; n[groupIdx].finishes[finishIdx].name = val; return n; });
   const updateFinishType = (groupIdx: number, finishIdx: number, val: string) => setVariantGroups(prev => { const n = [...prev]; n[groupIdx].finishes[finishIdx].type = val; return n; });
-  const handleFinishImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, groupIdx: number, finishIdx: number) => {
-  if (!e.target.files?.[0]) return;
   
-  // Set loading state for the specific item
-  setVariantGroups(prev => {
-    const n = [...prev];
-    n[groupIdx].finishes[finishIdx].loading = true;
-    return n;
-  });
-
+  const handleFinishImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, groupIdx: number, finishIdx: number) => {
+    if (!e.target.files?.[0]) return;
+    setVariantGroups(prev => { const n = [...prev]; n[groupIdx].finishes[finishIdx].loading = true; return n; });
+    try {
+      const url = await uploadFile(e.target.files[0], 'finishes');
+      setVariantGroups(prev => { const n = [...prev]; n[groupIdx].finishes[finishIdx].image = url; n[groupIdx].finishes[finishIdx].loading = false; return n; });
+    } catch (err: any) {
+      alert(`Finish image error: ${err.message}`);
+      setVariantGroups(prev => { const n = [...prev]; n[groupIdx].finishes[finishIdx].loading = false; return n; });
+    }
+  };
+// Add this function alongside your uploadFile function
+const deleteFile = async (fileUrl: string): Promise<void> => {
+  if (!fileUrl || typeof fileUrl !== 'string') return;
+  
+  const CLOUDFLARE_WORKER_URL = "https://supabase-proxy-dfpl.vsakariya24.workers.dev/api/delete";
+  
   try {
-    const url = await uploadFile(e.target.files[0], 'finishes');
-    setVariantGroups(prev => {
-      const n = [...prev];
-      n[groupIdx].finishes[finishIdx].image = url;
-      n[groupIdx].finishes[finishIdx].loading = false;
-      return n;
+    // Extract the file path from the URL
+    const urlObj = new URL(fileUrl);
+    const filePath = urlObj.pathname.substring(1); // Remove leading slash
+    
+    const response = await fetch(`${CLOUDFLARE_WORKER_URL}?path=${encodeURIComponent(filePath)}`, {
+      method: "DELETE",
     });
-  } catch (err: any) {
-    alert(`Finish image error: ${err.message}`);
-    setVariantGroups(prev => {
-      const n = [...prev];
-      n[groupIdx].finishes[finishIdx].loading = false;
-      return n;
-    });
+    
+    if (!response.ok) {
+      console.error(`Delete failed for ${fileUrl}: ${response.status}`);
+    }
+  } catch (error: any) {
+    console.error("Delete Error:", error);
+    // Don't throw - allow other deletions to continue
   }
 };
 
+// Helper to delete multiple files
+const deleteMultipleFiles = async (urls: string[]) => {
+  const results = await Promise.allSettled(urls.map(url => deleteFile(url)));
+  const failed = results.filter(r => r.status === 'rejected');
+  if (failed.length > 0) {
+    console.warn(`${failed.length} files failed to delete`);
+  }
+};
   // --- FASTENER VARIANT LOGIC ---
   const addFastenerSize = () => setFastenerSizes([...fastenerSizes, { diameter: '', diameterUnit: 'mm', length: '', unit: 'mm' }]);
   const removeFastenerSize = (idx: number) => setFastenerSizes(fastenerSizes.filter((_, i) => i !== idx));
@@ -438,156 +537,227 @@ const AddProduct: React.FC = () => {
     setFastenerSizes(newSizes);
   };
 
-  const addFastenerFinish = () => setFastenerFinishes([...fastenerFinishes, { name: '', image: '', loading: false }]);
+  const addFastenerFinish = () => setFastenerFinishes([...fastenerFinishes, { name: '', image: '', icon: '', loading: false, iconLoading: false }]);
   const removeFastenerFinish = (idx: number) => setFastenerFinishes(fastenerFinishes.filter((_, i) => i !== idx));
-  const updateFastenerFinishName = (idx: number, val: string) => {
-      const newFinishes = [...fastenerFinishes]; newFinishes[idx].name = val; setFastenerFinishes(newFinishes);
+  const updateFastenerFinishName = (idx: number, val: string) => { const newFinishes = [...fastenerFinishes]; newFinishes[idx].name = val; setFastenerFinishes(newFinishes); };
+
+  const handleFastenerFinishIconUpload = async (e: React.ChangeEvent<HTMLInputElement>, idx: number) => {
+    if (!e.target.files?.[0]) return;
+    const newFinishes = [...fastenerFinishes]; newFinishes[idx].iconLoading = true; setFastenerFinishes(newFinishes);
+    try {
+        const url = await uploadFile(e.target.files[0], 'finish-icons');
+        newFinishes[idx].icon = url;
+    } catch (err: any) {
+        alert(`Icon upload failed: ${err.message}`);
+    } finally {
+        newFinishes[idx].iconLoading = false;
+        setFastenerFinishes([...newFinishes]);
+    }
   };
+
   const handleFastenerFinishUpload = async (e: React.ChangeEvent<HTMLInputElement>, idx: number) => {
       if (!e.target.files?.[0]) return;
       const newFinishes = [...fastenerFinishes]; newFinishes[idx].loading = true; setFastenerFinishes(newFinishes);
       try {
           const url = await uploadFile(e.target.files[0], 'finishes');
           newFinishes[idx].image = url;
-      } catch(err) { alert('Upload failed'); }
+      } catch(err: any) { alert(`Upload failed: ${err.message}`); }
       newFinishes[idx].loading = false; setFastenerFinishes(newFinishes);
   };
 
   const addFastenerType = () => setFastenerTypes([...fastenerTypes, { name: '', image: '', loading: false }]);
   const removeFastenerType = (idx: number) => setFastenerTypes(fastenerTypes.filter((_, i) => i !== idx));
-  const updateFastenerType = (idx: number, val: string) => {
-      const newTypes = [...fastenerTypes]; newTypes[idx].name = val; setFastenerTypes(newTypes);
-  };
+  const updateFastenerType = (idx: number, val: string) => { const newTypes = [...fastenerTypes]; newTypes[idx].name = val; setFastenerTypes(newTypes); };
+  
   const handleFastenerTypeUpload = async (e: React.ChangeEvent<HTMLInputElement>, idx: number) => {
     if (!e.target.files?.[0]) return;
     const newTypes = [...fastenerTypes]; newTypes[idx].loading = true; setFastenerTypes(newTypes);
     try {
         const url = await uploadFile(e.target.files[0], 'types');
         newTypes[idx].image = url;
-    } catch(err) { alert('Upload failed'); }
+    } catch(err: any) { alert(`Upload failed: ${err.message}`); }
     newTypes[idx].loading = false; setFastenerTypes(newTypes);
   };
 
   // --- OTHER HANDLERS ---
   const addFaq = () => setFormData(p => ({ ...p, faqs: [...p.faqs, { question: '', answer: '' }] }));
   const removeFaq = (idx: number) => setFormData(p => ({ ...p, faqs: p.faqs.filter((_, i) => i !== idx) }));
-  const updateFaq = (idx: number, field: 'question' | 'answer', val: string) => {
-    const newFaqs = [...formData.faqs];
-    newFaqs[idx][field] = val;
-    setFormData(p => ({ ...p, faqs: newFaqs }));
-  };
+  const updateFaq = (idx: number, field: 'question' | 'answer', val: string) => { const newFaqs = [...formData.faqs]; newFaqs[idx][field] = val; setFormData(p => ({ ...p, faqs: newFaqs })); };
 
   const addSizeImage = () => setSizeImages([...sizeImages, { labels: '', name: '', image: '', loading: false }]);
   const removeSizeImage = (idx: number) => setSizeImages(sizeImages.filter((_, i) => i !== idx));
-  const updateSizeImageText = (idx: number, field: 'labels' | 'name', val: string) => {
-    const n = [...sizeImages]; n[idx][field] = val; setSizeImages(n);
-  };
+  const updateSizeImageText = (idx: number, field: 'labels' | 'name', val: string) => { const n = [...sizeImages]; n[idx][field] = val; setSizeImages(n); };
+  
   const handleSizeImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, idx: number) => {
     if (!e.target.files?.[0]) return;
     const n = [...sizeImages]; n[idx].loading = true; setSizeImages(n);
-    try { const url = await uploadFile(e.target.files[0], 'size-variants'); n[idx].image = url; } catch (err) { alert('Upload failed'); }
+    try { const url = await uploadFile(e.target.files[0], 'size-variants'); n[idx].image = url; } catch (err: any) { alert(`Upload failed: ${err.message}`); }
     n[idx].loading = false; setSizeImages(n);
   };
 
-  const togglePerformanceSpec = (key: string) => {
-    setSelectedPerformance(prev => prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key]);
-  };
+  const togglePerformanceSpec = (key: string) => { setSelectedPerformance(prev => prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key]); };
 
-  const handleAddCustomPerf = () => {
+const handleAddCustomPerf = () => {
     const trimmedName = newPerfName.trim();
-    if (!trimmedName) { setIsAddingPerf(false); setNewPerfName(''); return; }
+    
+    if (!trimmedName) { 
+        setIsAddingPerf(false); 
+        setNewPerfName(''); 
+        return; 
+    }
+    
     if (!availablePerfKeys.some(k => k.toLowerCase() === trimmedName.toLowerCase())) {
         setAvailablePerfKeys(prev => [...prev, trimmedName]); 
         setSelectedPerformance(prev => [...prev, trimmedName]); 
     }
-    setNewPerfName('');
+    
+    setNewPerfName(''); // Corrected line
     setIsAddingPerf(false);
-  };
-
+};
+const handleDeleteProduct = async (productId: string) => {
+  if (!confirm('⚠️ WARNING: This will permanently delete the product AND all associated images from Cloudflare. This cannot be undone. Are you sure?')) {
+    return;
+  }
+  
+  setLoading(true);
+  
+  try {
+    // 1. Fetch the product first to get all image URLs
+    const { data: product, error: fetchError } = await supabase
+      .from('products')
+      .select('*')
+      .eq('id', productId)
+      .single();
+    
+    if (fetchError) throw fetchError;
+    
+    // 2. Fetch variants
+    const { data: variants } = await supabase
+      .from('product_variants')
+      .select('*')
+      .eq('product_id', productId);
+    
+    // 3. Collect all image URLs
+    const finishImagesMap = product.finish_images || {};
+    const finishIconsMap = product.finish_icons || {};
+    const typeImagesMap = product.type_images || {};
+    
+    const allImageUrls = [
+      // Product images
+      ...(product.images || []),
+      // Technical drawing
+      ...(product.technical_drawing ? [product.technical_drawing] : []),
+      // Size images
+      ...(product.size_images || []).map((si: any) => si.image).filter(Boolean),
+      // Application images
+      ...(product.applications || []).map((app: any) => app.image).filter(Boolean),
+      // Finish images from maps
+      ...Object.values(finishImagesMap),
+      // Finish icons
+      ...Object.values(finishIconsMap),
+      // Type images
+      ...Object.values(typeImagesMap),
+      // Variant images
+      ...(variants || []).map((v: any) => v.image).filter(Boolean),
+    ];
+    
+    // Remove duplicates and empty strings
+    const uniqueUrls = [...new Set(allImageUrls.filter(url => url && typeof url === 'string' && url.trim() !== ''))];
+    
+    console.log(`🗑️ Deleting ${uniqueUrls.length} images from Cloudflare...`);
+    
+    // 4. Delete all images from Cloudflare
+    let deletedCount = 0;
+    let failedCount = 0;
+    
+    for (const url of uniqueUrls) {
+      try {
+        await deleteFile(url);
+        deletedCount++;
+        console.log(`✅ Deleted: ${url.substring(0, 50)}...`);
+      } catch (err) {
+        failedCount++;
+        console.error(`❌ Failed to delete: ${url}`, err);
+      }
+    }
+    
+    console.log(`📊 Deletion summary: ${deletedCount} succeeded, ${failedCount} failed`);
+    
+    // 5. Delete variants from Supabase
+    const { error: variantDeleteError } = await supabase
+      .from('product_variants')
+      .delete()
+      .eq('product_id', productId);
+    
+    if (variantDeleteError) throw variantDeleteError;
+    
+    // 6. Delete product from Supabase
+    const { error: productDeleteError } = await supabase
+      .from('products')
+      .delete()
+      .eq('id', productId);
+    
+    if (productDeleteError) throw productDeleteError;
+    
+    alert(`✅ Product deleted successfully!\n🗑️ ${deletedCount} images removed from Cloudflare.`);
+    navigate('/dfpladmin-access/products');
+    
+  } catch (error: any) {
+    console.error("Delete Error:", error);
+    alert(`❌ Deletion failed: ${error.message}`);
+  } finally {
+    setLoading(false);
+  }
+};
   const addCoreSpec = () => setDynamicCoreSpecs([...dynamicCoreSpecs, { key: '', value: '' }]);
   const removeCoreSpec = (idx: number) => setDynamicCoreSpecs(dynamicCoreSpecs.filter((_, i) => i !== idx));
-  const updateCoreSpec = (idx: number, field: 'key' | 'value', val: string) => {
-    const newSpecs = [...dynamicCoreSpecs]; newSpecs[idx][field] = val; setDynamicCoreSpecs(newSpecs);
-  };
+  const updateCoreSpec = (idx: number, field: 'key' | 'value', val: string) => { const newSpecs = [...dynamicCoreSpecs]; newSpecs[idx][field] = val; setDynamicCoreSpecs(newSpecs); };
 
   const addSpec = () => setFormData(p => ({ ...p, specifications: [...p.specifications, { key: '', value: '' }] }));
   const removeSpec = (idx: number) => setFormData(p => ({ ...p, specifications: p.specifications.filter((_, i) => i !== idx) }));
-  const updateSpec = (idx: number, field: 'key'|'value', val: string) => {
-    const newSpecs = [...formData.specifications]; newSpecs[idx][field] = val; setFormData(p => ({ ...p, specifications: newSpecs }));
-  };
+  const updateSpec = (idx: number, field: 'key'|'value', val: string) => { const newSpecs = [...formData.specifications]; newSpecs[idx][field] = val; setFormData(p => ({ ...p, specifications: newSpecs })); };
 
   const addDim = () => setFormData(p => ({ ...p, dimensional_specifications: [...p.dimensional_specifications, { label: '', symbol: '', values: {} }] }));
   const removeDim = (idx: number) => setFormData(p => ({ ...p, dimensional_specifications: p.dimensional_specifications.filter((_, i) => i !== idx) }));
   const updateDim = (idx: number, field: 'label' | 'symbol' | 'values', val: string, diameterKey?: string) => {
     const newDims = [...formData.dimensional_specifications];
-    if (field === 'values' && diameterKey) {
-        newDims[idx].values = { ...newDims[idx].values, [diameterKey]: val };
-    } else if (field === 'label' || field === 'symbol') {
-        newDims[idx][field] = val;
-    }
+    if (field === 'values' && diameterKey) { newDims[idx].values = { ...newDims[idx].values, [diameterKey]: val }; } 
+    else if (field === 'label' || field === 'symbol') { newDims[idx][field] = val; }
     setFormData(p => ({ ...p, dimensional_specifications: newDims }));
   };
 
   const addCert = () => setFormData(p => ({ ...p, certifications: [...p.certifications, { title: 'ISO 9001:2015', subtitle: 'Certified Facility' }] }));
   const removeCert = (idx: number) => setFormData(p => ({ ...p, certifications: p.certifications.filter((_, i) => i !== idx) }));
-  const updateCert = (idx: number, field: 'title' | 'subtitle', val: string) => {
-      const newCerts = [...formData.certifications]; newCerts[idx][field] = val; setFormData(p => ({ ...p, certifications: newCerts }));
-  };
+  const updateCert = (idx: number, field: 'title' | 'subtitle', val: string) => { const newCerts = [...formData.certifications]; newCerts[idx][field] = val; setFormData(p => ({ ...p, certifications: newCerts })); };
 
   const addMaterialRow = () => setMaterialRows([...materialRows, { name: '', grades: '' }]);
   const removeMaterialRow = (idx: number) => setMaterialRows(materialRows.filter((_, i) => i !== idx));
-  const updateMaterialRow = (idx: number, field: 'name' | 'grades', val: string) => {
-      const newRows = [...materialRows]; newRows[idx][field] = val; setMaterialRows(newRows);
-  };
-
-const uploadFile = async (file: File, folder: string) => {
-  // 1. Create a clean filename
-  const fileExt = file.name.split('.').pop();
-  const fileName = `${Math.random()}.${fileExt}`;
-  const filePath = `${folder}/${fileName}`;
-
-  // 2. Upload to Supabase Storage (Bucket name is usually 'product-images')
-  const { data, error } = await supabase.storage
-    .from('product-images') 
-    .upload(filePath, file);
-
-  if (error) {
-    console.error("Upload Error:", error);
-    throw new Error(error.message);
-  }
-
-  // 3. Get the Public URL
-  const { data: { publicUrl } } = supabase.storage
-    .from('product-images')
-    .getPublicUrl(filePath);
-
-  return publicUrl;
-};
+  const updateMaterialRow = (idx: number, field: 'name' | 'grades', val: string) => { const newRows = [...materialRows]; newRows[idx][field] = val; setMaterialRows(newRows); };
 
   const handleAppImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, idx: number) => {
     if (!e.target.files?.[0]) return;
     const newApps = [...formData.applications]; newApps[idx].loading = true; setFormData(p => ({ ...p, applications: newApps }));
-    try { const url = await uploadFile(e.target.files[0], 'applications'); newApps[idx].image = url; } catch(err) { alert('Upload failed'); }
+    try { const url = await uploadFile(e.target.files[0], 'applications'); newApps[idx].image = url; } catch(err: any) { alert(`Upload failed: ${err.message}`); }
     newApps[idx].loading = false; setFormData(p => ({ ...p, applications: newApps }));
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-  if (!e.target.files?.[0]) return;
-  setUploading(true);
-  try {
-    const url = await uploadFile(e.target.files[0], 'gallery');
-    setFormData(prev => ({ ...prev, images: [url, ...prev.images] }));
-  } catch (err: any) {
-    // Show the SPECIFIC error (e.g., "Invalid token" or "File too large")
-    alert(`Upload failed: ${err.message}`);
-  } finally {
-    setUploading(false);
-  }
-};
+    if (!e.target.files?.[0]) return;
+    setUploading(true);
+    try {
+      const url = await uploadFile(e.target.files[0], 'gallery');
+      setFormData(prev => ({ ...prev, images: [url, ...prev.images] }));
+    } catch (err: any) {
+      alert(`Upload failed: ${err.message}`);
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleTechDrawingUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.[0]) return;
     setUploading(true);
-    try { const url = await uploadFile(e.target.files[0], 'tech'); setFormData(prev => ({ ...prev, technical_drawing: url })); } catch(err) { alert('Upload failed'); }
+    try { const url = await uploadFile(e.target.files[0], 'tech'); setFormData(prev => ({ ...prev, technical_drawing: url })); } catch(err: any) { alert(`Upload failed: ${err.message}`); }
     setUploading(false);
   };
 
@@ -601,7 +771,6 @@ const uploadFile = async (file: File, folder: string) => {
     if (isFittingCategory) {
         rawList = variantGroups.map(g => g.sizeLabel.trim());
     } else {
-        // unit and prefix logic
         rawList = fastenerSizes.map(s => {
           const val = s.diameter.trim();
           if(!val) return '';
@@ -617,11 +786,10 @@ const uploadFile = async (file: File, folder: string) => {
   e.preventDefault();
   setLoading(true);
 
-  // 1. Generate Slug if missing
   const finalSlug = formData.slug || formData.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
-  // 2. Prepare Image Maps for JSONB columns
   const finishImageMap: Record<string, string> = {};
+  const finishIconMap: Record<string, string> = {};
   const typeImageMap: Record<string, string> = {};
 
   if (isFittingCategory) {
@@ -633,17 +801,18 @@ const uploadFile = async (file: File, folder: string) => {
   } else {
     fastenerFinishes.forEach(f => {
       if (f.name.trim() && f.image) finishImageMap[f.name.trim()] = f.image;
+      if (f.icon) finishIconMap[f.name.trim()] = f.icon;
     });
     fastenerTypes.forEach(t => {
       if (t.name.trim() && t.image) typeImageMap[t.name.trim()] = t.image;
     });
   }
 
-  // 3. Construct Payload
   const payload = {
     ...formData,
     slug: finalSlug,
     finish_images: finishImageMap,
+    finish_icons: finishIconMap,
     type_images: typeImageMap,
     size_images: sizeImages.filter(si => si.labels.trim() || si.image).map(({ loading, ...rest }) => rest),
     specifications: [
@@ -662,13 +831,10 @@ const uploadFile = async (file: File, folder: string) => {
   try {
     let productId = id;
 
-    // --- STEP A: UPSERT PRODUCT ---
     if (isEditMode) {
       const { error: updateErr } = await supabase.from('products').update(payload).eq('id', id);
       if (updateErr) throw updateErr;
     } else {
-      // Use .select('id') and handle potential CORS by ensuring headers are allowed
-      // If CORS persists, your "Fetch by Slug" method is the only safe fallback
       const { data, error: insertErr } = await supabase
         .from('products')
         .insert([payload])
@@ -676,7 +842,6 @@ const uploadFile = async (file: File, folder: string) => {
         .single();
 
       if (insertErr) {
-        // Fallback for strict CORS environments
         if (insertErr.message.includes('fetch')) {
           await supabase.from('products').insert([payload]);
           const { data: fallbackData } = await supabase.from('products').select('id').eq('slug', finalSlug).single();
@@ -691,19 +856,16 @@ const uploadFile = async (file: File, folder: string) => {
 
     if (!productId) throw new Error("Failed to retrieve Product ID");
 
-    // --- STEP B: SYNC VARIANTS ---
-    // First, clear old variants
     await supabase.from('product_variants').delete().eq('product_id', productId);
 
     const variantRows: any[] = [];
 
     if (isFittingCategory) {
-      // Fittings: Map groups directly
       variantGroups.forEach(group => {
         group.finishes.forEach(f => {
           variantRows.push({
             product_id: productId,
-            diameter: group.sizeLabel, // We store size label in diameter column for fittings
+            diameter: group.sizeLabel, 
             finish: f.name,
             type: f.type,
             image: f.image
@@ -711,10 +873,8 @@ const uploadFile = async (file: File, folder: string) => {
         });
       });
     } else {
-      // Fasteners: Generate Cross-Join (Size x Finish x Type)
       fastenerSizes.forEach(size => {
         fastenerFinishes.forEach(finish => {
-          // If you have multiple types (Full Thread/Half Thread), add another loop here
           const baseType = fastenerTypes[0]?.name || ''; 
           variantRows.push({
             product_id: productId,
@@ -724,7 +884,7 @@ const uploadFile = async (file: File, folder: string) => {
             unit: size.unit,
             finish: finish.name,
             type: baseType,
-            image: finish.image // Usually fastener variant images are tied to finish
+            image: finish.image 
           });
         });
       });
@@ -735,7 +895,8 @@ const uploadFile = async (file: File, folder: string) => {
       if (varErr) throw varErr;
     }
 
-    navigate('/dfpladmin access/products');
+    navigate('/dfpladmin-access/products'); 
+
   } catch (error: any) {
     console.error("Submission Error:", error);
     alert(`Submission Failed: ${error.message}`);
@@ -743,6 +904,7 @@ const uploadFile = async (file: File, folder: string) => {
     setLoading(false);
   }
 };
+
   const activeSubCategories = categories.find(c => c.name === formData.category)?.sub_categories || [];
 
   return (
@@ -777,16 +939,13 @@ const uploadFile = async (file: File, folder: string) => {
           <textarea name="long_description" value={formData.long_description} onChange={handleChange} placeholder="Long Description" className="w-full px-4 py-2 border rounded-lg" rows={4} />
         </div>
 
-        {/* ========================================================================= */}
-        {/* 2. CERTIFICATIONS SECTION (UPDATED WITH LIVE PREVIEW) */}
-        {/* ========================================================================= */}
+        {/* 2. CERTIFICATIONS SECTION */}
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
             <div className="flex justify-between items-center mb-4 border-b pb-2">
                 <h3 className="font-bold text-gray-900 flex items-center gap-2"><ShieldCheck size={18} className="text-emerald-600" /> Certifications</h3>
                 <button type="button" onClick={addCert} className="text-xs bg-emerald-100 text-emerald-800 font-bold px-3 py-1 rounded hover:bg-emerald-200 flex items-center gap-1"><Plus size={14} /> Add Badge</button>
             </div>
             
-            {/* Input fields */}
             <div className="space-y-3">
                 {formData.certifications.map((cert, idx) => (
                     <div key={idx} className="flex gap-4 items-start bg-gray-50 p-3 rounded-lg border border-gray-100">
@@ -800,7 +959,6 @@ const uploadFile = async (file: File, folder: string) => {
                 ))}
             </div>
 
-            {/* LIVE PREVIEW SECTION */}
             {formData.certifications.length > 0 && (
                 <div className="mt-8 border-t border-gray-200 pt-6">
                     <label className="block text-xs font-bold text-gray-500 mb-4 uppercase tracking-wider flex items-center gap-2">
@@ -808,24 +966,14 @@ const uploadFile = async (file: File, folder: string) => {
                     </label>
                     
                     <div className="p-4 bg-gray-100 rounded-lg border border-gray-200 flex flex-wrap gap-4">
-                        
-                        {/* THE EXACT DESIGN BLOCK FROM PRODUCTDETAIL.TSX */}
                         {formData.certifications.map((cert: CertItem, idx: number) => (
-                            <div 
-                                key={idx} 
-                                className="bg-neutral-900 rounded-md py-2 px-3 flex items-center gap-3 border border-neutral-800 shadow-2xl hover:scale-105 transition-transform duration-300 cursor-default"
-                            >
+                            <div key={idx} className="bg-neutral-900 rounded-md py-2 px-3 flex items-center gap-3 border border-neutral-800 shadow-2xl hover:scale-105 transition-transform duration-300 cursor-default">
                                 <div className="p-1 rounded-full border-2 border-emerald-500/30 shrink-0">
                                     <ShieldCheck className="text-emerald-500" size={24} strokeWidth={2.5} />
                                 </div>
                                 <div className="flex flex-col">
-                                    {/* Design fallbacks handled automatically for empty strings */}
-                                    <span className="text-white font-black text-sm leading-none">
-                                        {cert.title || 'Draft Title'}
-                                    </span>
-                                    <span className="text-emerald-500 text-[9px] font-bold tracking-[0.25em] uppercase mt-1.5 font-mono leading-none">
-                                        {cert.subtitle || 'Draft Subtitle'}
-                                    </span>
+                                    <span className="text-white font-black text-sm leading-none">{cert.title || 'Draft Title'}</span>
+                                    <span className="text-emerald-500 text-[9px] font-bold tracking-[0.25em] uppercase mt-1.5 font-mono leading-none">{cert.subtitle || 'Draft Subtitle'}</span>
                                 </div>
                             </div>
                         ))}
@@ -953,10 +1101,7 @@ const uploadFile = async (file: File, folder: string) => {
                               </td>
                               
                               {uniqueDiameters.map((dia) => {
-                                // Raw key logic
                                 const rawKey = dia.replace('mm', '').replace('#', '');
-                                
-                                // Value check logic
                                 const displayValue = dim.values[dia] || dim.values[rawKey] || '';
 
                                 return (
@@ -1039,18 +1184,39 @@ const uploadFile = async (file: File, folder: string) => {
 
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                     <div className="flex justify-between items-center mb-4"><h3 className="font-bold text-gray-900 flex items-center gap-2"><Palette size={18}/> Finishes</h3><button type="button" onClick={addFastenerFinish} className="text-purple-600 text-sm font-bold">+ Add</button></div>
-                    <div className="space-y-3">
-                        {fastenerFinishes.map((f, idx) => (
-                            <div key={idx} className="flex items-center gap-3 border p-2 rounded-lg bg-gray-50">
-                                <div className="w-10 h-10 bg-white rounded border relative overflow-hidden flex items-center justify-center">
-                                    {f.image ? <img src={f.image} className="w-full h-full object-cover"/> : <ImageIcon size={16} className="text-gray-300"/>}
-                                    <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" onChange={(e) => handleFastenerFinishUpload(e, idx)} />
+                  <div className="space-y-3">
+                    {fastenerFinishes.map((f, idx) => (
+                        <div key={idx} className="flex flex-col gap-2 border p-3 rounded-lg bg-gray-50">
+                            <div className="flex items-center gap-3">
+                                {/* HEAD ICON UPLOAD */}
+                                <div className="flex flex-col items-center gap-1">
+                                    <label className="text-[9px] font-bold uppercase text-gray-400">Head Icon</label>
+                                    <div className="w-12 h-12 bg-white rounded-lg border-2 border-dashed relative overflow-hidden flex items-center justify-center">
+                                        {f.icon ? <img src={f.icon} className="w-full h-full object-contain p-1"/> : <TypeIcon size={16} className="text-gray-300"/>}
+                                        {f.iconLoading && <div className="absolute inset-0 bg-white/80 flex items-center justify-center"><Loader2 size={12} className="animate-spin"/></div>}
+                                        <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" onChange={(e) => handleFastenerFinishIconUpload(e, idx)} />
+                                    </div>
                                 </div>
-                                <input value={f.name} onChange={(e) => updateFastenerFinishName(idx, e.target.value)} placeholder="e.g. Zinc Plate" className="flex-1 px-3 py-2 border rounded text-sm" />
-                                <button type="button" onClick={() => removeFastenerFinish(idx)} className="text-red-400"><Trash2 size={16}/></button>
+
+                                {/* FULL IMAGE UPLOAD */}
+                                <div className="flex flex-col items-center gap-1">
+                                    <label className="text-[9px] font-bold uppercase text-gray-400">Product Image</label>
+                                    <div className="w-12 h-12 bg-white rounded-lg border relative overflow-hidden flex items-center justify-center">
+                                        {f.image ? <img src={f.image} className="w-full h-full object-cover"/> : <ImageIcon size={16} className="text-gray-300"/>}
+                                        {f.loading && <div className="absolute inset-0 bg-white/80 flex items-center justify-center"><Loader2 size={12} className="animate-spin"/></div>}
+                                        <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" onChange={(e) => handleFastenerFinishUpload(e, idx)} />
+                                    </div>
+                                </div>
+
+                                <div className="flex-1">
+                                    <label className="text-[10px] font-bold text-gray-400 uppercase">Finish Name</label>
+                                    <input value={f.name} onChange={(e) => updateFastenerFinishName(idx, e.target.value)} placeholder="e.g. Black Phosphate" className="w-full px-3 py-2 border rounded text-sm" />
+                                </div>
+                                <button type="button" onClick={() => removeFastenerFinish(idx)} className="text-red-400 self-end mb-2"><Trash2 size={18}/></button>
                             </div>
-                        ))}
-                    </div>
+                        </div>
+                    ))}
+                  </div>
                 </div>
             </div>
         ) : (
@@ -1188,15 +1354,33 @@ const uploadFile = async (file: File, folder: string) => {
             <h3 className="font-bold mb-4">Product Gallery</h3>
             <div className="flex flex-wrap gap-4">
                 {formData.images.map((img, idx) => (
-                    <div key={idx} className="w-24 h-24 border rounded overflow-hidden relative group"><img src={img} className="w-full h-full object-cover"/><button type="button" onClick={()=>setFormData(p=>({...p, images: p.images.filter((_, i)=>i!==idx)}))} className="absolute top-1 right-1 bg-white text-red-500 rounded-full p-1 opacity-0 group-hover:opacity-100"><X size={12}/></button></div>
+                    <div key={idx} className="w-24 h-24 border rounded overflow-hidden relative group">
+                        <img src={img} className="w-full h-full object-cover" />
+                        <button 
+                            type="button" 
+                            onClick={() => setFormData(p => ({ ...p, images: p.images.filter((_, i) => i !== idx) }))} 
+                            className="absolute top-1 right-1 bg-white text-red-500 rounded-full p-1 opacity-0 group-hover:opacity-100"
+                        >
+                            <X size={12} />
+                        </button>
+                    </div>
                 ))}
-                <label className="w-24 h-24 border-2 border-dashed flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50">{uploading ? <Loader2 className="animate-spin"/> : <Upload className="text-gray-400"/>}<span className="text-xs text-gray-500 mt-1">Upload</span><input type="file" className="hidden" onChange={handleImageUpload}/></label>
+                
+                {/* Fixed JSX Syntax Here */}
+                <label className="w-24 h-24 border-2 border-dashed flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50">
+                    {uploading ? <Loader2 className="animate-spin" /> : <Upload className="text-gray-400" />}
+                    <span className="text-xs text-gray-500 mt-1">Upload</span>
+                    <input type="file" className="hidden" onChange={handleImageUpload} />
+                </label>
             </div>
         </div>
 
         {/* Submit */}
         <div className="flex justify-end pb-10">
-            <button type="submit" disabled={loading} className="bg-black text-white px-8 py-3 rounded-lg font-bold flex items-center gap-2 hover:bg-slate-800 transition-all">{loading ? <Loader2 className="animate-spin"/> : <Save size={20}/>} {isEditMode ? 'Update Product' : 'Save Product'}</button>
+            <button type="submit" disabled={loading} className="bg-black text-white px-8 py-3 rounded-lg font-bold flex items-center gap-2 hover:bg-slate-800 transition-all">
+                {loading ? <Loader2 className="animate-spin" /> : <Save size={20} />} 
+                {isEditMode ? 'Update Product' : 'Save Product'}
+            </button>
         </div>
       </form>
     </div>
