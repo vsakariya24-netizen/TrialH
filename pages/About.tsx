@@ -23,6 +23,8 @@ import {
   ShieldX,
   Lightbulb,
   BarChart, Handshake,
+  Headset,
+  Leaf,
 } from 'lucide-react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
@@ -292,10 +294,10 @@ const CustomCursor = () => {
 const leadershipData = [
   {
     id: 1,
-    name: "Mr.Vipul",
-    role: "Founder & Managing Director",
+    name: "Mr. Vipul",
+    role: "C.E.O. & Director",
     image:"/vrs1.png",
-    description: "The visionary behind DFPL, Vipul identified the critical gap between manufacturing potential and service reliability. With over a decade of industry experience, he built DFPL from ground up with a philosophy rooted in system-driven integrity, ethical business practices, and long-term value creation. He leads the company's strategic direction, IPO roadmap, and brand building initiatives.",
+    description: "Mr. Vipul is the Founder, CEO, and Director of Durable Fastener Pvt. Ltd. With extensive experience in the fastener industry, he leads the company’s strategic direction, business development, procurement, and financial management. His vision for quality, customer satisfaction, and long-term partnerships has been instrumental in the company’s growth and market reputation.",
     mainIcon: Crown,
     stats: [
       { icon: Target, label: "Strategy &\nVision" },
@@ -305,11 +307,11 @@ const leadershipData = [
   },
   {
     id: 2,
-    name: "Ms.Dipti",
-    role: "Head of Quality Assurance & Compliance",
+    name: "Ms. Dipti",
+    role: "Sales Manager & Director",
     image: "/dipti.png",
-    description: "Dipti ensures that every fastener leaving DFPL's facility meets uncompromising quality standards. She oversees the entire QC protocol from raw material inspection to final sign-off, maintaining ISO 9001:2015 certifications and implementing stringent quality checkpoints across all production stages. Her leadership makes 'zero defect' a daily reality.",
-    mainIcon: ShieldCheck,
+    description: "Ms. Dipti serves as Sales Manager and Director at Durable Fastener Pvt. Ltd., overseeing customer relationships, sales operations, and business coordination. With a strong focus on customer service and market responsiveness, she plays a key role in strengthening client engagement and supporting the company’s sales growth initiatives.",
+    mainIcon: ShieldCheck,   // <-- ADD THIS LINE
     stats: [
       { icon: Award, label: "Quality\nAssurance" },
       { icon: FileCheck, label: "Compliance &\nCertifications" },
@@ -318,10 +320,10 @@ const leadershipData = [
   },
   {
     id: 3,
-    name: "Mr.Dhaval",
-    role: "Sales & Business Development Director",
+    name: "Mr. Dhaval",
+    role: "C.O.O. & Director",
     image: "/dhaval.png",
-    description: "Dhaval drives DFPL's market expansion and client relationships with a customer-first approach. His deep understanding of industrial fastener applications across sectors like automotive, infrastructure, and engineering has built long-term partnerships with over 100+ clients nationwide. He leads a high-performance sales team focused on value-driven solutions.",
+    description: "Mr. Dhaval is the Chief Operating Officer (COO) and Director of Durable Fastener Pvt. Ltd. He is responsible for overseeing manufacturing operations, production planning, warehouse management, and dispatch activities. His operational expertise and commitment to efficiency help ensure consistent product quality and timely order fulfillment.",
     mainIcon: TrendingUp,
     stats: [
       { icon: Briefcase, label: "Business\nDevelopment" },
@@ -331,10 +333,10 @@ const leadershipData = [
   },
   {
     id: 4,
-    name: "Mr.Kishan",
-    role: "Operations & Supply Chain Head",
+    name: "Mr. Kishan",
+    role: "Exports & HR Head",
     image: "/ks.png",
-    description: "The architect behind DFPL's industry-leading 95% one-day dispatch rate. Kishan manages the complete operational workflow from raw material procurement to final delivery, ensuring seamless coordination between production, inventory, and logistics. His process optimization and inventory management systems have redefined reliability standards in fastener distribution.",
+    description: "Mr. Kishan leads the Exports and Human Resources functions at Durable Fastener Pvt. Ltd. He is responsible for international business development, organizational policies, talent management, and digital initiatives. His focus on process improvement, workforce development, and global market expansion supports the company’s long-term growth objectives.",
     mainIcon: Settings,
     stats: [
       { icon: Settings, label: "Operations\nManagement" },
@@ -343,23 +345,6 @@ const leadershipData = [
     ]
   }
 ];
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.2 }
-  }
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { duration: 0.6, ease: designSystem.animations.easeOut }
-  }
-};
 
 // ============================================
 // UI COMPONENTS
@@ -650,6 +635,7 @@ const SectionHeader = ({ badge, title, highlight, description = "", align = "cen
 );
 
 const EmployeeCard = ({ name, role, delay, image }: any) => {
+  const [imgSrc, setImgSrc] = useState(image);
   return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
@@ -661,9 +647,10 @@ const EmployeeCard = ({ name, role, delay, image }: any) => {
     >
       <div className="relative w-full aspect-[4/5] mb-6 sm:mb-8 overflow-hidden rounded-[1.5rem] bg-[#0A0A0F]">
         <img 
-          src={image || "/placeholder-avatar.jpg"} 
+          src={imgSrc} 
           alt={name}
           className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
+          onError={() => setImgSrc(`https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=f59e0b&color=fff&bold=true&size=128`)}
         />
       </div>
       <h3 className="text-white font-bold text-lg sm:text-xl mb-1 tracking-tight">{name}</h3>
@@ -693,7 +680,7 @@ const TestimonialCard = ({ quote, author, role, delay }: any) => (
 // ============================================
 const FullScreenSection = ({ id, children, className = "" }: { id: string; children: React.ReactNode; className?: string }) => (
   <section id={id} className={`snap-start min-h-screen w-full relative flex flex-col justify-center ${className}`}>
-    <div className="w-full py-8 md:py-12 lg:py-16">
+    <div className="w-full py-8 md:py-2 lg:py-2">
       {children}
     </div>
   </section>
@@ -920,56 +907,6 @@ const DFPLProcessSection = () => {
             </motion.div>
           ))}
         </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mt-8 rounded-3xl border border-white/10 bg-[#0a0a0f] overflow-hidden"
-        >
-          <div className="grid lg:grid-cols-3">
-            <div className="p-6 sm:p-8 border-b lg:border-b-0 lg:border-r border-white/10">
-              <div className="flex items-start gap-4 sm:gap-5">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0">
-                  <Handshake size={32} className="sm:w-10 sm:h-10 text-amber-400" />
-                </div>
-                <div>
-                  <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2 sm:mb-3">Our Commitment</h3>
-                  <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
-                    If wrong material is sent, DFPL covers 100% of replacement costs. If a delay occurs, we deliver before the deadline with 2 buffer days.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="p-6 sm:p-8 border-b lg:border-b-0 lg:border-r border-white/10">
-              <h4 className="text-center text-amber-400 font-semibold mb-4 sm:mb-6 text-sm sm:text-base">Zero error rate is our total accuracy</h4>
-              <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                <div className="rounded-2xl bg-white/[0.03] border border-white/10 p-4 sm:p-6 text-center">
-                  <div className="text-3xl sm:text-5xl font-black text-amber-400">100%</div>
-                  <div className="text-slate-400 mt-1 sm:mt-2 text-xs sm:text-sm">Accountability</div>
-                </div>
-                <div className="rounded-2xl bg-white/[0.03] border border-white/10 p-4 sm:p-6 text-center">
-                  <div className="text-3xl sm:text-5xl font-black text-amber-400">0%</div>
-                  <div className="text-slate-400 mt-1 sm:mt-2 text-xs sm:text-sm">Compromise</div>
-                </div>
-              </div>
-            </div>
-
-            <div className="p-6 sm:p-8">
-              <div className="flex items-start gap-4 sm:gap-5">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0">
-                  <ShieldCheck size={32} className="sm:w-10 sm:h-10 text-amber-400" />
-                </div>
-                <div>
-                  <h3 className="text-xl sm:text-2xl font-bold text-white">Trusted by 1000+ Global Customers</h3>
-                  <p className="text-slate-400 mt-2 sm:mt-3 text-sm sm:text-base">Delivering quality, reliability and commitment every time.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </motion.div>
       </div>
     </div>
   );
@@ -983,12 +920,10 @@ const About: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [showCustomCursor, setShowCustomCursor] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
-  const [activeNav, setActiveNav] = useState('hero');
   
   const { scrollYProgress } = useScroll({ target: containerRef });
   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
   
-  const heroY = useTransform(scrollYProgress, [0, 0.5], [0, 200]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
   const heroScale = useTransform(scrollYProgress, [0, 0.3], [1, 0.95]);
   const heroBlur = useTransform(scrollYProgress, [0, 0.3], [0, 8]);
@@ -1003,14 +938,6 @@ const About: React.FC = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  const scrollToSection = useCallback((sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element && containerRef.current) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      setActiveNav(sectionId);
-    }
-  }, []);
-
   return (
     <HelmetProvider>
       <div className="relative h-screen overflow-y-auto scroll-snap-type-y-mandatory bg-[#0A0A0F] text-white overflow-x-hidden selection:bg-amber-500 selection:text-black" ref={containerRef}>
@@ -1019,6 +946,7 @@ const About: React.FC = () => {
           <title>About DFPL | Durable Fastener Pvt. Ltd. - Engineering Integrity Since 2018</title>
           <meta name="description" content="Durable Fastener Pvt. Ltd. (DFPL) - India's premier fastener manufacturer with 95% One‑day dispatch, 99% order accuracy, and uncompromising quality standards since 2018." />
           <meta name="keywords" content="fastener manufacturer India, industrial fasteners, screws, bolts, DFPL, Rajkot fastener company, leadership team DFPL" />
+            <link rel="canonical" href="https://durablefastener.com/About" />
           <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
           <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet" />
         </Helmet>
@@ -1058,7 +986,7 @@ const About: React.FC = () => {
         <div className="fixed bottom-0 right-1/4 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[150px] pointer-events-none z-0 animate-pulse" style={{ animationDelay: "2s" }} />
         <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-purple-500/5 rounded-full blur-[200px] pointer-events-none z-0" />
 
-        {/* HERO SECTION */}
+        {/* ==================== HERO SECTION ==================== */}
         <FullScreenSection id="hero" className="relative">
           <ParallaxSection speed={0.3} className="absolute inset-0 z-0">
             <div className="relative w-full h-full flex items-center justify-center">
@@ -1213,466 +1141,582 @@ const About: React.FC = () => {
           </motion.div>
         </FullScreenSection>
 
-        {/* SECTION: WHO WE ARE - THE GENESIS */}
-       <FullScreenSection id="who-we-are"
-      className="relative w-full bg-[#050508] font-sans antialiased"
+        {/* ==================== WHO WE ARE ==================== */}
+        <FullScreenSection id="who-we-are" className="relative bg-[#050508]">
+          <div className="absolute inset-0 bg-gradient-to-br from-[#0c0c12] via-[#08080c] to-[#030305] z-0" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(245,158,11,0.08)_0%,_transparent_60%)] z-0" />
+          <div className="absolute top-0 right-0 w-[50vw] h-[50vh] bg-amber-600/10 rounded-full blur-[140px] pointer-events-none z-0" />
+          <div className="absolute bottom-0 left-0 w-[40vw] h-[40vh] bg-sky-500/5 rounded-full blur-[120px] pointer-events-none z-0" />
+
+          <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 py-12 md:py-16">
+            <div className="text-center mb-10 md:mb-12">
+              <div className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 rounded-full px-4 py-1.5 mb-5">
+                <span className="w-2 h-2 rounded-full bg-amber-400 shadow-glow-amber" />
+                <span className="text-amber-400 font-bold tracking-wider text-xs sm:text-sm uppercase">The Genesis</span>
+              </div>
+              <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white tracking-tight">
+                Who <span className="text-amber-400 relative inline-block">We Are</span>
+              </h2>
+              <div className="w-20 h-1 bg-amber-500/60 mx-auto mt-4 rounded-full" />
+            </div>
+
+            <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+              <motion.div
+                className="lg:col-span-5 flex justify-center lg:justify-start"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+              >
+                <div className="w-full max-w-[280px] sm:max-w-[320px] lg:max-w-[360px]">
+                  <div className="relative group">
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-amber-500/40 via-amber-400/20 to-transparent rounded-2xl blur-sm opacity-0 group-hover:opacity-100 transition duration-700" />
+                    <div className="relative bg-gradient-to-b from-white/[0.08] to-transparent p-[1px] rounded-2xl shadow-2xl">
+                      <div className="bg-[#0a0a0f] rounded-2xl overflow-hidden">
+                        <div className="aspect-[3/4] relative">
+                          <img
+                            src="/vrs2.png"
+                            alt="Mr. Vipul Sakariya - CEO"
+                            className="w-full h-full object-cover object-top group-hover:scale-105 transition duration-700"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=Vipul+Sakariya&background=f59e0b&color=fff&bold=true&size=128`;
+                            }}
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f] via-[#0a0a0f]/20 to-transparent pointer-events-none" />
+                        </div>
+                        <div className="text-center py-4 px-4 bg-[#0a0a0f] border-t border-white/5">
+                          <h3 className="text-xl sm:text-2xl font-bold text-white tracking-wide">Mr. Vipul Sakariya</h3>
+                          <p className="text-amber-400 font-bold tracking-wider uppercase text-xs sm:text-sm mt-1">Chief Executive Officer</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+
+              <div className="lg:col-span-7 flex flex-col gap-6">
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: 0.1 }}
+                  className="relative"
+                >
+                  <Quote size={32} className="absolute -top-4 -left-2 text-amber-500/20 rotate-180" />
+                  <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-white leading-[1.3] font-medium pl-4 border-l-4 border-amber-500">
+                    <span className="font-light italic">"We do not just supply fasteners — we </span>
+                    <span className="text-amber-400 font-bold not-italic">engineer</span>
+                    <span className="font-light italic"> the integrity of your structures."</span>
+                  </h1>
+                  <div className="flex items-center gap-3 mt-4 pl-4">
+                    <span className="text-amber-400 font-bold tracking-wider uppercase text-xs sm:text-sm">Vipul Sakariya</span>
+                    <span className="w-px h-3 bg-white/20" />
+                    <span className="text-slate-300 font-medium tracking-wide text-xs sm:text-sm">Founder & CEO, DFPL</span>
+                  </div>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                  className="relative border border-white/10 rounded-xl bg-gradient-to-br from-white/[0.03] to-transparent p-5 sm:p-6 backdrop-blur-[2px]"
+                >
+                  <div className="absolute -top-3 left-5 bg-[#08080c] px-3 flex items-center gap-2">
+                    <div className="w-5 h-[2px] bg-amber-500 shadow-md" />
+                    <h4 className="text-amber-400 font-bold uppercase tracking-wider text-xs">Our Philosophy</h4>
+                  </div>
+                  <p className="text-sm sm:text-base text-slate-200 leading-relaxed">
+                    Operating from <strong className="text-white font-semibold">Rajkot</strong> — India's industrial nerve center, DFPL is built on 
+                    <strong className="text-amber-400 font-semibold"> reliable systems & precision engineering</strong>, 
+                    and an unwavering commitment to customer satisfaction. Every fastener reflects our dedication to structural safety.
+                  </p>
+                </motion.div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <motion.div
+                    initial={{ opacity: 0, y: 15 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: 0.3 }}
+                    className="flex gap-4 items-start p-4 rounded-xl border border-white/[0.07] bg-[#0d0d12] hover:border-amber-500/30 transition-all group cursor-default"
+                  >
+                    <div className="w-10 h-10 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 group-hover:bg-amber-500 group-hover:text-[#0a0a0c] transition-colors">
+                      <Factory size={20} />
+                    </div>
+                    <div>
+                      <h5 className="text-amber-400 text-xs font-bold tracking-wider uppercase">Manufacturing & Export Hub</h5>
+                      <p className="text-white font-semibold text-sm mt-0.5">Ravki Makhavad, Rajkot</p>
+                    </div>
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 15 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: 0.4 }}
+                    className="flex gap-4 items-start p-4 rounded-xl border border-white/[0.07] bg-[#0d0d12] hover:border-slate-400/30 transition-all group cursor-default"
+                  >
+                    <div className="w-10 h-10 rounded-lg bg-slate-500/10 border border-slate-500/20 flex items-center justify-center text-slate-300 group-hover:bg-slate-200 group-hover:text-[#0a0a0c] transition-colors">
+                      <Truck size={20} />
+                    </div>
+                    <div>
+                      <h5 className="text-amber-400 text-xs font-bold tracking-wider uppercase">Distribution Network</h5>
+                      <p className="text-white font-semibold text-sm mt-0.5">Surat Branch & Warehouse</p>
+                    </div>
+                  </motion.div>
+                </div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.5 }}
+                  className="relative mt-3 pt-5 border-t border-white/[0.08]"
+                >
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#050508] px-5 py-0.5 rounded-full border border-white/10">
+                    <h6 className="text-slate-300 font-bold tracking-wider uppercase text-xs">Key Achievements</h6>
+                  </div>
+                  <div className="flex justify-center sm:justify-around items-center gap-6 pt-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 flex items-center justify-center bg-amber-500/15 rounded-full border border-amber-500/30 shadow-sm">
+                        <Users size={20} className="text-amber-400" />
+                      </div>
+                      <div>
+                        <p className="text-2xl sm:text-3xl md:text-4xl font-black text-amber-400 leading-none">1000+</p>
+                        <p className="text-xs sm:text-sm font-bold text-slate-300 uppercase tracking-wider">Clients Served</p>
+                      </div>
+                    </div>
+                    <div className="hidden sm:block w-px h-8 bg-white/10" />
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 flex items-center justify-center bg-sky-500/15 rounded-full border border-sky-500/30 shadow-sm">
+                        <Building2 size={20} className="text-sky-300" />
+                      </div>
+                      <div>
+                        <p className="text-2xl sm:text-3xl md:text-4xl font-black text-amber-400 leading-none">5000+</p>
+                        <p className="text-xs sm:text-sm font-bold text-slate-300 uppercase tracking-wider">Projects Completed</p>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+            </div>
+          </div>
+          <style>{`.shadow-glow-amber { box-shadow: 0 0 8px rgba(245, 158, 11, 0.5); }`}</style>
+        </FullScreenSection>
+
+        {/* ==================== THE JOURNEY ==================== */}
+        <FullScreenSection id="the-journey" className="relative bg-[#050508]">
+  <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(245,158,11,0.08)_0%,transparent_70%)] pointer-events-none" />
+  <div className="absolute bottom-0 left-0 w-[50vw] h-[30vh] bg-amber-500/10 rounded-full blur-[120px] pointer-events-none" />
+  
+  <div className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 py-10 md:py-14">
+    
+    {/* ── Section Header ── */}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      className="text-center mb-10 md:mb-14"
     >
-      {/* --- Ambient backgrounds (refined for readability) --- */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#0c0c12] via-[#08080c] to-[#030305] z-0" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(245,158,11,0.08)_0%,_transparent_60%)] z-0" />
-      <div className="absolute top-0 right-0 w-[50vw] h-[50vh] bg-amber-600/10 rounded-full blur-[140px] pointer-events-none z-0" />
-      <div className="absolute bottom-0 left-0 w-[40vw] h-[40vh] bg-sky-500/5 rounded-full blur-[120px] pointer-events-none z-0" />
+      <div className="inline-flex items-center gap-2 bg-amber-500/15 border border-amber-500/30 rounded-full px-4 py-1.5 sm:px-5 sm:py-2 mb-5 shadow-sm">
+        <Rocket className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400" />
+        <span className="text-[10px] sm:text-[11px] font-bold text-amber-400 tracking-[0.2em] uppercase">
+          The Evolution
+        </span>
+      </div>
+      <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-white">
+        The Early <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-500">Journey</span>
+      </h2>
+      <p className="text-slate-400 text-sm sm:text-base max-w-2xl mx-auto mt-4 font-medium tracking-wide">
+        Every setback became a stronger system. DFPL's defining moments.
+      </p>
+    </motion.div>
 
-      {/* --- Main Container (max-width + auto margins to prevent overflow) --- */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12 lg:py-16">
-        
-        {/* --- Section Header (inline component, centered, high contrast) --- */}
-        <div className="text-center mb-8 md:mb-10">
-          <div className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 rounded-full px-3 py-1 sm:px-4 sm:py-1.5 mb-4 sm:mb-5">
-            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-amber-400 shadow-glow-amber" />
-            <span className="text-amber-400 font-bold tracking-wider text-[10px] sm:text-[11px] uppercase">The Genesis</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight">
-            Who <span className="text-amber-400 relative inline-block">We Are
-              <span className="absolute bottom-0 left-0 w-full h-0.5 sm:h-1 bg-amber-500/30 rounded-full blur-sm -z-10" />
-            </span>
-          </h2>
-          <div className="w-16 sm:w-20 h-0.5 sm:h-1 bg-amber-500/60 mx-auto mt-3 sm:mt-4 rounded-full" />
+    {/* ── 3 Cards Grid ── */}
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6 mb-12">
+      
+      {/* Card 1 - The ₹1 Crore Rejection */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.1 }}
+        whileHover={{ y: -6, borderColor: "rgba(239, 68, 68, 0.5)" }}
+        className="group relative bg-gradient-to-br from-[#1c0a0a] to-[#0a0505] rounded-2xl border border-red-500/30 p-6 shadow-2xl hover:shadow-red-500/10 transition-all duration-300"
+      >
+        {/* Icon */}
+        <div className="absolute -top-5 left-6 w-11 h-11 bg-[#2a0f0f] rounded-xl border border-red-500/40 flex items-center justify-center rotate-3 group-hover:rotate-0 transition-transform duration-300">
+          <AlertTriangle className="w-5 h-5 text-red-400" />
         </div>
-
-        {/* --- 12-Column Responsive Grid --- */}
-        <div className="grid lg:grid-cols-12 gap-6 lg:gap-10 xl:gap-14 items-start">
-          
-          {/* LEFT COLUMN: Founder Image Card (more polished, no overflow) */}
-          <motion.div
-            className="lg:col-span-5 flex justify-center lg:justify-start"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-          >
-            <div className="w-full max-w-[260px] sm:max-w-[300px] lg:max-w-[340px]">
-              <div className="relative group">
-                {/* Decorative border gradient */}
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-amber-500/30 via-amber-400/20 to-transparent rounded-2xl blur-sm opacity-0 group-hover:opacity-100 transition duration-700" />
-                <div className="relative bg-gradient-to-b from-white/[0.08] to-transparent p-[1px] rounded-2xl shadow-2xl">
-                  <div className="bg-[#0a0a0f] rounded-2xl overflow-hidden">
-                    <div className="aspect-[3/4] relative">
-                      <img
-                        src="/vrs2.png"
-                        alt="Mr. Vipul Sakariya - CEO"
-                        className="w-full h-full object-cover object-top scale-100 group-hover:scale-105 transition duration-700 ease-out"
-                      />
-                      {/* Gradient overlay for depth */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f] via-[#0a0a0f]/20 to-transparent pointer-events-none" />
-                    </div>
-                    <div className="text-center py-3 sm:py-4 px-3 sm:px-4 bg-[#0a0a0f] border-t border-white/5">
-                      <h3 className="text-base sm:text-lg md:text-xl font-bold text-white tracking-wide">Mr. Vipul Sakariya</h3>
-                      <p className="text-amber-400 font-bold tracking-wider uppercase text-[9px] sm:text-[10px] mt-1">Chief Executive Officer</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* RIGHT COLUMN: All Content (improved typography & spacing) */}
-          <div className="lg:col-span-7 flex flex-col gap-5 md:gap-6">
-            
-            {/* 1. Founder Quote — now uses standard sans-serif with elegant italics, high contrast */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="relative"
-            >
-              <Quote size={24} className="absolute -top-3 -left-2 text-amber-500/20 rotate-180" />
-              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-white leading-[1.3] font-medium pl-3 sm:pl-4 border-l-3 sm:border-l-4 border-amber-500">
-                <span className="font-light italic">"We do not just supply fasteners — we </span>
-                <span className="text-amber-400 font-bold not-italic">engineer</span>
-                <span className="font-light italic"> the integrity of your structures."</span>
-              </h1>
-              <div className="flex items-center gap-3 mt-3 sm:mt-4 pl-3 sm:pl-4">
-                <span className="text-amber-400 font-bold tracking-wider uppercase text-[9px] sm:text-[10px]">Vipul Sakariya</span>
-                <span className="w-px h-2 sm:h-3 bg-white/20" />
-                <span className="text-slate-300 font-medium tracking-wide uppercase text-[9px] sm:text-[10px]">Founder & CEO, DFPL</span>
-              </div>
-            </motion.div>
-
-            {/* 2. Philosophy Box — clean, readable, subtle backdrop */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="relative border border-white/10 rounded-xl bg-gradient-to-br from-white/[0.03] to-transparent p-4 sm:p-5 backdrop-blur-[2px]"
-            >
-              <div className="absolute -top-3 left-4 sm:left-5 bg-[#08080c] px-2 sm:px-3 flex items-center gap-1 sm:gap-2">
-                <div className="w-4 h-[2px] bg-amber-500 shadow-md" />
-                <h4 className="text-amber-400 font-bold uppercase tracking-wider text-[9px] sm:text-[10px]">Our Philosophy</h4>
-              </div>
-              <p className="text-xs sm:text-sm text-slate-200 leading-relaxed">
-                Operating from <strong className="text-white font-semibold">Rajkot</strong> — India's industrial nerve center, DFPL is built on 
-                <strong className="text-amber-400 font-semibold"> reliable systems & precision engineering</strong>, 
-                and an unwavering commitment to customer satisfaction. Every fastener reflects our dedication to structural safety.
-              </p>
-            </motion.div>
-
-            {/* 3. Two Info Cards — better hover feedback, clear text */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-              <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-                className="flex gap-3 sm:gap-4 items-start p-3 sm:p-4 rounded-xl border border-white/[0.07] bg-[#0d0d12] hover:border-amber-500/30 hover:bg-[#111118] transition-all group cursor-default"
-              >
-                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 group-hover:bg-amber-500 group-hover:text-[#0a0a0c] transition-colors">
-                  <Factory size={16} className="sm:w-[18px] sm:h-[18px]" />
-                </div>
-                <div>
-                  <h5 className="text-amber-400 text-[9px] sm:text-[10px] font-bold tracking-wider uppercase">Manufacturing & Export Hub</h5>
-                  <p className="text-white font-semibold text-xs sm:text-sm mt-0.5">Ravki Makhavad, Rajkot</p>
-                </div>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-                className="flex gap-3 sm:gap-4 items-start p-3 sm:p-4 rounded-xl border border-white/[0.07] bg-[#0d0d12] hover:border-slate-400/30 hover:bg-[#111118] transition-all group cursor-default"
-              >
-                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-slate-500/10 border border-slate-500/20 flex items-center justify-center text-slate-300 group-hover:bg-slate-200 group-hover:text-[#0a0a0c] transition-colors">
-                  <Truck size={16} className="sm:w-[18px] sm:h-[18px]" />
-                </div>
-                <div>
-                  <h5 className="text-amber-400 text-[9px] sm:text-[10px] font-bold tracking-wider uppercase">Distribution Network</h5>
-                  <p className="text-white font-semibold text-xs sm:text-sm mt-0.5">Surat Branch & Warehouse</p>
-                </div>
-              </motion.div>
-            </div>
-
-            {/* 4. Key Achievements — high contrast stats, fully legible */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.5 }}
-              className="relative mt-2 pt-4 sm:pt-5 border-t border-white/[0.08]"
-            >
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#050508] px-3 sm:px-4 py-0.5 rounded-full border border-white/10">
-                <h6 className="text-slate-300 font-bold tracking-wider uppercase text-[8px] sm:text-[9px]">Key Achievements</h6>
-              </div>
-              <div className="flex justify-center sm:justify-around items-center gap-4 sm:gap-6 md:gap-8 pt-2">
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-amber-500/15 rounded-full border border-amber-500/30 shadow-sm">
-                    <Users size={14} className="sm:w-[18px] sm:h-[18px] text-amber-400" />
-                  </div>
-                  <div>
-                    <p className="text-xl sm:text-2xl md:text-3xl font-black text-amber-400 leading-none">1000+</p>
-                    <p className="text-[8px] sm:text-[9px] md:text-[10px] font-bold text-slate-300 uppercase tracking-wider">Clients Served</p>
-                  </div>
-                </div>
-                <div className="hidden sm:block w-px h-6 sm:h-8 bg-white/10" />
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-sky-500/15 rounded-full border border-sky-500/30 shadow-sm">
-                    <Building2 size={14} className="sm:w-[18px] sm:h-[18px] text-sky-300" />
-                  </div>
-                  <div>
-                    <p className="text-xl sm:text-2xl md:text-3xl font-black text-amber-400 leading-none">5000+</p>
-                    <p className="text-[8px] sm:text-[9px] md:text-[10px] font-bold text-slate-300 uppercase tracking-wider">Projects Completed</p>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
+        
+        <div className="mt-8">
+          <h3 className="text-xl sm:text-2xl font-black text-white mb-3 leading-tight">
+            The <span className="text-red-400">₹1 Crore</span> Rejection
+          </h3>
+          <p className="text-slate-300 text-sm leading-relaxed mb-4">
+            A major order of <span className="text-red-300 font-semibold">10 million PCS</span> was rejected due to a critical head-cutting issue.
+          </p>
+          <div className="bg-black/40 border border-red-500/20 rounded-xl p-4">
+            <p className="text-amber-400 text-[10px] font-bold uppercase tracking-[0.15em] mb-1.5">Root Cause</p>
+            <p className="text-slate-200 text-sm leading-relaxed">Seasonal variation in plywood density during winter conditions.</p>
           </div>
+        </div>
+      </motion.div>
+
+      {/* Card 2 - Strategic Shift */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.2 }}
+        whileHover={{ y: -6, borderColor: "rgba(16, 185, 129, 0.5)" }}
+        className="group relative bg-gradient-to-br from-[#0a1a12] to-[#030a06] rounded-2xl border border-emerald-500/30 p-6 shadow-2xl hover:shadow-emerald-500/10 transition-all duration-300"
+      >
+        {/* Icon */}
+        <div className="absolute -top-5 left-6 w-11 h-11 bg-[#0f2618] rounded-xl border border-emerald-500/40 flex items-center justify-center -rotate-3 group-hover:rotate-0 transition-transform duration-300">
+          <Target className="w-5 h-5 text-emerald-400" />
+        </div>
+        
+        <div className="mt-8">
+          <h3 className="text-xl sm:text-2xl font-black text-white mb-3 leading-tight">Strategic Shift</h3>
+          <p className="text-slate-300 text-sm leading-relaxed mb-4">
+            We began analyzing international standards and engineering systems for:
+          </p>
+          <div className="space-y-3">
+            <div className="flex items-start gap-3 text-sm text-slate-200 bg-white/5 rounded-xl p-3 border border-white/5">
+              <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
+              <span>Material science & metallurgy</span>
+            </div>
+            <div className="flex items-start gap-3 text-sm text-slate-200 bg-white/5 rounded-xl p-3 border border-white/5">
+              <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
+              <span>Seasonal & environmental factors</span>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Card 3 - Turning Point */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.3 }}
+        whileHover={{ y: -6, borderColor: "rgba(59, 130, 246, 0.5)" }}
+        className="group relative bg-gradient-to-br from-[#0a121c] to-[#04080e] rounded-2xl border border-blue-500/30 p-6 shadow-2xl hover:shadow-blue-500/10 transition-all duration-300"
+      >
+        {/* Icon */}
+        <div className="absolute -top-5 left-6 w-11 h-11 bg-[#101a2a] rounded-xl border border-blue-500/40 flex items-center justify-center rotate-3 group-hover:rotate-0 transition-transform duration-300">
+          <TrendingUp className="w-5 h-5 text-blue-400" />
+        </div>
+        
+        <div className="mt-8">
+          <h3 className="text-xl sm:text-2xl font-black text-white mb-3 leading-tight">Turning Point</h3>
+          <p className="text-slate-300 text-sm leading-relaxed mb-4">
+            This failure became a breakthrough. We shifted focus to{' '}
+            <span className="text-blue-400 font-semibold">application engineering</span>.
+          </p>
+          <div className="bg-black/40 border border-blue-500/20 rounded-xl p-4">
+            <p className="text-blue-400 text-[10px] font-bold uppercase tracking-[0.15em] mb-1.5">Key Learning</p>
+            <p className="text-slate-200 text-sm leading-relaxed">Quality depends on environment, material behavior, and application conditions.</p>
+          </div>
+        </div>
+      </motion.div>
+    </div>
+
+    {/* ── Core Philosophy Quote ── */}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: 0.4 }}
+      className="relative bg-gradient-to-r from-amber-950/30 via-[#0a0a0f] to-transparent rounded-2xl border border-amber-500/30 p-6 md:p-10 overflow-hidden shadow-xl hover:shadow-amber-500/10 transition-shadow duration-500"
+    >
+      {/* Background Quote Decoration */}
+      <div className="absolute -right-10 -top-10 opacity-5">
+        <Quote className="w-48 h-48 text-amber-500" />
+      </div>
+      
+      <div className="relative flex flex-col md:flex-row items-center gap-5">
+        {/* Icon */}
+        <div className="bg-amber-500/15 p-4 rounded-2xl border border-amber-500/30 shrink-0 shadow-glow-amber">
+          <Quote className="w-6 h-6 text-amber-400" />
+        </div>
+        
+        {/* Content */}
+        <div className="text-center md:text-left">
+          <p className="text-amber-400 text-[10px] font-bold tracking-[0.25em] uppercase mb-2">Core Philosophy</p>
+          <p className="text-xl sm:text-2xl md:text-3xl font-bold text-white leading-tight">
+            We don't react to problems —<br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-500">
+              we engineer systems that prevent them.
+            </span>
+          </p>
         </div>
       </div>
+    </motion.div>
 
-      {/* Additional Custom Style - for glow effect (shadow-glow-amber) */}
-      <style>{`
-        .shadow-glow-amber {
-          box-shadow: 0 0 6px rgba(245, 158, 11, 0.5);
-        }
-      `}</style>
-    
+  </div>
+  
+  {/* Glow Shadow Style */}
+  <style>{`
+    .shadow-glow-amber {
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.15);
+    }
+  `}</style>
 </FullScreenSection>
 
-        {/* SECTION: THE ORIGIN — THE STORY */}
-        <FullScreenSection id="the-journey"
-      className="relative w-full bg-[#050508] font-sans overflow-hidden"
+
+        {/* ==================== WHY CHOOSE US ==================== */}
+        <FullScreenSection id="why-choose-us" className="bg-gradient-to-b from-[#0A0A0F] via-[#0D0D14] to-[#0A0A0F] relative">
+  {/* Enhanced ambient glow */}
+  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] bg-amber-500/5 blur-[150px] rounded-full pointer-events-none" />
+  <div className="absolute bottom-0 right-0 w-1/2 h-[400px] bg-blue-500/5 blur-[120px] rounded-full pointer-events-none" />
+  
+  <div className="max-w-[1350px] mx-auto relative z-10 px-4 sm:px-6 lg:px-8">
+    <div className="mb-12 lg:mb-16">
+      <SectionHeader 
+        badge="Why Choose DFPL" 
+        title="The Durable" 
+        highlight="Advantage" 
+        description="What makes us the preferred partner for industry leaders across India" 
+      />
+    </div>
+    
+    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-7 items-stretch">
+      {[
+        { 
+          icon: QualityIcon, 
+          title: "Uncompromising Quality", 
+          description: "From raw material to final dispatch, each step is controlled, verified, and aligned with international standards.", 
+          metrics: { value: "100%", label: "Quality Certified" },
+          gradient: "from-amber-500/20 to-amber-600/10",
+          border: "hover:border-amber-500/40"
+        },
+        { 
+          icon: DispatchIcon, 
+          title: "One-Day Dispatch", 
+          description: "Real-time inventory management with floor stock matching system records for guaranteed One-day dispatch (Running Item).", 
+          metrics: { value: "95%", label: "On-Time Delivery" },
+          gradient: "from-blue-500/20 to-blue-600/10",
+          border: "hover:border-blue-500/40"
+        },
+        { 
+          icon: EthicsIcon, 
+          title: "Absolute Ethics", 
+          description: "Strict adherence to regulations and financial systems. Built for multi-decade sustainable growth.", 
+          metrics: { value: "8+", label: "Years Trust" },
+          gradient: "from-emerald-500/20 to-emerald-600/10",
+          border: "hover:border-emerald-500/40"
+        },
+        { 
+          icon: ValueIcon, 
+          title: "10x Value Delivery", 
+          description: "Delivering 10x value for every rupee invested through superior quality and reliability.", 
+          metrics: { value: "10x", label: "ROI Delivered" },
+          gradient: "from-purple-500/20 to-purple-600/10",
+          border: "hover:border-purple-500/40"
+        },
+        { 
+          icon: InnovationIcon, 
+          title: "Advanced R&D", 
+          description: "Continuous innovation and development of new technologies for evolving industry needs.", 
+          metrics: { value: "24/7", label: "Innovation Lab" },
+          gradient: "from-rose-500/20 to-rose-600/10",
+          border: "hover:border-rose-500/40"
+        },
+        { 
+          icon: CustomerIcon, 
+          title: "Customer First", 
+          description: "24/7 support and dedicated relationship managers for every client account.", 
+          metrics: { value: "100%", label: "Support Coverage" },
+          gradient: "from-teal-500/20 to-teal-600/10",
+          border: "hover:border-teal-500/40"
+        }
+      ].map((feature, idx) => {
+        const { icon: Icon, title, description, metrics, gradient, border } = feature;
+        return (
+          <ScrollReveal key={idx} direction="up" delay={idx * 0.08} className="h-full flex flex-col">
+            <TiltCard glow intensity="low" className="h-full flex flex-col flex-1">
+              <motion.div 
+                whileHover={{ y: -4, scale: 1.01 }} 
+                transition={{ type: "spring", stiffness: 350, damping: 25 }}
+                className="group flex-1 w-full bg-gradient-to-br from-white/[0.04] to-white/[0.01] backdrop-blur-sm border border-white/[0.06] hover:border-white/[0.12] rounded-2xl p-6 lg:p-7 flex flex-col gap-4 overflow-hidden relative transition-all duration-500"
+              >
+                {/* Premium gradient overlays */}
+                <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-2xl`} />
+                <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-amber-500 via-amber-400 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className={`absolute -top-24 -right-24 w-48 h-48 bg-gradient-to-br ${gradient} rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700 pointer-events-none opacity-50`} />
+
+                {/* Icon & Title */}
+                <div className="flex items-start gap-4 relative z-10">
+                  <motion.div 
+                    className="w-12 h-12 lg:w-14 lg:h-14 rounded-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] flex items-center justify-center shrink-0 border border-white/[0.08] group-hover:border-white/[0.15] transition-all duration-300"
+                    whileHover={{ rotate: 8, scale: 1.08 }} 
+                    transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                  >
+                    <Icon className="w-6 h-6 lg:w-7 lg:h-7 text-amber-400/90 group-hover:text-amber-300 transition-colors duration-300" />
+                  </motion.div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-base lg:text-lg font-bold text-white tracking-tight group-hover:text-white/90 transition-colors duration-300">
+                      {title}
+                    </h3>
+                  </div>
+                </div>
+
+                {/* Description */}
+                <p className="text-slate-400 group-hover:text-slate-300 leading-relaxed text-sm lg:text-base flex-grow relative z-10 transition-colors duration-300">
+                  {description}
+                </p>
+
+                {/* Metrics with enhanced design */}
+                <div className="mt-auto pt-4 border-t border-white/[0.06] group-hover:border-white/[0.1] relative z-10 transition-colors duration-300">
+                  <div className="flex items-baseline justify-between">
+                    <span className="text-2xl lg:text-3xl font-extrabold bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent group-hover:scale-105 origin-left transition-all duration-500">
+                      {metrics.value}
+                    </span>
+                    <span className="text-[11px] font-semibold text-zinc-500 group-hover:text-zinc-400 uppercase tracking-wider transition-colors duration-300">
+                      {metrics.label}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Subtle shine effect */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none">
+                  <div className="absolute -top-[100%] -left-[100%] w-[300%] h-[300%] bg-gradient-to-br from-white/5 via-transparent to-transparent rotate-45 translate-x-[-50%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+                </div>
+              </motion.div>
+            </TiltCard>
+          </ScrollReveal>
+        );
+      })}
+    </div>
+  </div>
+</FullScreenSection>
+
+        {/* ==================== MISSION & VISION ==================== */}
+        <FullScreenSection 
+      id="mission" 
+      className="relative bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 min-h-screen flex items-center"
     >
-      {/* Ambient backgrounds - softer to improve text contrast */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(245,158,11,0.08)_0%,transparent_70%)] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[50vw] h-[30vh] bg-amber-500/10 rounded-full blur-[120px] pointer-events-none" />
-      
-      {/* Subtle grid pattern for depth (improves readability by reducing flatness) */}
-
-
-      {/* Main container - increased padding and max-width for breathing room */}
-      <div className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 py-10 md:py-14 lg:py-20">
-        
-        {/* Section Header - improved spacing and text contrast */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-8 md:mb-12"
-        >
-          <div className="inline-flex items-center gap-2 bg-amber-500/15 border border-amber-500/30 rounded-full px-3 py-1 sm:px-4 sm:py-1.5 mb-4 sm:mb-5 shadow-sm">
-            <Rocket className="w-3 h-3 sm:w-4 sm:h-4 text-amber-400" />
-            <span className="text-[10px] sm:text-[11px] font-bold text-amber-400 tracking-[0.15em] uppercase">The Evolution</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-white">
-            The Early <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-500">Journey</span>
-          </h2>
-          <p className="text-slate-300 text-sm sm:text-base md:text-lg max-w-2xl mx-auto mt-3 sm:mt-4 font-medium">
-            Every setback became a stronger system. DFPL's defining moments.
-          </p>
-        </motion.div>
-
-        {/* Three Cards - improved backgrounds, better text contrast */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6 mb-10 md:mb-12">
-          
-          {/* Card 1: The Rejection */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            whileHover={{ y: -4, scale: 1.01 }}
-            className="group relative bg-gradient-to-br from-[#1c0a0a] to-[#0a0505] rounded-2xl border border-red-500/30 p-5 sm:p-6 shadow-2xl transition-all duration-300"
-          >
-            <div className="absolute -top-4 left-5 sm:left-6 w-10 h-10 sm:w-12 sm:h-12 bg-[#2a0f0f] rounded-xl border border-red-500/40 flex items-center justify-center shadow-red-500/30 rotate-3 group-hover:rotate-6 transition">
-              <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 text-red-400" />
-            </div>
-            <div className="mt-6 sm:mt-8">
-              <h3 className="text-xl sm:text-2xl font-black text-white mb-2 sm:mb-3">
-                The <span className="text-red-400">₹1 Crore</span> Rejection
-              </h3>
-              <p className="text-slate-300 text-xs sm:text-sm leading-relaxed mb-4 sm:mb-5">
-                A major order of <span className="text-red-300 font-semibold">10 million PCS</span> was rejected due to a critical head-cutting issue.
-              </p>
-              <div className="bg-black/30 border border-red-500/20 rounded-xl p-3 sm:p-4">
-                <p className="text-amber-400 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider mb-1">Root Cause</p>
-                <p className="text-slate-200 text-xs sm:text-sm leading-relaxed">
-                  Seasonal variation in plywood density during winter conditions.
-                </p>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Card 2: Strategic Shift */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            whileHover={{ y: -4, scale: 1.01 }}
-            className="group relative bg-gradient-to-br from-[#0a1a12] to-[#030a06] rounded-2xl border border-emerald-500/30 p-5 sm:p-6 shadow-2xl transition-all duration-300"
-          >
-            <div className="absolute -top-4 left-5 sm:left-6 w-10 h-10 sm:w-12 sm:h-12 bg-[#0f2618] rounded-xl border border-emerald-500/40 flex items-center justify-center shadow-emerald-500/30 -rotate-3 group-hover:-rotate-6 transition">
-              <Target className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400" />
-            </div>
-            <div className="mt-6 sm:mt-8">
-              <h3 className="text-xl sm:text-2xl font-black text-white mb-2 sm:mb-3">Strategic Shift</h3>
-              <p className="text-slate-300 text-xs sm:text-sm leading-relaxed mb-3 sm:mb-4">
-                We began analyzing international standards and engineering systems for:
-              </p>
-              <div className="space-y-2 sm:space-y-3">
-                <div className="flex items-start gap-2 text-xs sm:text-sm text-slate-200">
-                  <CheckCircle2 className="w-3 h-3 sm:w-4 sm:h-4 text-emerald-400 mt-0.5 shrink-0" />
-                  <span>Material science & metallurgy</span>
-                </div>
-                <div className="flex items-start gap-2 text-xs sm:text-sm text-slate-200">
-                  <CheckCircle2 className="w-3 h-3 sm:w-4 sm:h-4 text-emerald-400 mt-0.5 shrink-0" />
-                  <span>Seasonal & environmental factors</span>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Card 3: Turning Point */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
-            whileHover={{ y: -4, scale: 1.01 }}
-            className="group relative bg-gradient-to-br from-[#0a121c] to-[#04080e] rounded-2xl border border-blue-500/30 p-5 sm:p-6 shadow-2xl transition-all duration-300"
-          >
-            <div className="absolute -top-4 left-5 sm:left-6 w-10 h-10 sm:w-12 sm:h-12 bg-[#101a2a] rounded-xl border border-blue-500/40 flex items-center justify-center shadow-blue-500/30 rotate-3 group-hover:rotate-6 transition">
-              <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400" />
-            </div>
-            <div className="mt-6 sm:mt-8">
-              <h3 className="text-xl sm:text-2xl font-black text-white mb-2 sm:mb-3">Turning Point</h3>
-              <p className="text-slate-300 text-xs sm:text-sm leading-relaxed mb-4 sm:mb-5">
-                This failure became a breakthrough. We shifted focus to{" "}
-                <span className="text-blue-400 font-semibold">application engineering</span>.
-              </p>
-              <div className="bg-black/30 border border-blue-500/20 rounded-xl p-3 sm:p-4">
-                <p className="text-blue-400 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider mb-1">Key Learning</p>
-                <p className="text-slate-200 text-xs sm:text-sm leading-relaxed">
-                  Quality depends on environment, material behavior, and application conditions.
-                </p>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Philosophy Quote - enhanced contrast and visibility */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.4 }}
-          className="relative bg-gradient-to-r from-amber-950/30 via-[#0a0a0f] to-transparent rounded-2xl border border-amber-500/30 p-5 sm:p-6 md:p-8 overflow-hidden shadow-xl"
-        >
-          <div className="absolute -right-8 -top-8 opacity-5 pointer-events-none">
-            <Quote className="w-40 h-40 sm:w-56 sm:h-56 text-amber-500" />
-          </div>
-          <div className="relative flex flex-col md:flex-row items-center gap-4 sm:gap-5 md:gap-8">
-            <div className="bg-amber-500/15 p-3 sm:p-4 rounded-2xl border border-amber-500/30 shrink-0 shadow-glow">
-              <Quote className="w-5 h-5 sm:w-7 sm:h-7 text-amber-400" />
-            </div>
-            <div className="text-center md:text-left">
-              <p className="text-amber-400 text-[10px] sm:text-[11px] font-bold tracking-[0.2em] uppercase mb-1 sm:mb-2">Core Philosophy</p>
-              <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-white leading-tight">
-                We don't react to problems —<br className="hidden sm:block" />{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-500">
-                  we engineer systems that prevent them.
-                </span>
-              </p>
-            </div>
-          </div>
-        </motion.div>
+      {/* Background Ambient Glow */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 -left-1/4 w-[600px] h-[600px] bg-amber-500/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 -right-1/4 w-[600px] h-[600px] bg-amber-500/5 rounded-full blur-3xl" />
       </div>
 
-      {/* Custom style for glow effect (if needed) */}
-      
-    
-        </FullScreenSection>
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full py-16 md:py-24">
+        {/* Section Header */}
+        <div className="mb-12 md:mb-16 lg:mb-20">
+          <SectionHeader 
+            badge="Our Purpose" 
+            title="Mission &" 
+            highlight="Vision" 
+            description="Driving industrial excellence through quality and reliability." 
+          />
+        </div>
 
-        {/* SECTION: WHY CHOOSE US - FULLY OPTIMIZED FOR ONE SCREEN */}
-        <FullScreenSection id="why-choose-us" className="bg-gradient-to-b from-[#0A0A0F] via-[#050508] to-[#0A0A0F] relative overflow-hidden">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] bg-amber-500/5 blur-[120px] rounded-full pointer-events-none"></div>
-
-          <div className="max-w-[1350px] mx-auto relative z-10 px-4 sm:px-6 flex-1 flex flex-col justify-center">
-            {/* Section Header - compact but readable */}
-            <div className="mb-5 md:mb-6">
-              <SectionHeader 
-                badge="Why Choose DFPL" 
-                title="The Durable" 
-                highlight="Advantage" 
-                description="What makes us the preferred partner for industry leaders across India" 
-              />
-            </div>
-
-            {/* Responsive grid - adjusted gaps and padding for better fit */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 lg:gap-6 items-stretch">
-              {[
-                { icon: QualityIcon, title: "Uncompromising Quality", description: "From raw material to final dispatch, each step is controlled, verified, and aligned with international standards.", metrics: { value: "100%", label: "Quality Certified" } },
-                { icon: DispatchIcon, title: "One-Day Dispatch", description: "Real-time inventory management with floor stock matching system records for guaranteed One-day dispatch (Running Item).", metrics: { value: "95%", label: "On-Time Delivery" } },
-                { icon: EthicsIcon, title: "Absolute Ethics", description: "Strict adherence to regulations and financial systems. Built for multi-decade sustainable growth.", metrics: { value: "8+", label: "Years Trust" } },
-                { icon: ValueIcon, title: "10x Value Delivery", description: "Delivering 10x value for every rupee invested through superior quality and reliability.", metrics: { value: "10x", label: "ROI Delivered" } },
-                { icon: InnovationIcon, title: "Advanced R&D", description: "Continuous innovation and development of new technologies for evolving industry needs.", metrics: { value: "24/7", label: "Innovation Lab" } },
-                { icon: CustomerIcon, title: "Customer First", description: "24/7 support and dedicated relationship managers for every client account.", metrics: { value: "100%", label: "Support Coverage" } }
-              ].map((feature, idx) => {
-                const { icon: Icon, title, description, metrics } = feature;
-                return (
-                  <ScrollReveal key={idx} direction="up" delay={idx * 0.1} className="h-full flex flex-col">
-                    <TiltCard glow className="h-full flex flex-col flex-1">
-                      <motion.div 
-                        whileHover={{ y: -3, scale: 1.01 }} 
-                        transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                        className="group flex-1 w-full bg-gradient-to-br from-white/[0.03] to-transparent border border-white/[0.06] hover:border-amber-500/40 rounded-xl sm:rounded-2xl p-4 sm:p-5 flex flex-col gap-3 sm:gap-4 overflow-hidden relative"
-                      >
-                        <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-amber-500 via-amber-400 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                        <div className="absolute -top-24 -right-24 w-36 h-36 bg-gradient-to-br from-amber-500/10 to-transparent rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700 pointer-events-none" />
-
-                        <div className="flex items-center gap-3 relative z-10">
-                          <motion.div 
-                            className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center shrink-0 border border-amber-500/20"
-                            whileHover={{ rotate: 6, scale: 1.05 }} 
-                            transition={{ type: "spring", stiffness: 200, damping: 10 }}
-                          >
-                            <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-amber-400" strokeWidth={1.5} />
-                          </motion.div>
-                          <h3 className="text-base sm:text-lg md:text-xl font-bold text-white tracking-wide">{title}</h3>
-                        </div>
-
-                        <p className="text-slate-300 leading-relaxed text-xs sm:text-sm md:text-base flex-grow relative z-10">
-                          {description}
-                        </p>
-
-                        <div className="mt-auto pt-3 sm:pt-4 border-t border-white/[0.06] relative z-10">
-                          <div className="flex items-baseline gap-2">
-                            <span className="text-xl sm:text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent group-hover:scale-105 origin-left transition-transform duration-500">
-                              {metrics.value}
-                            </span>
-                            <span className="text-[10px] sm:text-xs font-semibold text-zinc-400 uppercase tracking-wider">
-                              {metrics.label}
-                            </span>
-                          </div>
-                        </div>
-                      </motion.div>
-                    </TiltCard>
-                  </ScrollReveal>
-                );
-              })}
-            </div>
-          </div>
-        </FullScreenSection>
-
-        {/* SECTION: MISSION & VISION */}
-        <FullScreenSection id="mission" className="relative bg-gradient-to-b from-transparent via-amber-500/5 to-transparent">
-          <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
-            <SectionHeader badge="Our Purpose" title="Mission &" highlight="Vision" description="Driving industrial excellence through quality and reliability." />
-            <div className="grid md:grid-cols-2 gap-5 md:gap-6 lg:gap-8">
-              <ScrollReveal direction="right" delay={0.1}>
-                <TiltCard glow>
-                  <motion.div whileHover={{ y: -5 }} className="group relative p-8 sm:p-10 md:p-12 rounded-3xl bg-gradient-to-br from-white/[0.03] to-transparent border border-white/[0.06] hover:border-amber-500/40 transition-all duration-500 overflow-hidden">
-                    <div className="absolute top-0 left-0 w-full h-0.5 sm:h-1 bg-gradient-to-r from-amber-500 via-amber-400 to-transparent" />
-                    <div className="absolute -top-24 -right-24 w-40 h-40 sm:w-48 sm:h-48 bg-gradient-to-br from-amber-500/10 to-transparent rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700" />
-                    <div className="relative z-10">
-                      <motion.div className="w-14 h-14 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform" whileHover={{ rotate: 360 }} transition={{ duration: 0.5 }}>
-                        <Target className="w-7 h-7 sm:w-10 sm:h-10 text-amber-400" strokeWidth={1.5} />
-                      </motion.div>
-                      <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4">Our Mission</h3>
-                      <p className="text-slate-300 leading-relaxed text-lg sm:text-xl md:text-2xl">"To give the best. Improve every single day, across every department and every person in the organization."</p>
-                    </div>
+        {/* Cards Grid */}
+        <div className="grid md:grid-cols-2 gap-6 lg:gap-8 xl:gap-10">
+          {/* Mission Card */}
+          <ScrollReveal direction="right" delay={0.1}>
+            <TiltCard glow>
+              <motion.div 
+                whileHover={{ y: -8 }} 
+                className="group relative p-8 md:p-10 lg:p-12 rounded-3xl bg-gradient-to-br from-white/[0.05] to-white/[0.02] border border-white/[0.08] hover:border-amber-500/50 transition-all duration-500 overflow-hidden backdrop-blur-sm"
+              >
+                {/* Gradient Top Border */}
+                <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-amber-500 via-amber-400 to-amber-300 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                
+                {/* Ambient Glow */}
+                <div className="absolute -top-24 -right-24 w-56 h-56 bg-gradient-to-br from-amber-500/15 to-transparent rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700" />
+                
+                {/* Content */}
+                <div className="relative z-10">
+                  {/* Icon */}
+                  <motion.div 
+                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center mb-5 sm:mb-6 group-hover:scale-110 transition-transform duration-300" 
+                    whileHover={{ rotate: 360 }} 
+                    transition={{ duration: 0.6, ease: "easeInOut" }}
+                  >
+                    <Target className="w-8 h-8 sm:w-10 sm:h-10 text-amber-400" strokeWidth={1.5} />
                   </motion.div>
-                </TiltCard>
-              </ScrollReveal>
 
-              <ScrollReveal direction="left" delay={0.2}>
-                <TiltCard glow>
-                  <motion.div whileHover={{ y: -5 }} className="group relative p-8 sm:p-10 md:p-12 rounded-3xl bg-gradient-to-br from-white/[0.03] to-transparent border border-white/[0.06] hover:border-amber-500/40 transition-all duration-500 overflow-hidden">
-                    <div className="absolute top-0 left-0 w-full h-0.5 sm:h-1 bg-gradient-to-r from-amber-500 via-amber-400 to-transparent" />
-                    <div className="absolute -bottom-24 -right-24 w-40 h-40 sm:w-48 sm:h-48 bg-gradient-to-br from-amber-500/10 to-transparent rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700" />
-                    <div className="relative z-10">
-                      <motion.div className="w-14 h-14 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform" whileHover={{ rotate: 360 }} transition={{ duration: 0.5 }}>
-                        <Eye className="w-7 h-7 sm:w-10 sm:h-10 text-amber-400" strokeWidth={1.5} />
-                      </motion.div>
-                      <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4">Our Vision</h3>
-                      <p className="text-slate-300 leading-relaxed text-lg sm:text-xl md:text-2xl">"IPO Bound 2030. DFPL aims to list on SME IPO by 2030 and Graduate to Main Board by 2036. Building India's most trusted fastener brand."</p>
-                    </div>
+                  {/* Title */}
+                  <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-3 sm:mb-4 tracking-tight">
+                    Our Mission
+                  </h3>
+
+                  {/* Description */}
+                  <p className="text-slate-300 leading-relaxed text-base sm:text-lg lg:text-xl">
+                    "To give the best. Improve every single day, across every department and every person in the organization."
+                  </p>
+
+                  {/* Decorative Quote Mark */}
+                  <div className="absolute -bottom-4 -right-4 text-7xl text-amber-500/5 font-serif select-none">
+                    "
+                  </div>
+                </div>
+              </motion.div>
+            </TiltCard>
+          </ScrollReveal>
+
+          {/* Vision Card */}
+          <ScrollReveal direction="left" delay={0.2}>
+            <TiltCard glow>
+              <motion.div 
+                whileHover={{ y: -8 }} 
+                className="group relative p-8 md:p-10 lg:p-12 rounded-3xl bg-gradient-to-br from-white/[0.05] to-white/[0.02] border border-white/[0.08] hover:border-amber-500/50 transition-all duration-500 overflow-hidden backdrop-blur-sm"
+              >
+                {/* Gradient Top Border */}
+                <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-amber-500 via-amber-400 to-amber-300 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                
+                {/* Ambient Glow */}
+                <div className="absolute -bottom-24 -right-24 w-56 h-56 bg-gradient-to-br from-amber-500/15 to-transparent rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700" />
+                
+                {/* Content */}
+                <div className="relative z-10">
+                  {/* Icon */}
+                  <motion.div 
+                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center mb-5 sm:mb-6 group-hover:scale-110 transition-transform duration-300" 
+                    whileHover={{ rotate: 360 }} 
+                    transition={{ duration: 0.6, ease: "easeInOut" }}
+                  >
+                    <Eye className="w-8 h-8 sm:w-10 sm:h-10 text-amber-400" strokeWidth={1.5} />
                   </motion.div>
-                </TiltCard>
-              </ScrollReveal>
-            </div>
-          </div>
-        </FullScreenSection>
 
-        {/* SECTION: STATISTICS - NOW FULLY OPTIMIZED FOR ALL SCREEN SIZES */}
-        <FullScreenSection id="statistics" className="relative overflow-hidden">
+                  {/* Title */}
+                  <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-3 sm:mb-4 tracking-tight">
+                    Our Vision
+                  </h3>
+
+                  {/* Description */}
+                  <p className="text-slate-300 leading-relaxed text-base sm:text-lg lg:text-xl">
+                    "IPO Bound 2030. DFPL aims to list on SME IPO by 2030 and Graduate to Main Board by 2036. Building India's most trusted fastener brand."
+                  </p>
+
+                  {/* Decorative Quote Mark */}
+                  <div className="absolute -bottom-4 -right-4 text-7xl text-amber-500/5 font-serif select-none">
+                    "
+                  </div>
+                </div>
+              </motion.div>
+            </TiltCard>
+          </ScrollReveal>
+        </div>
+
+        {/* Bottom Decorative Element */}
+        <div className="mt-12 md:mt-16 flex justify-center">
+          <div className="w-24 h-0.5 bg-gradient-to-r from-transparent via-amber-500/30 to-transparent" />
+        </div>
+      </div>
+    </FullScreenSection>
+
+        {/* ==================== STATISTICS ==================== */}
+        <FullScreenSection id="statistics" className="relative">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.06)_0%,transparent_70%)]" />
           <div className="max-w-[1400px] mx-auto relative z-10 px-4 sm:px-6">
-            
-            {/* Section Header - reduced margin for tighter fit */}
-            <div className="mb-5 md:mb-7">
+            <div className="mb-5">
               <SectionHeader 
                 badge="Performance Metrics" 
                 title="Our Numbers" 
@@ -1680,11 +1724,7 @@ const About: React.FC = () => {
                 description="Real-time performance metrics that demonstrate our commitment to excellence" 
               />
             </div>
-
-            {/* Responsive grid - 2 columns on mobile, 4 on desktop, with compact gaps and fully responsive cards */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
-              
-              {/* Stat Cards - each card is compact but fully readable on all devices */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
               <StatCard icon={LogisticsIcon} label="On-Time Dispatch" value={95} suffix="%" delay={0} trend="+12% YoY" />
               <StatCard icon={VerifyIcon} label="Order Accuracy" value={99} suffix="%" delay={0.1} trend="+5% YoY" />
               <StatCard icon={Users} label="Repeat Customers" value={92} suffix="%" delay={0.2} trend="+18% YoY" />
@@ -1693,21 +1733,139 @@ const About: React.FC = () => {
               <StatCard icon={TrendingUp} label="Total Customers" value={1000} suffix="+" delay={0.5} trend="+25% YoY" />
               <StatCard icon={ManufacturingIcon} label="Yearly Capacity" value={300} suffix=" Tons" delay={0.6} trend="+15% YoY" />
               <StatCard icon={Globe} label="Cities Served" value={450} suffix="+" delay={0.7} trend="Expanding" />
-              
             </div>
           </div>
         </FullScreenSection>
 
-        {/* SECTION: OUR PROCESS */}
-        <FullScreenSection id="process" className="py-6 md:py-8">
+        {/* ==================== OUR PROCESS ==================== */}
+        <FullScreenSection id="process">
           <DFPLProcessSection />
         </FullScreenSection>
 
-        {/* SECTION: VALUES */}
+        {/* ==================== COMMITMENT ==================== */}
+        <FullScreenSection id="commitment" className="relative py-20 bg-[#050508]">
+      {/* Background Effects */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_40%,rgba(245,158,11,0.08),transparent_60%)] pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-amber-500/5 rounded-full blur-[100px] pointer-events-none" />
+      
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="rounded-3xl border border-white/10 bg-[#0a0a0f]/80 backdrop-blur-sm overflow-hidden shadow-2xl hover:shadow-amber-500/10 transition-shadow"
+        >
+          {/* 3x2 Grid Layout */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 divide-y md:divide-y-0 md:gap-[1px] bg-white/10">
+            
+            {/* 1. Our Commitment */}
+            <motion.div whileHover={{ backgroundColor: "rgba(255,255,255,0.04)" }} className="group p-6 sm:p-8 bg-[#0a0a0f]/95 h-full">
+              <div className="flex items-start gap-4">
+                <motion.div whileHover={{ rotate: 12, scale: 1.1 }} className="shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-amber-500/20 to-amber-600/10 border border-amber-500/30 flex items-center justify-center shadow-lg group-hover:shadow-amber-500/40 transition-all">
+                  <Handshake size={32} className="text-amber-400 group-hover:text-amber-300" />
+                </motion.div>
+                <div>
+                  <h3 className="text-xl sm:text-2xl font-bold text-white group-hover:text-amber-400 transition-colors mb-2">Our Commitment</h3>
+                  <p className="text-slate-300 text-sm leading-relaxed">
+                    If wrong material is sent, DFPL covers <span className="text-amber-400 font-semibold">100% of replacement costs</span>. If a delay occurs, we deliver before the deadline with <span className="text-amber-400 font-semibold">2 buffer days</span>.
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* 2. Accuracy Stats */}
+            <motion.div whileHover={{ backgroundColor: "rgba(255,255,255,0.04)" }} className="group p-6 sm:p-8 bg-[#0a0a0f]/95 h-full flex flex-col justify-center">
+              <h4 className="text-center text-amber-400 font-bold mb-4 text-sm uppercase tracking-wider group-hover:tracking-widest transition-all">Zero error rate is our total accuracy</h4>
+              <div className="grid grid-cols-2 gap-3">
+                <motion.div whileHover={{ y: -5 }} className="rounded-2xl bg-gradient-to-br from-white/[0.03] to-white/[0.01] border border-white/10 hover:border-amber-500/50 p-4 text-center transition-all shadow-md">
+                  <motion.div initial={{ scale: 0.8, opacity: 0 }} whileInView={{ scale: 1, opacity: 1 }} transition={{ delay: 0.2 }} className="text-3xl sm:text-4xl font-black text-amber-400 mb-1">100%</motion.div>
+                  <div className="text-slate-400 text-xs font-medium uppercase">Accountability</div>
+                </motion.div>
+                <motion.div whileHover={{ y: -5 }} className="rounded-2xl bg-gradient-to-br from-white/[0.03] to-white/[0.01] border border-white/10 hover:border-amber-500/50 p-4 text-center transition-all shadow-md">
+                  <motion.div initial={{ scale: 0.8, opacity: 0 }} whileInView={{ scale: 1, opacity: 1 }} transition={{ delay: 0.3 }} className="text-3xl sm:text-4xl font-black text-amber-400 mb-1">0%</motion.div>
+                  <div className="text-slate-400 text-xs font-medium uppercase">Compromise</div>
+                </motion.div>
+              </div>
+            </motion.div>
+
+            {/* 3. Global Trust */}
+            <motion.div whileHover={{ backgroundColor: "rgba(255,255,255,0.04)" }} className="group p-6 sm:p-8 bg-[#0a0a0f]/95 h-full">
+              <div className="flex items-start gap-4">
+                <motion.div whileHover={{ rotate: -12, scale: 1.1 }} className="shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-amber-500/20 to-amber-600/10 border border-amber-500/30 flex items-center justify-center shadow-lg group-hover:shadow-amber-500/40 transition-all">
+                  <ShieldCheck size={32} className="text-amber-400 group-hover:text-amber-300" />
+                </motion.div>
+                <div>
+                  <h3 className="text-xl sm:text-2xl font-bold text-white group-hover:text-amber-400 transition-colors mb-2">Trusted Globally</h3>
+                  <p className="text-slate-300 text-sm leading-relaxed">
+                    Partnering with <span className="text-amber-400 font-semibold">1000+ customers worldwide</span>. Delivering quality, reliability, and commitment <span className="text-amber-400 font-medium">every single time</span>.
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* 4. Quality Assurance */}
+            <motion.div whileHover={{ backgroundColor: "rgba(255,255,255,0.04)" }} className="group p-6 sm:p-8 bg-[#0a0a0f]/95 h-full">
+              <div className="flex items-start gap-4">
+                <motion.div whileHover={{ rotate: 12, scale: 1.1 }} className="shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-amber-500/20 to-amber-600/10 border border-amber-500/30 flex items-center justify-center shadow-lg group-hover:shadow-amber-500/40 transition-all">
+                  <Award size={32} className="text-amber-400 group-hover:text-amber-300" />
+                </motion.div>
+                <div>
+                  <h3 className="text-xl sm:text-2xl font-bold text-white group-hover:text-amber-400 transition-colors mb-2">Certified Quality</h3>
+                  <p className="text-slate-300 text-sm leading-relaxed">
+                    Every product undergoes <span className="text-amber-400 font-semibold">multi-stage inspections</span> to ensure it meets international ISO standards before leaving our facility.
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* 5. 24/7 Support */}
+            <motion.div whileHover={{ backgroundColor: "rgba(255,255,255,0.04)" }} className="group p-6 sm:p-8 bg-[#0a0a0f]/95 h-full">
+              <div className="flex items-start gap-4">
+                <motion.div whileHover={{ rotate: -12, scale: 1.1 }} className="shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-amber-500/20 to-amber-600/10 border border-amber-500/30 flex items-center justify-center shadow-lg group-hover:shadow-amber-500/40 transition-all">
+                  <Headset size={32} className="text-amber-400 group-hover:text-amber-300" />
+                </motion.div>
+                <div>
+                  <h3 className="text-xl sm:text-2xl font-bold text-white group-hover:text-amber-400 transition-colors mb-2">Always Available</h3>
+                  <p className="text-slate-300 text-sm leading-relaxed">
+                    Our dedicated account managers provide <span className="text-amber-400 font-semibold">round-the-clock support</span> to resolve queries and keep your supply chain moving seamlessly.
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* 6. Sustainable Practices */}
+            <motion.div whileHover={{ backgroundColor: "rgba(255,255,255,0.04)" }} className="group p-6 sm:p-8 bg-[#0a0a0f]/95 h-full">
+              <div className="flex items-start gap-4">
+                <motion.div whileHover={{ rotate: 12, scale: 1.1 }} className="shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-amber-500/20 to-amber-600/10 border border-amber-500/30 flex items-center justify-center shadow-lg group-hover:shadow-amber-500/40 transition-all">
+                  <Leaf size={32} className="text-amber-400 group-hover:text-amber-300" />
+                </motion.div>
+                <div>
+                  <h3 className="text-xl sm:text-2xl font-bold text-white group-hover:text-amber-400 transition-colors mb-2">Eco-Conscious</h3>
+                  <p className="text-slate-300 text-sm leading-relaxed">
+                    Committed to a greener future with <span className="text-amber-400 font-semibold">sustainable materials</span> and optimized processes that significantly reduce our carbon footprint.
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+
+          </div>
+          
+          {/* Animated Bottom Line */}
+          <div className="bg-[#0a0a0f]/95 pb-4 pt-2">
+             <motion.div className="h-[2px] bg-gradient-to-r from-transparent via-amber-500/50 to-transparent w-3/4 mx-auto rounded-full" initial={{ width: "0%", opacity: 0 }} whileInView={{ width: "75%", opacity: 1 }} transition={{ duration: 1, delay: 0.5 }} />
+          </div>
+        </motion.div>
+      </div>
+      
+          
+        </FullScreenSection>
+
+        {/* ==================== VALUES ==================== */}
         <FullScreenSection id="values">
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
             <SectionHeader badge="Core Values" title="The Principles That" highlight="Guide Us" description="Our foundational values that shape every decision we make" />
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 md:gap-5">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
               {[
                 { icon: QualityIcon, title: "Quality First", description: "Zero compromise", color: "from-emerald-500", metric: "ISO Certified" },
                 { icon: EthicsIcon, title: "Absolute Ethics", description: "Words are sacred", color: "from-blue-500", metric: "100% Trust" },
@@ -1718,13 +1876,13 @@ const About: React.FC = () => {
               ].map((value, idx) => (
                 <ScrollReveal key={idx} direction="up" delay={idx * 0.05}>
                   <TiltCard>
-                    <motion.div className="group text-center p-4 sm:p-5 md:p-6 rounded-2xl bg-gradient-to-br from-white/[0.02] to-transparent border border-white/[0.04] hover:border-amber-500/40 transition-all duration-500 h-full" whileHover={{ y: -3 }}>
-                      <motion.div className={`w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-br ${value.color}/20 to-transparent flex items-center justify-center mx-auto mb-3 sm:mb-4`} whileHover={{ rotate: 360, scale: 1.1 }} transition={{ duration: 0.5 }}>
+                    <motion.div className="group text-center p-4 md:p-5 rounded-2xl bg-gradient-to-br from-white/[0.02] to-transparent border border-white/[0.04] hover:border-amber-500/40 transition-all h-full" whileHover={{ y: -3 }}>
+                      <motion.div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br ${value.color}/20 to-transparent flex items-center justify-center mx-auto mb-3`} whileHover={{ rotate: 360, scale: 1.1 }} transition={{ duration: 0.5 }}>
                         <value.icon size={24} className="sm:w-7 sm:h-7" color="#f59e0b" />
                       </motion.div>
-                      <h4 className="text-base sm:text-lg md:text-xl font-bold text-white mb-1 sm:mb-2">{value.title}</h4>
-                      <p className="text-sm sm:text-base text-slate-300 mb-2 sm:mb-3">{value.description}</p>
-                      <div className="text-xs sm:text-sm text-amber-400/80 uppercase tracking-wider font-semibold">{value.metric}</div>
+                      <h4 className="text-base sm:text-lg font-bold text-white mb-1">{value.title}</h4>
+                      <p className="text-sm text-slate-300 mb-2">{value.description}</p>
+                      <div className="text-xs text-amber-400/80 uppercase tracking-wider font-semibold">{value.metric}</div>
                     </motion.div>
                   </TiltCard>
                 </ScrollReveal>
@@ -1733,136 +1891,320 @@ const About: React.FC = () => {
           </div>
         </FullScreenSection>
 
-        {/* SECTION: LEADERSHIP TEAM */}
-        <FullScreenSection id="leadership" className="relative bg-[#050508] overflow-hidden font-sans">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(245,158,11,0.04)_0%,transparent_60%)] pointer-events-none" />
-          <div className="max-w-[1400px] mx-auto relative z-10 px-4 sm:px-6">
-            <div className="flex flex-col items-center text-center mb-10 md:mb-14">
-              <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="inline-flex items-center gap-2 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full border border-amber-500/30 bg-amber-500/5 mb-4 sm:mb-6">
-                <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-amber-500" />
-                <span className="text-[10px] sm:text-xs font-bold text-amber-500 tracking-widest uppercase">The Visionaries</span>
-              </motion.div>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 sm:mb-6">Our <span className="text-amber-500">Leadership</span></h2>
-              <p className="text-slate-300 text-base sm:text-lg max-w-3xl mx-auto leading-relaxed px-4">A leadership team united by a shared vision of industrial excellence, system-driven integrity, and sustainable growth. Their collective expertise drives DFPL's mission to become India's most trusted fastener brand.</p>
-            </div>
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-5 lg:gap-6">
-              {leadershipData.map((leader, index) => {
-                const MainIcon = leader.mainIcon;
-                return (
-                  <motion.div key={leader.id} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: index * 0.1 }} className="group flex flex-col sm:flex-row bg-[#0a0a0f] rounded-2xl border border-white/10 hover:border-amber-500/30 transition-colors duration-300 overflow-hidden">
-                    <div className="w-full sm:w-2/5 relative min-h-[280px] sm:min-h-full bg-gradient-to-b from-[#2a1d0c] to-[#0a0a0f] overflow-hidden shrink-0">
-                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(245,158,11,0.3)_0%,transparent_70%)] opacity-80" />
-                      <img src={leader.image} alt={leader.name} className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-full object-cover object-bottom drop-shadow-2xl grayscale-[20%] group-hover:grayscale-0 transition-all duration-500" />
-                    </div>
-                    <div className="w-full sm:w-3/5 p-5 sm:p-6 md:p-8 flex flex-col">
-                      <div className="flex items-start gap-3 sm:gap-4 mb-3 sm:mb-4">
-                        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-[#15151c] border border-white/10 flex items-center justify-center shrink-0"><MainIcon className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500" /></div>
-                        <div>
-                          <h3 className="text-xl sm:text-2xl font-bold text-white mb-0.5 tracking-wide group-hover:text-amber-500 transition-colors duration-300">{leader.name}</h3>
-                          <p className="text-amber-500 text-xs sm:text-sm font-medium">{leader.role}</p>
-                        </div>
-                      </div>
-                      <p className="text-slate-400 leading-relaxed text-xs sm:text-sm mb-5 sm:mb-6 flex-grow">{leader.description}</p>
-                      <div className="grid grid-cols-3 gap-1 sm:gap-2 pt-4 sm:pt-5 border-t border-white/5 mt-auto">
-                        {leader.stats.map((stat, idx) => {
-                          const StatIcon = stat.icon;
-                          return (
-                            <div key={idx} className="flex items-center gap-1 sm:gap-2">
-                              <StatIcon className="w-6 h-6 sm:w-8 sm:h-8 text-amber-500 shrink-0 p-1 sm:p-1.5" />
-                              <span className="text-[9px] sm:text-[10px] md:text-xs text-slate-300 leading-tight whitespace-pre-line font-medium">{stat.label}</span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </div>
-          </div>
-        </FullScreenSection>
+        {/* ==================== LEADERSHIP 1 ==================== */}
+        <FullScreenSection id="leadership-1" className="relative bg-[#050508]">
+  <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(245,158,11,0.05)_0%,transparent_60%)] pointer-events-none" />
+  <div className="relative z-10 w-full px-4 sm:px-6 py-8 md:py-10">
+    <div className="max-w-[1400px] mx-auto">
+      <div className="flex flex-col items-center text-center mb-8">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-amber-500/30 bg-amber-500/5 mb-3"
+        >
+          <Sparkles className="w-3 h-3 text-amber-500" />
+          <span className="text-[10px] font-bold text-amber-500 tracking-widest uppercase">
+            The Visionaries
+          </span>
+        </motion.div>
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-2">
+          Our <span className="text-amber-500">Leadership</span>
+        </h2>
+        <p className="text-slate-300 text-sm sm:text-base max-w-2xl leading-relaxed">
+          A leadership team united by a shared vision of industrial excellence,
+          system-driven integrity, and sustainable growth.
+        </p>
+      </div>
 
-        {/* SECTION: TEAM MEMBERS */}
-        <FullScreenSection id="our-team" className="bg-[#0A0A0F]">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-6">
+        {leadershipData.slice(0, 2).map((leader, idx) => {
+          const MainIcon = leader.mainIcon;
+          return (
+            <motion.div
+              key={leader.id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: idx * 0.1 }}
+              className="group flex flex-col md:flex-row bg-[#0a0a0f] rounded-2xl border border-white/10 hover:border-amber-500/50 transition-all overflow-hidden shadow-lg"
+            >
+              {/* Image Section */}
+              <div className="w-full md:w-2/5 relative bg-gradient-to-b from-[#2a1d0c] to-[#0a0a0f] overflow-hidden">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(245,158,11,0.15)_0%,transparent_70%)] pointer-events-none" />
+                <div className="aspect-[2/3] w-full flex items-center justify-center bg-[#0a0a0f]">
+                  <img
+                    src={leader.image}
+                    alt={leader.name}
+                    className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                        leader.name
+                      )}&background=f59e0b&color=fff&bold=true&size=128`;
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Content Section */}
+              <div className="w-full md:w-3/5 p-4 md:p-5 flex flex-col">
+                <div className="flex items-start gap-2 mb-2">
+                  <div className="w-8 h-8 rounded-lg bg-[#15151c] border border-white/10 flex items-center justify-center shrink-0 group-hover:bg-amber-500/20 transition-colors">
+                    <MainIcon className="w-4 h-4 text-amber-500" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg md:text-xl font-bold text-white group-hover:text-amber-500 transition-colors">
+                      {leader.name}
+                    </h3>
+                    <p className="text-amber-500 text-[11px] font-medium">
+                      {leader.role}
+                    </p>
+                  </div>
+                </div>
+
+                {/* ✅ FULL DESCRIPTION - No truncation, no line-clamp */}
+                <p className="text-slate-300 text-xs md:text-sm leading-relaxed mb-3">
+                  {leader.description}
+                </p>
+
+                <div className="grid grid-cols-3 gap-1 pt-3 border-t border-white/10 mt-auto">
+                  {leader.stats.map((stat, i) => {
+                    const StatIcon = stat.icon;
+                    return (
+                      <div
+                        key={i}
+                        className="flex flex-col items-center text-center gap-0.5"
+                      >
+                        <div className="w-7 h-7 rounded-lg bg-amber-500/10 flex items-center justify-center group-hover:bg-amber-500/20 transition-colors">
+                          <StatIcon className="w-3.5 h-3.5 text-amber-400" />
+                        </div>
+                        <span className="text-[8px] md:text-[10px] text-slate-300 font-medium whitespace-pre-line">
+                          {stat.label}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
+    </div>
+  </div>
+</FullScreenSection>
+
+        {/* ==================== LEADERSHIP 2 ==================== */}
+        <FullScreenSection id="leadership-2" className="relative bg-[#050508]">
+  <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(245,158,11,0.05)_0%,transparent_60%)] pointer-events-none" />
+  <div className="relative z-10 w-full px-4 sm:px-6 py-8 md:py-10">
+    <div className="max-w-[1400px] mx-auto">
+      <div className="flex flex-col items-center text-center mb-8">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-amber-500/30 bg-amber-500/5 mb-3"
+        >
+          <Sparkles className="w-3 h-3 text-amber-500" />
+          <span className="text-[10px] font-bold text-amber-500 tracking-widest uppercase">
+            Operational Excellence
+          </span>
+        </motion.div>
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-2">
+          Driving <span className="text-amber-500">Growth</span> & Efficiency
+        </h2>
+        <p className="text-slate-300 text-sm sm:text-base max-w-2xl leading-relaxed">
+          Meet the leaders who turn strategy into action, ensuring DFPL stays
+          ahead in quality, logistics, and customer satisfaction.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-6">
+        {leadershipData.slice(2, 4).map((leader, idx) => {
+          const MainIcon = leader.mainIcon;
+          return (
+            <motion.div
+              key={leader.id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: idx * 0.1 }}
+              className="group flex flex-col md:flex-row bg-[#0a0a0f] rounded-2xl border border-white/10 hover:border-amber-500/50 transition-all overflow-hidden shadow-lg"
+            >
+              {/* Image Section */}
+              <div className="w-full md:w-2/5 relative bg-gradient-to-b from-[#2a1d0c] to-[#0a0a0f] overflow-hidden">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(245,158,11,0.15)_0%,transparent_70%)] pointer-events-none" />
+                <div className="aspect-[2/3] w-full flex items-center justify-center bg-[#0a0a0f]">
+                  <img
+                    src={leader.image}
+                    alt={leader.name}
+                    className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                        leader.name
+                      )}&background=f59e0b&color=fff&bold=true&size=128`;
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Content Section */}
+              <div className="w-full md:w-3/5 p-4 md:p-5 flex flex-col">
+                <div className="flex items-start gap-2 mb-2">
+                  <div className="w-8 h-8 rounded-lg bg-[#15151c] border border-white/10 flex items-center justify-center shrink-0 group-hover:bg-amber-500/20 transition-colors">
+                    <MainIcon className="w-4 h-4 text-amber-500" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg md:text-xl font-bold text-white group-hover:text-amber-500 transition-colors">
+                      {leader.name}
+                    </h3>
+                    <p className="text-amber-500 text-[11px] font-medium">
+                      {leader.role}
+                    </p>
+                  </div>
+                </div>
+
+                {/* ✅ FULL DESCRIPTION - No truncation, no line-clamp */}
+                <p className="text-slate-300 text-xs md:text-sm leading-relaxed mb-3">
+                  {leader.description}
+                </p>
+
+                <div className="grid grid-cols-3 gap-1 pt-3 border-t border-white/10 mt-auto">
+                  {leader.stats.map((stat, i) => {
+                    const StatIcon = stat.icon;
+                    return (
+                      <div
+                        key={i}
+                        className="flex flex-col items-center text-center gap-0.5"
+                      >
+                        <div className="w-7 h-7 rounded-lg bg-amber-500/10 flex items-center justify-center group-hover:bg-amber-500/20 transition-colors">
+                          <StatIcon className="w-3.5 h-3.5 text-amber-400" />
+                        </div>
+                        <span className="text-[8px] md:text-[10px] text-slate-300 font-medium whitespace-pre-line">
+                          {stat.label}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
+    </div>
+  </div>
+</FullScreenSection>
+
+        {/* ==================== TEAM SECTION 1 ==================== */}
+        <FullScreenSection id="our-team-1" className="bg-[#0A0A0F]">
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
             <SectionHeader badge="The Execution Force" title="Meet Our" highlight="Expert Team" />
-            <div className="flex flex-wrap justify-center gap-4 sm:gap-5 md:gap-6 lg:gap-8 mt-8 sm:mt-10 md:mt-12">
-              <EmployeeCard name="Ms.Ayushi" role="Office Executive" delay={0.05} image="/ayushi.jpg" />
-              <EmployeeCard name="Mr.Rohit" role="Business Development Executive" delay={0.1} image="/rohit.jpg" />
-              <EmployeeCard name="Mr.Daniel" role="Business Development Executive" delay={0.15} image="/daniel.png" />
-              <EmployeeCard name="Ms.Payal" role="Business Development Executive" delay={0.2} image="/payal.png" />
-              <EmployeeCard name="Ms.Prinsi" role="Office Executive" delay={0.25} image="/prinsi123.png" />
-              <EmployeeCard name="Ms.Asmita" role="Business Development Executive" delay={0.3} image="/asmita.png" />
-              <EmployeeCard name="Ms.Yagni" role="Business Development Executive" delay={0.35} image="/yagni.png" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6 mt-8">
+              <EmployeeCard name="Ms. Ayushi" role="Office Executive" delay={0.05} image="/ayushi.jpg" />
+              <EmployeeCard name="Mr. Rohit" role="Business Development Executive" delay={0.1} image="/rohit.jpg" />
+              <EmployeeCard name="Mr. Daniel" role="Business Development Executive" delay={0.15} image="/daniel.png" />
+              <EmployeeCard name="Ms. Payal" role="Business Development Executive" delay={0.2} image="/payal.png" />
             </div>
           </div>
         </FullScreenSection>
 
-        {/* SECTION: TESTIMONIALS */}
-        <FullScreenSection id="testimonials">
+        {/* ==================== TEAM SECTION 2 ==================== */}
+        <FullScreenSection id="our-team-2" className="bg-[#0A0A0F]">
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
-            <SectionHeader badge="Client Love" title="What Our" highlight="Clients Say" description="Trusted by precision-driven industries across the globe" />
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
-              <TestimonialCard quote="DFPL has been our trusted partner for over 5 years. Their quality standards and on-time delivery are unmatched in the industry." author="Ramesh Patel" role="Director, Bhumi Associates" delay={0} />
-              <TestimonialCard quote="The professionalism and system-driven approach of DFPL sets them apart. They treat fasteners as precision-engineered products, not just hardware." author="Suresh Mehta" role="Owner, Ramdev Hardware" delay={0.1} />
-              <TestimonialCard quote="Zero defects, zero delays, zero excuses. That's the DFPL promise they've delivered consistently for years." author="Ankit Shah" role="Purchase Head, Leading OEM" delay={0.2} />
+            <SectionHeader badge="The Execution Force" title="Meet Our" highlight="Expert Team" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 mt-8 justify-center items-center">
+              <EmployeeCard name="Ms. Prinsi" role="Office Executive" delay={0.25} image="/prinsi123.png" />
+              <EmployeeCard name="Ms. Asmita" role="Business Development Executive" delay={0.3} image="/asmita.png" />
+              <EmployeeCard name="Ms. Yagni" role="Business Development Executive" delay={0.35} image="/yagni.png" />
             </div>
           </div>
         </FullScreenSection>
 
-        {/* SECTION: FOUNDER'S QUOTE */}
+       
+          {/* ==================== TESTIMONIALS ==================== */} 
+
+<FullScreenSection id="testimonials">
+  <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
+    <SectionHeader 
+      badge="Client Love" 
+      title="What Our" 
+      highlight="Clients Say" 
+      description="Trusted by precision-driven industries across the globe" 
+    />
+    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+      <TestimonialCard 
+        quote="DFPL has been our preferred supplier for drywall screws and fastening solutions for over 5 years. Their consistent quality, timely dispatches, and technical support have helped us maintain smooth project execution across South India." 
+        author="Pradeep Kumar Sharma" 
+        role="Bengaluru Urban, Karnataka" 
+        delay={0} 
+      />
+      <TestimonialCard 
+        quote="The quality consistency of DFPL's SDS Screws and Chipboard Screws is excellent. Every batch meets specifications, and their professional approach makes them one of the most dependable fastening partners we work with." 
+        author="RAM SINGH RATHORE" 
+        role="Hubli, Karnataka" 
+        delay={0.1} 
+      />
+      <TestimonialCard 
+        quote="DFPL delivers exactly what they promise—quality products, competitive pricing, and on-time delivery. Over the years, we have experienced virtually zero quality complaints and outstanding service support." 
+        author="Sandeep Das" 
+        role="South Andaman, Andaman and Nicobar Islands" 
+        delay={0.2} 
+      />
+    </div>
+  </div>
+</FullScreenSection>
+
+        {/* ==================== FOUNDER'S QUOTE ==================== */}
         <FullScreenSection id="quote" className="relative overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(245,158,11,0.12)_0%,transparent_70%)]" />
           <div className="max-w-5xl mx-auto text-center relative z-10 px-4 sm:px-6">
             <ScrollReveal direction="up">
-              <motion.div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center mx-auto mb-6 sm:mb-8 border-2 border-amber-500/30" whileHover={{ rotate: 360, scale: 1.1 }} transition={{ duration: 0.5 }}>
-                <Quote className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 text-amber-400" strokeWidth={1.5} />
+              <motion.div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center mx-auto mb-6 border-2 border-amber-500/30" whileHover={{ rotate: 360, scale: 1.1 }} transition={{ duration: 0.5 }}>
+                <Quote className="w-10 h-10 sm:w-12 sm:h-12 text-amber-400" />
               </motion.div>
-              <motion.h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-light italic text-slate-200 leading-relaxed mb-8 sm:mb-10 md:mb-12" initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.2 }}>
-                "If we said 5 days — you will have it in 4. We have <span className="text-white font-bold not-italic relative inline-block">never missed a commitment<motion.span className="absolute bottom-0 left-0 w-full h-2 sm:h-3 bg-amber-500/40 -z-10 rounded-sm" initial={{ width: "0%" }} whileInView={{ width: "100%" }} transition={{ duration: 1, delay: 0.5 }} /></span> in 8 years. And we never will."
+              <motion.h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-light italic text-slate-200 leading-relaxed mb-8" initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.2 }}>
+                "If we said 5 days — you will have it in 4. We have <span className="text-white font-bold not-italic relative inline-block">never missed a commitment<motion.span className="absolute bottom-0 left-0 w-full h-2 bg-amber-500/40 -z-10 rounded-sm" initial={{ width: "0%" }} whileInView={{ width: "100%" }} transition={{ duration: 1, delay: 0.5 }} /></span> in 8 years. And we never will."
               </motion.h2>
               <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5, delay: 0.4 }}>
-                <div className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-white to-amber-200 bg-clip-text text-transparent mb-2 sm:mb-3">Mr.Vipul</div>
-                <div className="text-sm sm:text-base md:text-lg text-amber-400 font-bold uppercase tracking-[0.2em]">Founder & Visionary, DFPL</div>
-                <motion.div className="w-16 sm:w-20 h-px sm:h-[2px] bg-amber-500 mx-auto mt-4 sm:mt-6" initial={{ width: 0 }} whileInView={{ width: 64 }} transition={{ duration: 0.6, delay: 0.6 }} />
+                <div className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-white to-amber-200 bg-clip-text text-transparent mb-2">Mr. Vipul</div>
+                <div className="text-sm sm:text-base text-amber-400 font-bold uppercase tracking-[0.2em]">Founder & Visionary, DFPL</div>
+                <motion.div className="w-16 sm:w-20 h-px bg-amber-500 mx-auto mt-4" initial={{ width: 0 }} whileInView={{ width: 64 }} transition={{ duration: 0.6, delay: 0.6 }} />
               </motion.div>
             </ScrollReveal>
           </div>
         </FullScreenSection>
 
-        {/* SECTION: CONTACT */}
+        {/* ==================== CONTACT ==================== */}
         <FullScreenSection id="contact">
           <div className="max-w-[1200px] mx-auto px-4 sm:px-6">
             <ScrollReveal direction="up">
-              <motion.div className="relative rounded-2xl sm:rounded-3xl overflow-hidden bg-gradient-to-br from-amber-600 via-amber-700 to-amber-800 p-8 sm:p-10 md:p-12 lg:p-16 text-center" whileHover={{ scale: 1.01 }} transition={{ duration: 0.3 }}>
+              <motion.div className="relative rounded-2xl sm:rounded-3xl overflow-hidden bg-gradient-to-br from-amber-600 via-amber-700 to-amber-800 p-8 md:p-12 text-center" whileHover={{ scale: 1.01 }} transition={{ duration: 0.3 }}>
                 <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E')] opacity-10" />
-                {[...Array(6)].map((_, i) => (
-                  <motion.div key={i} className="absolute w-0.5 h-0.5 sm:w-1 sm:h-1 bg-white rounded-full" initial={{ x: Math.random() * 600 - 300, y: Math.random() * 300 - 150, scale: 0 }} animate={{ scale: [0, 1, 0], opacity: [0, 1, 0] }} transition={{ duration: 3, delay: i * 0.4, repeat: Infinity }} style={{ left: `${Math.random() * 100}%`, top: `${Math.random() * 100}%` }} />
-                ))}
                 <div className="relative z-10">
-                  <motion.div animate={{ y: [0, -5, 0] }} transition={{ duration: 2, repeat: Infinity }} className="inline-block mb-4 sm:mb-6"><Gem className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 text-white/80" /></motion.div>
-                  <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-3 sm:mb-4">Ready to Partner with Excellence?</h2>
-                  <p className="text-amber-100 text-base sm:text-lg md:text-xl mb-6 sm:mb-8 md:mb-10 max-w-2xl mx-auto leading-relaxed">Join India's most trusted fastener manufacturer. Experience the DFPL difference with guaranteed quality and on-time delivery.</p>
-                  <div className="flex flex-col sm:flex-row gap-4 sm:gap-5 justify-center">
-                    <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="group relative px-6 sm:px-8 py-3 sm:py-4 bg-white text-amber-700 font-bold rounded-full flex items-center justify-center gap-2 shadow-xl overflow-hidden text-base sm:text-lg md:text-xl">
+                  <motion.div animate={{ y: [0, -5, 0] }} transition={{ duration: 2, repeat: Infinity }} className="inline-block mb-4"><Gem className="w-10 h-10 sm:w-12 sm:h-12 text-white/80" /></motion.div>
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3">Ready to Partner with Excellence?</h2>
+                  <p className="text-amber-100 text-base sm:text-lg mb-6 max-w-2xl mx-auto">Join India's most trusted fastener manufacturer. Experience the DFPL difference with guaranteed quality and on-time delivery.</p>
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="group relative px-6 sm:px-8 py-3 sm:py-4 bg-white text-amber-700 font-bold rounded-full flex items-center justify-center gap-2 shadow-xl overflow-hidden">
                       <span className="relative z-10">Contact Sales</span>
                       <motion.div className="relative z-10" animate={{ x: [0, 5, 0] }} transition={{ duration: 1, repeat: Infinity }}><Send className="w-4 h-4 sm:w-5 sm:h-5" /></motion.div>
                       <motion.div className="absolute inset-0 bg-gradient-to-r from-amber-100 to-white" initial={{ x: "100%" }} whileHover={{ x: "0%" }} transition={{ duration: 0.3 }} />
                     </motion.button>
-                    <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="px-6 sm:px-8 py-3 sm:py-4 border-2 border-white/50 text-white font-semibold rounded-full hover:bg-white/10 transition-all duration-300 backdrop-blur-sm flex items-center justify-center gap-2 text-base sm:text-lg md:text-xl">
+                    <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="px-6 sm:px-8 py-3 sm:py-4 border-2 border-white/50 text-white font-semibold rounded-full hover:bg-white/10 transition-all backdrop-blur-sm flex items-center justify-center gap-2">
                       <Phone className="w-4 h-4 sm:w-5 sm:h-5" /> Request Quote
                     </motion.button>
                   </div>
-                  <div className="flex flex-wrap justify-center gap-4 sm:gap-5 md:gap-6 mt-6 sm:mt-8 md:mt-10 pt-4 sm:pt-6 border-t border-white/20">
-                    <div className="flex items-center gap-1 sm:gap-2 text-amber-100 text-xs sm:text-sm md:text-base"><CheckCircle className="w-3 h-3 sm:w-4 sm:h-4" /><span>ISO Certified</span></div>
-                    <div className="flex items-center gap-1 sm:gap-2 text-amber-100 text-xs sm:text-sm md:text-base"><Shield className="w-3 h-3 sm:w-4 sm:h-4" /><span>100% Guarantee</span></div>
-                    <div className="flex items-center gap-1 sm:gap-2 text-amber-100 text-xs sm:text-sm md:text-base"><DispatchIcon size={14} className="sm:w-4 sm:h-4" color="#fffbeb" /><span>PAN India Delivery</span></div>
+                  <div className="flex flex-wrap justify-center gap-4 mt-6 pt-4 border-t border-white/20">
+                    <div className="flex items-center gap-1 text-amber-100 text-xs sm:text-sm"><CheckCircle className="w-3 h-3" /><span>ISO Certified</span></div>
+                    <div className="flex items-center gap-1 text-amber-100 text-xs sm:text-sm"><Shield className="w-3 h-3" /><span>100% Guarantee</span></div>
+                    <div className="flex items-center gap-1 text-amber-100 text-xs sm:text-sm"><DispatchIcon size={14} color="#fffbeb" /><span>PAN India Delivery</span></div>
                   </div>
                 </div>
               </motion.div>
             </ScrollReveal>
           </div>
         </FullScreenSection>
+
       </div>
     </HelmetProvider>
   );

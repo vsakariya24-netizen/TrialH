@@ -45,10 +45,8 @@ const JobCard: React.FC<{ job: any }> = ({ job }) => {
     const phoneNumber = "918758700783"; 
     const message = `Hello, I am interested in the position of *${job.title}* at Durable Fastener.`;
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    let url = isMobile 
-        ? `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodeURIComponent(message)}`
-        : `https://web.whatsapp.com/send?phone=${phoneNumber}&text=${encodeURIComponent(message)}`;
-    window.open(url, '_blank');
+    const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+window.open(url, '_blank');
   };
 
   return (
@@ -146,10 +144,8 @@ const InternshipCard: React.FC = () => {
       const phoneNumber = "918758700783"; 
       const message = "Hello, I am interested in the *Internship / Training Program* at Durable Fastener.";
       const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      const url = isMobile 
-        ? `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodeURIComponent(message)}`
-        : `https://web.whatsapp.com/send?phone=${phoneNumber}&text=${encodeURIComponent(message)}`;
-      window.open(url, '_blank');
+     const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+window.open(url, '_blank');
     };
   
     return (
@@ -363,7 +359,7 @@ const isFiltered = selectedDepts.length > 0;
       ? `${selectedDepts[0]} Jobs at Durable Fastener | Apply Now`
       : 'Careers at Durable Fastener | Manufacturing Jobs in Rajkot'}
   </title>
-  
+  <link rel="canonical" href="https://durablefastener.com/careers" />
   <meta 
     name="description" 
     content={`Explore ${filteredJobs.length} open positions in ${selectedDepts.length > 0 ? selectedDepts.join(', ') : 'Engineering, Sales, and Admin'}. Join Rajkot's leading fastener manufacturer.`} 
@@ -371,45 +367,51 @@ const isFiltered = selectedDepts.length > 0;
 
   {/* 2. DYNAMIC JOB POSTING SCHEMA (Uses 'filteredJobs' instead of all 'jobs') */}
   {!loading && filteredJobs.length > 0 && (
-    <script type="application/ld+json">
-      {`
-        {
-          "@context": "https://schema.org",
-          "@graph": [
-            ${filteredJobs.map(job => `
-              {
-                "@type": "JobPosting",
-                "title": "${job.title}",
-                "description": "${job.description.replace(/"/g, '\\"').replace(/\n/g, ' ')}",
-                "identifier": {
-                  "@type": "PropertyValue",
-                  "name": "Durable Fastener",
-                  "value": "${job.id}"
-                },
-                "datePosted": "${job.created_at}",
-                "validThrough": "2026-12-31",
-                "hiringOrganization": {
-                  "@type": "Organization",
-                  "name": "Durable Fastener Pvt Ltd",
-                  "sameAs": "https://durablefastener.com",
-                  "logo": "https://durablefastener.com/durablefastener.png"
-                },
-                "jobLocation": {
-                  "@type": "Place",
-                  "address": {
-                    "@type": "PostalAddress",
-                    "addressLocality": "${job.location || 'Rajkot'}",
-                    "addressRegion": "Gujarat",
-                    "addressCountry": "IN"
-                  }
-                },
-                "employmentType": "FULL_TIME"
-              }
-            `).join(',')}
-          ]
-        }
-      `}
-    </script>
+ <script
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify(
+      filteredJobs.map(job => ({
+        "@context": "https://schema.org",
+        "@type": "JobPosting",
+        "title": job.title,
+        "description": job.description,
+        "identifier": {
+          "@type": "PropertyValue",
+          "name": "Durable Fastener Pvt Ltd",
+          "value": job.id
+        },
+        "datePosted": new Date(job.created_at).toISOString(),
+        "validThrough": "2026-12-31",
+        "employmentType": "FULL_TIME",
+
+        "hiringOrganization": {
+          "@type": "Organization",
+          "name": "Durable Fastener Pvt Ltd",
+          "sameAs": "https://durablefastener.com",
+          "logo": "https://durablefastener.com/durablefastener.png"
+        },
+
+        "jobLocation": {
+          "@type": "Place",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": job.location || "Rajkot",
+            "addressRegion": "Gujarat",
+            "addressCountry": "IN"
+          }
+        },
+
+        "applicantLocationRequirements": {
+          "@type": "Country",
+          "name": "India"
+        },
+
+        "jobLocationType": "ON_SITE"
+      }))
+    )
+  }}
+/>
   )}
 </Helmet>
       {/* PROFESSIONAL HEADER */}

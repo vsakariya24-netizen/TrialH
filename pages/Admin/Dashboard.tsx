@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
-import { Package, MessageSquare, TrendingUp, FileText, Layers, Settings, Factory,Info } from 'lucide-react'; 
+import { Package, MessageSquare, TrendingUp, FileText, Layers, Settings, Factory, Info } from 'lucide-react'; 
 import { Link } from 'react-router-dom';
 
 const DashboardHome: React.FC = () => {
@@ -83,7 +83,6 @@ const DashboardHome: React.FC = () => {
               <FileText size={18} /> Write Article
             </Link>
 
-            {/* MANUFACTURING PAGE LINK */}
             <Link to="/admin/manufacturing" className="px-6 py-3 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition-colors flex items-center gap-2 shadow-lg shadow-blue-200">
               <Factory size={18} /> Edit Factory Page
             </Link>
@@ -95,20 +94,24 @@ const DashboardHome: React.FC = () => {
             <Link to="/admin/manage-oem" className="px-6 py-3 bg-zinc-100 text-zinc-700 rounded-lg font-bold hover:bg-zinc-200 transition-colors flex items-center gap-2">
               <Settings size={18} /> OEM Settings
             </Link>
-            <Link 
-  to="/admin/manufacturing" 
-  className="px-6 py-3 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-700 transition-all flex items-center gap-2 shadow-lg shadow-indigo-200 hover:-translate-y-1"
->
-<Factory size={18} /> 
-  <span>Edit Factory Page</span>
-  <div className="ml-2 px-1.5 py-0.5 bg-indigo-400 rounded text-[10px] uppercase">Live</div>
-</Link>
 
-<Link to="/admin/edit-about" className="px-6 py-3 bg-zinc-900 text-white rounded-lg font-bold hover:bg-black transition-all flex items-center gap-2 shadow-lg shadow-gray-200">
-  <Info size={18} /> 
-  <span>Manage About Page</span>
-  <div className="ml-2 px-1.5 py-0.5 bg-amber-500 text-black rounded text-[10px] font-black uppercase">Live Stats</div>
-</Link>
+            <Link 
+              to="/admin/manufacturing" 
+              className="px-6 py-3 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-700 transition-all flex items-center gap-2 shadow-lg shadow-indigo-200 hover:-translate-y-1"
+            >
+              <Factory size={18} /> 
+              <span>Edit Factory Page</span>
+              <div className="ml-2 px-1.5 py-0.5 bg-indigo-400 rounded text-[10px] uppercase">Live</div>
+            </Link>
+
+            <Link 
+              to="/admin/edit-about" 
+              className="px-6 py-3 bg-zinc-900 text-white rounded-lg font-bold hover:bg-black transition-all flex items-center gap-2 shadow-lg shadow-gray-200"
+            >
+              <Info size={18} /> 
+              <span>Manage About Page</span>
+              <div className="ml-2 px-1.5 py-0.5 bg-amber-500 text-black rounded text-[10px] font-black uppercase">Live Stats</div>
+            </Link>
          </div>
       </div>
     </div>

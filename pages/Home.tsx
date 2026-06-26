@@ -27,6 +27,7 @@ const homeFaqSchema = JSON.stringify({
     "text": "Durable Fastener Private Limited is a leading screw manufacturer in India producing high-quality self-drilling, drywall, and stainless steel screws for industrial and construction use."
    }
   },
+  
   {
    "@type": "Question",
    "name": "Where can I buy drywall screws in bulk in India?",
@@ -51,6 +52,7 @@ const homeFaqSchema = JSON.stringify({
     "text": "Yes, Durable Fastener supplies bulk quantities for distributors, wholesalers, and international buyers."
    }
   },
+
   {
    "@type": "Question",
    "name": "Can I get custom size screws manufactured?",
@@ -59,6 +61,7 @@ const homeFaqSchema = JSON.stringify({
     "text": "Yes, custom OEM manufacturing is available according to client specifications including size, coating, and packaging."
    }
   },
+
   {
    "@type": "Question",
    "name": "Where is Durable Fastener located?",
@@ -67,6 +70,7 @@ const homeFaqSchema = JSON.stringify({
     "text": "Durable Fastener Private Limited is located in Rajkot, Gujarat, India."
    }
   },
+
 {
       "@type": "Question",
       "name": "What is the difference between self-drilling and self-tapping screws?",
@@ -104,8 +108,9 @@ const cleanImageUrl = (url: string): string => {
 
   // Any Supabase or workers.dev URL → extract filename → redirect to R2
   if (url.startsWith('http://') || url.startsWith('https://')) {
-    const fileName = url.split('/').pop(); // e.g. "1773038153437-panhead.png"
-    return `${R2_BASE}/${fileName}`;
+    //const fileName = url.split('/').pop(); // e.g. "1773038153437-panhead.png"
+   // return `${R2_BASE}/${fileName}`;
+       return url; 
   }
 
   // Relative path → prepend R2
@@ -609,7 +614,7 @@ const { data: allProducts } = await supabase
 
  <div className="grid grid-cols-2 gap-x-4 flex-1">
   {/* Show only first 10 products */}
-  {division.products.slice().map((product: { name: string; slug: string }, i: number) => (
+  {division.products.map((product: { name: string; slug: string }, i: number) => (
     <div key={i} className="flex items-start gap-2.5 py-2.5 border-b border-white/5">
       <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-yellow-500/40 flex-shrink-0 group-hover:bg-yellow-500 transition-colors" />
       
@@ -793,7 +798,8 @@ const { data: allProducts } = await supabase
                             src={post.image_url}
                             alt={post.title}
                             className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
-                            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                            //onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                            onError={(e) => { (e.target as HTMLImageElement).src = '/placeholder.jpg'; }}
                           />
                         ) : (
                           <div className="w-full h-full bg-gradient-to-br from-neutral-800 to-neutral-900 flex items-center justify-center">
