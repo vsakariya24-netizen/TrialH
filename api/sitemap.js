@@ -1,33 +1,57 @@
 import { createClient } from '@supabase/supabase-js';
 
 export default async function handler(req, res) {
-  const supabase = createClient(
-    process.env.VITE_SUPABASE_URL,
-    process.env.VITE_SUPABASE_ANON_KEY
-  );
+  try {
+    const supabaseUrl = process.env.VITE_SUPABASE_URL;
+    const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY;
+    const supabase = createClient(supabaseUrl, supabaseKey);
+    const { data: blogs } = await supabase.from('blogs').select('slug');
+console.log("Fetched Blogs:", blogs); // Vercel logs mein check karein
 
-  // Supabase se data fetch karein
-  const { data: blogs } = await supabase.from('blogs').select('slug');
-  const { data: products } = await supabase.from('products').select('slug');
+    // Supabase se data fetch karein
+   
+    const { data: products } = await supabase.from('products').select('slug');
 
-  const staticUrls = [
-    'https://durablefastener.com/',
-    'https://durablefastener.com/products',
-    'https://durablefastener.com/about',
-    'https://durablefastener.com/blog',
-    'https://durablefastener.com/contact'
-  ];
+    const STATIC_URLS = [
+  'https://durablefastener.com/',
+  'https://durablefastener.com/products',
+  'https://durablefastener.com/products/fasteners-segment', // Add karein
+  'https://durablefastener.com/products/fittings',          // Add karein
+  'https://durablefastener.com/manufacturing',
+  'https://durablefastener.com/about',
+  'https://durablefastener.com/blog',
+  'https://durablefastener.com/oem-platform',
+  'https://durablefastener.com/careers',
+  'https://durablefastener.com/contact'
+];
 
-  // XML Content taiyar karein
-  const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-      ${staticUrls.map(url => `<url><loc>${url}</loc><priority>1.0</priority></url>`).join('')}
-      ${blogs?.map(blog => `<url><loc>https://durablefastener.com/blog/${blog.slug}</loc><priority>0.7</priority></url>`).join('') || ''}
-      ${products?.map(prod => `<url><loc>https://durablefastener.com/product/${prod.slug}</loc><priority>0.8</priority></url>`).join('') || ''}
-    </urlset>`;
+    let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
 
-  // Response ko XML format mein bhejein
-  res.setHeader('Content-Type', 'text/xml');
-  res.write(sitemap);
-  res.end();
+    // Static URLs
+    STATIC_URLS.forEach(url => {
+      sitemap += `<url><loc>${url}</loc><priority>0.8</priority></url>`;
+    });
+
+    // Blogs URLs
+    blogs?.forEach(blog => {
+      sitemap += `<url><loc>https://durablefastener.com/blog/${blog.slug}</loc><priority>0.7</priority></url>`;
+    });
+
+    // Products URLs
+    products?.forEach(product => {
+      sitemap += `<url><loc>https://durablefastener.com/product/${product.slug}</loc><priority>0.9</priority></url>`;
+    });
+
+    sitemap += `</urlset>`;
+
+    // XML Headers set karein
+    res.setHeader('Content-Type', 'text/xml');
+    res.setHeader('Cache-Control', 's-maxage=0, stale-while-revalidate');
+    res.write(sitemap);
+    res.end();
+
+  } catch (error) {
+    res.status(500).send("Error generating sitemap");
+  }
 }
