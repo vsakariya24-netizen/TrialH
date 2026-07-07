@@ -960,7 +960,7 @@ const About: React.FC = () => {
           ::-webkit-scrollbar-track { background: #0A0A0F; }
           ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 5px; }
           ::-webkit-scrollbar-thumb:hover { background: #d97706; }
-          ::selection { background: #f59e0b; color: #000; }
+          ::selection { background: #f59e0b; solor: #000; }
           @keyframes float { 0%, 100% { transform: translateY(0px) translateX(0px); } 25% { transform: translateY(-10px) translateX(5px); } 75% { transform: translateY(10px) translateX(-5px); } }
           @keyframes pulse-glow { 0%, 100% { opacity: 0.2; filter: blur(100px); } 50% { opacity: 0.4; filter: blur(120px); } }
           @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
@@ -1044,9 +1044,10 @@ const About: React.FC = () => {
                       Integrity.
                     </motion.span>
                     <br />
-                    <span className="text-3xl sm:text-4xl md:text-5xl text-slate-400 block mt-3 sm:mt-4 font-light">
-                      Built To Last.
-                    </span>
+<span className="text-3xl sm:text-4xl md:text-5xl text-slate-400 block mt-3 sm:mt-4 font-light tracking-tighter">
+  Built To Last.
+</span>
+
                   </h1>
                 </ScrollReveal>
 
@@ -1528,7 +1529,7 @@ const About: React.FC = () => {
         { 
           icon: CustomerIcon, 
           title: "Customer First", 
-          description: "24/7 support and dedicated relationship managers for every client account.", 
+          description: "Response within 2 hours and dedicated relationship managers for every client account.", 
           metrics: { value: "100%", label: "Support Coverage" },
           gradient: "from-teal-500/20 to-teal-600/10",
           border: "hover:border-teal-500/40"
