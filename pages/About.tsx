@@ -25,6 +25,7 @@ import {
   BarChart, Handshake,
   Headset,
   Leaf,
+  FileText,
 } from 'lucide-react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
@@ -703,7 +704,7 @@ const DFPLProcessSection = () => {
 
   const EngineeringProcess = () => (
     <div className="flex flex-col items-center flex-1 justify-between w-full h-full mt-2">
-      <FlowStep title="Material Inspection" icon={SearchCheck} color="blue" />
+      <FlowStep title=" Raw Material Inspection" icon={SearchCheck} color="blue" />
       <ArrowDown className="text-blue-400" size={16} />
       <FlowStep title="Wire Drawing" icon={Cable} color="blue" />
       <ArrowDown className="text-blue-400" size={16} />
@@ -778,6 +779,9 @@ const DFPLProcessSection = () => {
       
       <FlowStep title="Stock Verification" icon={Truck} color="amber" />
       <ArrowDown className="text-amber-400" size={16} />
+
+       <FlowStep title="Billing & E-invoice" icon={FileText} color="amber" />
+    <ArrowDown className="text-amber-400" size={16} />
       
       <FlowStep title="Dispatch" icon={CheckCircle2} color="amber" />
       <ArrowDown className="text-amber-400" size={16} />
@@ -1360,7 +1364,8 @@ const About: React.FC = () => {
           </p>
           <div className="bg-black/40 border border-red-500/20 rounded-xl p-4">
             <p className="text-amber-400 text-[10px] font-bold uppercase tracking-[0.15em] mb-1.5">Root Cause</p>
-            <p className="text-slate-200 text-sm leading-relaxed">Seasonal variation in plywood density during winter conditions.</p>
+            <p className="text-slate-200 text-sm leading-relaxed">Seasonal changes in the density of plywood, wood, and other materials during winter.
+</p>
           </div>
         </div>
       </motion.div>
@@ -1529,7 +1534,7 @@ const About: React.FC = () => {
         { 
           icon: CustomerIcon, 
           title: "Customer First", 
-          description: "Response within 2 hours and dedicated relationship managers for every client account.", 
+          description: "Response within 30 to 90 minutes and dedicated relationship managers for every client account.", 
           metrics: { value: "100%", label: "Support Coverage" },
           gradient: "from-teal-500/20 to-teal-600/10",
           border: "hover:border-teal-500/40"
@@ -1733,7 +1738,7 @@ const About: React.FC = () => {
               <StatCard icon={RejectionIcon} label="Rejection Rate" value={1.2} suffix="%" delay={0.4} trend="-40% YoY" />
               <StatCard icon={TrendingUp} label="Total Customers" value={1000} suffix="+" delay={0.5} trend="+25% YoY" />
               <StatCard icon={ManufacturingIcon} label="Yearly Capacity" value={300} suffix=" Tons" delay={0.6} trend="+15% YoY" />
-              <StatCard icon={Globe} label="Cities Served" value={450} suffix="+" delay={0.7} trend="Expanding" />
+              <StatCard icon={Globe} label="Cities Served" value={480} suffix="+" delay={0.7} trend="Expanding" />
             </div>
           </div>
         </FullScreenSection>
@@ -2124,7 +2129,7 @@ const About: React.FC = () => {
        
           {/* ==================== TESTIMONIALS ==================== */} 
 
-<FullScreenSection id="testimonials">
+<FullScreenSection id="testimonials" className="py-12 md:py-16">
   <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
     <SectionHeader 
       badge="Client Love" 
@@ -2132,7 +2137,7 @@ const About: React.FC = () => {
       highlight="Clients Say" 
       description="Trusted by precision-driven industries across the globe" 
     />
-    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 mt-8 md:mt-10">
       <TestimonialCard 
         quote="DFPL has been our preferred supplier for drywall screws and fastening solutions for over 5 years. Their consistent quality, timely dispatches, and technical support have helped us maintain smooth project execution across South India." 
         author="Pradeep Kumar Sharma" 
